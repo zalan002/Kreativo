@@ -1,0 +1,69 @@
+# Kreativo Magyarország — WordPress URL struktúra
+
+## Oldaltérkép
+
+| # | HTML fájl | WordPress URL (slug) | Oldal neve | Megjegyzés |
+|---|-----------|----------------------|------------|------------|
+| 1 | `index.html` | `/` | Kezdőlap | Főoldal — WordPress "Front page" |
+| 2 | `szolgaltatasaink.html` | `/szolgaltatasaink/` | Szolgáltatásaink | Szolgáltatás áttekintő oldal |
+| 3 | `szolgaltatasaink-palyazatfigyeles.html` | `/szolgaltatasaink/palyazatfigyeles/` | Pályázatfigyelés | Szolgáltatás aloldal |
+| 4 | `szolgaltatasaink-palyazati-tanacsadas.html` | `/szolgaltatasaink/palyazati-tanacsadas/` | Pályázatírás és tanácsadás | Szolgáltatás aloldal |
+| 5 | `szolgaltatasaink-projektmenedzsment.html` | `/szolgaltatasaink/projektmenedzsment/` | Projektmenedzsment | Szolgáltatás aloldal |
+| 6 | `szolgaltatasaink-kozbeszerzesi-tanacsadas.html` | `/szolgaltatasaink/kozbeszerzesi-tanacsadas/` | Közbeszerzési tanácsadás | Szolgáltatás aloldal |
+| 7 | `szolgaltatasaink-uzletviteli-tanacsadas.html` | `/szolgaltatasaink/uzletviteli-tanacsadas/` | Üzletviteli tanácsadás | Szolgáltatás aloldal |
+| 8 | `szolgaltatasaink-biztositeknyujtas.html` | `/szolgaltatasaink/biztositeknyujtas/` | Biztosítéknyújtás | Szolgáltatás aloldal |
+| 9 | `szolgaltatasaink-hitelkozvetites.html` | `/szolgaltatasaink/hitelkozvetites/` | Hitelközvetítés | Szolgáltatás aloldal |
+| 10 | `palyazatfigyeles.html` | `/palyazatfigyeles/` | Pályázatfigyelés (landing) | Önálló landing page |
+| 11 | `referenciaink.html` | `/referenciaink/` | Partnereink és referenciáink | Referencia oldal |
+| 12 | `kapcsolat.html` | `/kapcsolat/` | Kapcsolat | Kapcsolat oldal — form + elérhetőségek |
+
+---
+
+## WordPress oldal hierarchia
+
+```
+kreativo.hu/
+├── / ............................ Kezdőlap (index.html)
+├── /szolgaltatasaink/ ........... Szolgáltatás áttekintő (szolgaltatasaink.html)
+│   ├── /palyazatfigyeles/ ....... Pályázatfigyelés
+│   ├── /palyazati-tanacsadas/ ... Pályázatírás és tanácsadás
+│   ├── /projektmenedzsment/ ..... Projektmenedzsment
+│   ├── /kozbeszerzesi-tanacsadas/ Közbeszerzési tanácsadás
+│   ├── /uzletviteli-tanacsadas/ . Üzletviteli tanácsadás
+│   ├── /biztositeknyujtas/ ...... Biztosítéknyújtás
+│   └── /hitelkozvetites/ ........ Hitelközvetítés
+├── /palyazatfigyeles/ ........... Pályázatfigyelés landing
+├── /referenciaink/ .............. Referenciáink
+├── /kapcsolat/ .................. Kapcsolat (form + elérhetőségek + térkép)
+└── /koszonjuk-a-kapcsoaltfelvetelt/ ... Köszönő oldal (már létezik WP-ben)
+```
+
+---
+
+## Belső hivatkozások összesítése
+
+### index.html (Kezdőlap) hivatkozásai:
+- `szolgaltatasaink-palyazatfigyeles.html` → `/szolgaltatasaink/palyazatfigyeles/`
+- `szolgaltatasaink-palyazati-tanacsadas.html` → `/szolgaltatasaink/palyazati-tanacsadas/`
+- `szolgaltatasaink-projektmenedzsment.html` → `/szolgaltatasaink/projektmenedzsment/`
+- `szolgaltatasaink-kozbeszerzesi-tanacsadas.html` → `/szolgaltatasaink/kozbeszerzesi-tanacsadas/`
+- `szolgaltatasaink-uzletviteli-tanacsadas.html` → `/szolgaltatasaink/uzletviteli-tanacsadas/`
+- `szolgaltatasaink-hitelkozvetites.html` → `/szolgaltatasaink/hitelkozvetites/`
+- `#kapcsolat` → oldal belső anchor (marad)
+
+### szolgaltatasaink.html (Szolgáltatások áttekintő) hivatkozásai:
+- Ugyanazok a szolgáltatás aloldalak, mint a kezdőlapon
+- `index.html#kapcsolat` → `/#kapcsolat` vagy `/szolgaltatasaink/#kapcsolat`
+
+### Form (minden oldalon):
+- Sikeres küldés után → `https://kreativo.hu/koszonjuk-a-kapcsoaltfelvetelt/`
+
+---
+
+## WordPress beállítási teendők
+
+1. **Permalink beállítás:** Beállítások → Állandó hivatkozások → „Bejegyzés neve" (`/%postname%/`)
+2. **Oldalak létrehozása:** A fenti hierarchia szerint, szülő oldalak megadásával
+3. **Kezdőlap:** Beállítások → Olvasás → „Statikus oldal" → Kezdőlap: `index.html` tartalma
+4. **Menü:** A WordPress menüben a header/footer navigációt kell beállítani
+5. **Köszönő oldal:** `/koszonjuk-a-kapcsoaltfelvetelt/` — már létezik a WordPress-ben

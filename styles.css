@@ -786,12 +786,13 @@ ul, ol {
   line-height: 1.7;
 }
 
-/* ── PROCESS STEPS ── */
+/* ── PROCESS STEPS (Timeline) ── */
 .process-section {
   padding: 80px 0;
   background: #fff;
 }
 
+/* Legacy grid (index.html) */
 .process-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -808,12 +809,6 @@ ul, ol {
   background: var(--gradient-decorative);
   border-radius: 2px;
 }
-
-.process-step {
-  text-align: center;
-  position: relative;
-}
-
 .step-dot {
   width: 48px;
   height: 48px;
@@ -831,18 +826,95 @@ ul, ol {
   box-shadow: 0 0 0 6px var(--cream);
 }
 
+/* Service page timeline */
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+  margin-top: 48px;
+}
+
+.process-steps::before {
+  content: '';
+  position: absolute;
+  top: 36px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 3px;
+  background: var(--gradient-decorative);
+  border-radius: 2px;
+  z-index: 0;
+}
+
+.process-step {
+  text-align: center;
+  position: relative;
+  padding: 0 12px;
+}
+
+.step-number {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin: 0 auto 0;
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 0 0 6px #f9f9f9,
+    0 8px 24px rgba(46, 58, 110, 0.15);
+  transition: all 0.3s ease;
+}
+
+.process-step:hover .step-number {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 0 6px #f9f9f9,
+    0 12px 32px rgba(46, 58, 110, 0.25);
+}
+
 .process-step h3 {
   font-family: 'DM Sans', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin: 20px 0 8px;
   color: var(--text-dark);
+  transition: color 0.2s ease;
+}
+
+.process-step:hover h3 {
+  color: var(--deep-blue);
 }
 
 .process-step p {
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+/* Connector arrows between steps */
+.process-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 34px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  border-top: 3px solid var(--purple);
+  border-right: 3px solid var(--purple);
+  transform: rotate(45deg);
+  z-index: 2;
+  opacity: 0.5;
 }
 
 /* ── GRANT AREAS ── */
@@ -1398,6 +1470,9 @@ ul, ol {
   .why-grid { grid-template-columns: 1fr; }
   .process-grid { grid-template-columns: repeat(2, 1fr); }
   .process-grid::before { display: none; }
+  .process-steps { grid-template-columns: repeat(2, 1fr); gap: 40px 0; }
+  .process-steps::before { display: none; }
+  .process-step:not(:last-child)::after { display: none; }
   .contact-grid { grid-template-columns: 1fr; }
   .problem-cards { grid-template-columns: 1fr; }
   .partner-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1446,6 +1521,7 @@ ul, ol {
   .stat-card.featured { grid-column: span 2; }
   .services-grid { grid-template-columns: 1fr; }
   .process-grid { grid-template-columns: 1fr; }
+  .process-steps { grid-template-columns: 1fr; gap: 32px; }
   .trust-grid { grid-template-columns: 1fr; }
   .proof-grid { grid-template-columns: repeat(2, 1fr); }
   .partner-grid { grid-template-columns: 1fr 1fr; }

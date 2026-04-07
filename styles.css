@@ -286,7 +286,8 @@ ul, ol {
   transform: rotate(180deg);
 }
 
-.nav-cta-btn {
+.main-nav > a.nav-cta-btn,
+a.nav-cta-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -301,8 +302,10 @@ ul, ol {
   transition: all 0.3s ease;
   box-shadow: 0 2px 12px rgba(46, 58, 110, 0.2);
 }
-.nav-cta-btn:hover {
+.main-nav > a.nav-cta-btn:hover,
+a.nav-cta-btn:hover {
   color: #fff;
+  background: var(--gradient-primary);
   transform: translateY(-1px);
   box-shadow: 0 4px 20px rgba(46, 58, 110, 0.3);
 }

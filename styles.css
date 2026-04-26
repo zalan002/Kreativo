@@ -522,6 +522,22 @@ a.nav-cta-btn:hover {
   padding: 140px 0 80px;
   position: relative;
   overflow: hidden;
+  background:
+    radial-gradient(circle at 85% 18%, rgba(155, 126, 197, 0.2), transparent 38%),
+    radial-gradient(circle at 15% 80%, rgba(106, 142, 201, 0.2), transparent 42%),
+    linear-gradient(180deg, #fff 0%, var(--cream) 60%, #f8f4ff 100%);
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
 }
 
 .hero-badge {
@@ -554,6 +570,72 @@ a.nav-cta-btn:hover {
   line-height: 1.7;
   margin-bottom: 36px;
 }
+
+.hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.highlight-pill {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(46, 58, 110, 0.1);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--deep-blue);
+}
+
+.hero-visual {
+  position: relative;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #eef4ff 0%, #f8f2ff 100%);
+  border: 1px solid rgba(46, 58, 110, 0.08);
+  padding: 24px;
+  box-shadow: var(--shadow-elevated);
+}
+
+.hero-visual img {
+  width: 100%;
+  border-radius: 14px;
+  display: block;
+}
+
+.hero-floating-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(46, 58, 110, 0.1);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(8px);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.hero-floating-card span {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.hero-floating-card strong {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.hero-floating-card.card-top {
+  right: -10px;
+  top: 16px;
+}
+
+.hero-floating-card.card-bottom {
+  left: -14px;
+  bottom: 18px;
+}
+
 
 /* ── STAT CARDS ── */
 .stats-grid {
@@ -924,6 +1006,31 @@ a.nav-cta-btn:hover {
 .grant-areas {
   padding: 60px 0;
   background: linear-gradient(135deg, var(--pale-blue) 0%, var(--warm-white) 50%, var(--pale-purple) 100%);
+}
+
+.grant-areas-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.grant-areas-layout .section-subtitle {
+  margin-bottom: 28px;
+}
+
+.grant-areas-visual {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(46, 58, 110, 0.08);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: var(--shadow-card);
+}
+
+.grant-areas-visual img {
+  width: 100%;
+  display: block;
+  border-radius: 16px;
 }
 
 .pills-grid {
@@ -1467,6 +1574,9 @@ a.nav-cta-btn:hover {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
   .footer-cta { flex-direction: column; text-align: center; }
   .hero h1 { font-size: 2.6rem; }
+  .hero-layout { grid-template-columns: 1fr; }
+  .hero-visual { max-width: 620px; width: 100%; margin: 0 auto; }
+  .grant-areas-layout { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .stat-card.featured { grid-column: span 2; }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1518,6 +1628,8 @@ a.nav-cta-btn:hover {
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
   .hero { padding: 120px 0 40px; }
   .hero h1 { font-size: 2rem; }
+  .hero-floating-card { position: static; margin-top: 12px; }
+  .hero-visual { padding: 18px; }
   .section { padding: 60px 0; }
   .section-title { font-size: 1.8rem; }
   .stats-grid { grid-template-columns: 1fr 1fr; }

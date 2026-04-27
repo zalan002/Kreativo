@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pályázati Kisokos — Ingyenes 12 oldalas útmutató | Kreativo</title>
+<meta name="description" content="Töltsd le ingyen a 12 oldalas Pályázati Kisokost: a leggyakoribb buktatók, amelyek miatt a pályázók többsége elbukik — és hogyan kerülheted el őket.">
+<meta property="og:title" content="Pályázati Kisokos — Ingyenes 12 oldalas útmutató">
+<meta property="og:description" content="A 17 cm, amin egy 30 milliós pályázat elbukott — és 4 másik buktató, amit ismerned kell.">
+<meta property="og:type" content="website">
+<link rel="icon" href="img/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '3511173002462631');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<style id="lp-styles">
+/* ── Pályázati Kisokos landing — scoped ── */
+.lp-hero {
+  position: relative;
+  padding: clamp(120px, 16vw, 180px) 0 clamp(80px, 10vw, 120px);
+  background:
+    radial-gradient(circle at 90% 8%, rgba(184, 151, 90, 0.12), transparent 55%),
+    radial-gradient(circle at 5% 95%, rgba(123, 94, 167, 0.16), transparent 55%),
+    var(--paper);
+  overflow: hidden;
+  isolation: isolate;
+}
+.lp-hero-grid {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: clamp(48px, 6vw, 96px);
+  align-items: center;
+}
+.lp-hero h1 {
+  font-size: var(--display-2xl);
+  line-height: 1.0;
+  margin: 24px 0 28px;
+  letter-spacing: -0.015em;
+}
+.lp-hero h1 .num {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+}
+.lp-hero .lede {
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  margin-bottom: 36px;
+  max-width: 56ch;
+}
+.lp-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 28px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--ink-line);
+  font-size: 13px;
+  color: var(--ink-mute);
+  letter-spacing: 0.02em;
+}
+.lp-trust strong { color: var(--ink); font-weight: 600; }
+.lp-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 32px;
+  background: var(--plum-deep);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--plum-darker);
+  transition: all var(--duration) var(--ease-out);
+  box-shadow: 0 12px 32px -12px rgba(91, 63, 138, 0.5);
+}
+.lp-cta:hover {
+  background: var(--plum-darker);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 48px -16px rgba(91, 63, 138, 0.6);
+}
+.lp-cta svg { transition: transform var(--duration) var(--ease-out); }
+.lp-cta:hover svg { transform: translateX(3px); }
+.lp-cta-meta {
+  margin-left: 18px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* E-book mockup — közös, lp-cover prefix */
+.lp-cover-stage {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  perspective: 1400px;
+  display: grid;
+  place-items: center;
+}
+.lp-cover-stage::after {
+  content: '';
+  position: absolute;
+  left: 12%; right: 12%; bottom: 6%;
+  height: 22px;
+  background: radial-gradient(ellipse at center, rgba(26,27,46,0.28), transparent 70%);
+  filter: blur(8px);
+  z-index: -1;
+}
+.lp-cover {
+  position: relative;
+  width: min(100%, 360px);
+  aspect-ratio: 3 / 4;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #2E2547 0%, #5B3F8A 55%, #3F2A6B 100%);
+  color: #fff;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.10) inset,
+    0 30px 60px -20px rgba(63, 42, 107, 0.55),
+    0 60px 120px -40px rgba(26, 27, 46, 0.45);
+  transform: rotateY(-8deg) rotateX(2deg);
+  overflow: hidden;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+.lp-cover:hover { transform: rotateY(-3deg) rotateX(1deg); }
+.lp-cover::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 18px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.32), transparent);
+}
+.lp-cover::after {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.lp-cover-inner {
+  position: relative;
+  height: 100%;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.lp-cover-eyebrow {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lp-cover-eyebrow::before {
+  content: '';
+  width: 22px;
+  height: 1px;
+  background: rgba(255,255,255,0.55);
+}
+.lp-cover-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.lp-cover-title em {
+  font-style: italic;
+  font-weight: 500;
+  color: #E8D7B0;
+}
+.lp-cover-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+}
+.lp-cover-foot strong {
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #fff;
+  margin-top: 4px;
+}
+.lp-cover-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.4);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 16px;
+  color: #fff;
+}
+
+/* ── Mit tudsz meg — információs rés × 5 ── */
+.lp-tease {
+  background: var(--paper-tint);
+  padding: clamp(80px, 10vw, 140px) 0;
+}
+.lp-tease-head {
+  max-width: 760px;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+.lp-tease-head .eyebrow { margin-bottom: 20px; }
+.lp-tease-head h2 {
+  font-size: var(--display-lg);
+  margin-bottom: 16px;
+}
+.lp-tease-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--ink-line);
+  border-left: 1px solid var(--ink-line);
+}
+.lp-tease-card {
+  padding: 44px 40px;
+  border-right: 1px solid var(--ink-line);
+  border-bottom: 1px solid var(--ink-line);
+  background: rgba(251, 248, 243, 0.4);
+  transition: background var(--duration) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lp-tease-card:hover { background: var(--paper-pure); }
+.lp-tease-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 32px;
+  color: var(--plum);
+  line-height: 1;
+}
+.lp-tease-card h3 {
+  font-size: var(--display-sm);
+  line-height: 1.2;
+}
+.lp-tease-card p {
+  color: var(--ink-mute);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.lp-tease-hint {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--plum-deep);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.lp-tease-hint::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--plum);
+}
+
+/* ── Hitelesség / proof band ── */
+.lp-proof {
+  padding: clamp(80px, 10vw, 120px) 0;
+  background: var(--paper);
+  border-top: 1px solid var(--ink-line);
+}
+.lp-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.lp-proof-cell {
+  padding: 0 32px;
+  border-left: 1px solid var(--ink-line);
+}
+.lp-proof-cell:first-child { border-left: 0; padding-left: 0; }
+.lp-proof-num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.lp-proof-num em { font-style: italic; color: var(--plum); }
+.lp-proof-cell p {
+  font-size: 13px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
+
+/* ── Történet (kotrógép) — információs rés ── */
+.lp-story {
+  padding: clamp(80px, 10vw, 140px) 0;
+  background: var(--ink);
+  color: rgba(255,255,255,0.85);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.lp-story::before {
+  content: '';
+  position: absolute;
+  inset: -30% -10% auto auto;
+  width: 70vw;
+  max-width: 800px;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(184, 151, 90, 0.18), transparent 60%);
+  filter: blur(20px);
+  z-index: -1;
+}
+.lp-story .eyebrow { color: var(--plum-soft); }
+.lp-story .eyebrow::before { background: var(--plum-soft); }
+.lp-story-quote {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  line-height: 1.2;
+  color: #fff;
+  margin: 28px 0;
+  max-width: 22ch;
+}
+.lp-story-quote::before {
+  content: '“';
+  display: block;
+  font-size: 4em;
+  line-height: 0.5;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.lp-story-body {
+  max-width: 56ch;
+  font-size: var(--body-lg);
+  line-height: 1.7;
+  color: rgba(255,255,255,0.78);
+  margin-bottom: 28px;
+}
+.lp-story-body strong { color: #fff; }
+.lp-story-tease {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.22);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  transition: all var(--duration) var(--ease-out);
+}
+.lp-story-tease:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--plum-soft);
+}
+
+/* ── Form szekció ── */
+.lp-form {
+  padding: clamp(80px, 10vw, 140px) 0;
+  background: var(--paper-tint);
+}
+.lp-form-grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: clamp(40px, 5vw, 80px);
+  align-items: start;
+}
+.lp-form-text .eyebrow { margin-bottom: 20px; }
+.lp-form-text h2 {
+  font-size: var(--display-lg);
+  margin-bottom: 20px;
+  line-height: 1.05;
+}
+.lp-form-text .lede {
+  margin-bottom: 28px;
+}
+.lp-form-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--ink-line);
+}
+.lp-form-bullet {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 14px;
+  color: var(--ink-mute);
+}
+.lp-form-bullet svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--plum);
+}
+.lp-form-bullet strong { color: var(--ink); font-weight: 600; }
+
+.lp-form-card {
+  background: var(--paper-pure);
+  border: 1px solid var(--ink-line);
+  border-radius: var(--r-lg);
+  padding: clamp(32px, 4vw, 48px);
+  box-shadow: var(--shadow-soft);
+}
+.lp-form-card .form-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.lp-form-card .form-title em { font-style: italic; color: var(--plum); }
+.lp-form-card .form-subtitle {
+  font-size: 14px;
+  color: var(--ink-mute);
+  margin-bottom: 28px;
+}
+
+/* ── GYIK ── */
+.lp-faq {
+  padding: clamp(80px, 10vw, 140px) 0;
+  background: var(--paper);
+}
+.lp-faq-head {
+  max-width: 720px;
+  margin-bottom: clamp(40px, 5vw, 64px);
+}
+.lp-faq-head h2 {
+  font-size: var(--display-lg);
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.lp-faq-list {
+  border-top: 1px solid var(--ink-line);
+  max-width: 880px;
+}
+.lp-faq-item {
+  border-bottom: 1px solid var(--ink-line);
+}
+.lp-faq-q {
+  width: 100%;
+  text-align: left;
+  padding: 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  color: var(--ink);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.lp-faq-q:hover { color: var(--plum-deep); }
+.lp-faq-q .lp-faq-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-line-2);
+  display: grid;
+  place-items: center;
+  transition: all var(--duration) var(--ease-out);
+}
+.lp-faq-item[open] .lp-faq-icon {
+  background: var(--plum-deep);
+  border-color: var(--plum-deep);
+  color: #fff;
+  transform: rotate(45deg);
+}
+.lp-faq-a {
+  padding: 0 0 28px;
+  max-width: 64ch;
+  color: var(--ink-mute);
+  line-height: 1.7;
+}
+
+/* ── Záró CTA — puszta kitettség (ismétlés) ── */
+.lp-final {
+  padding: clamp(80px, 10vw, 140px) 0;
+  background: var(--paper-tint);
+}
+.lp-final-card {
+  background: var(--paper-pure);
+  border: 1px solid var(--ink-line);
+  border-radius: var(--r-lg);
+  padding: clamp(48px, 6vw, 88px);
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+.lp-final-card h2 {
+  font-size: var(--display-md);
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+.lp-final-card p {
+  color: var(--ink-mute);
+  margin-bottom: 28px;
+}
+.lp-final-mini {
+  position: relative;
+  width: min(100%, 280px);
+  aspect-ratio: 3 / 4;
+  margin-left: auto;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #2E2547 0%, #5B3F8A 55%, #3F2A6B 100%);
+  color: #fff;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 24px 56px -16px rgba(63, 42, 107, 0.5);
+  transform: rotate(2deg);
+}
+.lp-final-mini-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.lp-final-mini-title em { font-style: italic; color: #E8D7B0; }
+.lp-final-mini-meta {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+}
+
+/* ── Reszponzív ── */
+@media (max-width: 980px) {
+  .lp-hero-grid { grid-template-columns: 1fr; gap: 64px; }
+  .lp-cover-stage { max-width: 320px; margin: 0 auto; }
+  .lp-tease-grid { grid-template-columns: 1fr; }
+  .lp-proof-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 0; }
+  .lp-proof-cell:nth-child(3) { border-left: 0; padding-left: 0; }
+  .lp-form-grid { grid-template-columns: 1fr; }
+  .lp-final-card { grid-template-columns: 1fr; }
+  .lp-final-mini { margin: 0 auto; }
+}
+@media (max-width: 560px) {
+  .lp-proof-grid { grid-template-columns: 1fr; }
+  .lp-proof-cell { border-left: 0; padding-left: 0; padding-bottom: 24px; border-bottom: 1px solid var(--ink-line); }
+  .lp-proof-cell:last-child { border-bottom: 0; padding-bottom: 0; }
+  .lp-cta { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="/" class="header-logo">
+      <img src="img/logo-header.png" alt="Kreativo Magyarország Kft.">
+    </a>
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menü">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="main-nav">
+      <a href="/">Kezdőlap</a>
+      <div class="nav-dropdown">
+        <a href="/szolgaltatasaink" class="nav-link">
+          Szolgáltatásaink
+          <svg class="nav-caret" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
+        </a>
+        <div class="dropdown-menu">
+          <a href="/szolgaltatasaink-palyazatfigyeles">Pályázatfigyelés</a>
+          <a href="/szolgaltatasaink-palyazati-tanacsadas">Pályázatírás, tanácsadás</a>
+          <a href="/szolgaltatasaink-projektmenedzsment">Projektmenedzsment</a>
+          <a href="/szolgaltatasaink-kozbeszerzesi-tanacsadas">Közbeszerzési tanácsadás</a>
+          <a href="/szolgaltatasaink-uzletviteli-tanacsadas">Üzletviteli tanácsadás</a>
+          <a href="/szolgaltatasaink-biztositeknyujtas">Biztosítéknyújtás</a>
+          <a href="/szolgaltatasaink-hitelkozvetites">Hitelközvetítés</a>
+        </div>
+      </div>
+      <a href="/palyazatfigyeles">Pályázatfigyelés</a>
+      <a href="/referenciaink">Referenciáink</a>
+      <a href="/kapcsolat" class="nav-cta-btn">Kapcsolat</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO — információs rés hook -->
+<section class="lp-hero">
+  <div class="container">
+    <div class="lp-hero-grid">
+      <div class="lp-hero-text reveal">
+        <div class="eyebrow">Ingyenes útmutató · 12 oldal</div>
+        <h1>A <span class="num">17 cm</span>, amin egy <em>30 milliós</em> pályázat elbukott — és 4 másik buktató, amit ismerned kell.</h1>
+        <p class="lede">Olyan tudást adunk a kezedbe, amit a versenytársaink jellemzően az első <em>fizetős</em> konzultáción osztanak meg. 12 oldal, 5 fejezet, valós esetek — most ingyen.</p>
+        <a href="#letoltes" class="lp-cta">
+          Kérem ingyen a Kisokost
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <span class="lp-cta-meta">PDF · 873 KB · 15 perc olvasás</span>
+        <div class="lp-trust">
+          <span><strong>2015 óta</strong> a piacon</span>
+          <span><strong>100+</strong> nyertes pályázat</span>
+          <span><strong>Sikerdíjas</strong> modell</span>
+        </div>
+      </div>
+      <div class="lp-hero-visual reveal delay-1" aria-hidden="true">
+        <div class="lp-cover-stage">
+          <div class="lp-cover">
+            <div class="lp-cover-inner">
+              <div><span class="lp-cover-eyebrow">Kreativo · 2025</span></div>
+              <h2 class="lp-cover-title">Pályázati<br><em>Kisokos</em></h2>
+              <div class="lp-cover-foot">
+                <div>
+                  <span>Kiadta</span>
+                  <strong>Kreativo</strong>
+                </div>
+                <span class="lp-cover-mark">K</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MIT TUDSZ MEG — információs rés × 5 -->
+<section class="lp-tease">
+  <div class="container">
+    <div class="lp-tease-head reveal">
+      <div class="eyebrow ink">Mit tudsz meg a Kisokosból?</div>
+      <h2>5 fejezet, 5 buktató, amit <em>kevesen</em> mondanak el — pedig itt dől el a pályázatod.</h2>
+      <p class="lede">A legjellemzőbb hibák, amelyekbe a pályázók rendre belefutnak. Konkrét válaszokkal, valós esetekkel — bent a Kisokosban.</p>
+    </div>
+    <div class="lp-tease-grid">
+      <div class="lp-tease-card reveal">
+        <span class="lp-tease-num">01</span>
+        <h3>Alkalmas vagy egyáltalán pályázatra?</h3>
+        <p>8 alapfeltétel, ami nélkül még a legjobb pályázatíróval is esélytelenül indulsz. Az egyiken pl. a KKV-k több mint fele elbukik a beadás előtt.</p>
+        <span class="lp-tease-hint">Részletek a Kisokosban</span>
+      </div>
+      <div class="lp-tease-card reveal delay-1">
+        <span class="lp-tease-num">02</span>
+        <h3>A megvalósítási helyszín — ahol a többség elvérzik</h3>
+        <p>Egyetlen címregisztrációs döntésen múlhat <strong>99%</strong> elutasítási kockázat. Ha rosszul jelented be a céged, már nem segít a legjobb pályázat sem.</p>
+        <span class="lp-tease-hint">Részletek a Kisokosban</span>
+      </div>
+      <div class="lp-tease-card reveal">
+        <span class="lp-tease-num">03</span>
+        <h3>A 3 legnépszerűbb pályázattípus rejtett csapdái</h3>
+        <p>Eszközbeszerzés, ingatlanfejlesztés, IT — mindegyiknél van 5 olyan apróság, amit ha figyelmen kívül hagysz, megnyert pályázatból visszafizetendő tartozás lesz.</p>
+        <span class="lp-tease-hint">Részletek a Kisokosban</span>
+      </div>
+      <div class="lp-tease-card reveal delay-1">
+        <span class="lp-tease-num">04</span>
+        <h3>Az elszámolás és a fenntartási időszak</h3>
+        <p>A nyerés még csak a fele. Itt dől el, hogy <strong>20–50 millió Ft + kamat</strong> visszafizetés vár-e rád, vagy tényleg megtartod a támogatást.</p>
+        <span class="lp-tease-hint">Részletek a Kisokosban</span>
+      </div>
+      <div class="lp-tease-card reveal delay-2" style="grid-column: 1 / -1;">
+        <span class="lp-tease-num">05</span>
+        <h3>Az 1 kérdés, amivel kiszűrheted a rossz pályázatírót</h3>
+        <p>Ha a leendő partnered erre a kérdésre <em>nem</em> tud konkrét választ adni, valószínűleg nem a te érdekedet fogja képviselni. A kérdés pontos megfogalmazása a Kisokos 5. fejezetében.</p>
+        <span class="lp-tease-hint">Részletek a Kisokosban</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HITELESSÉG / proof — puszta kitettség -->
+<section class="lp-proof">
+  <div class="container">
+    <div class="section-head reveal" style="margin-bottom: 56px;">
+      <div class="eyebrow ink">Miért hallgass ránk?</div>
+      <h2 class="display-lg" style="margin-top:16px;">2015 óta segítünk magyar vállalkozásoknak <em>nyerni</em>.</h2>
+    </div>
+    <div class="lp-proof-grid reveal">
+      <div class="lp-proof-cell">
+        <div class="lp-proof-num"><em>10+</em> év</div>
+        <p>Tapasztalat a hazai pályázati piacon</p>
+      </div>
+      <div class="lp-proof-cell">
+        <div class="lp-proof-num"><em>100+</em></div>
+        <p>Nyertes pályázat ügyfeleink részére</p>
+      </div>
+      <div class="lp-proof-cell">
+        <div class="lp-proof-num"><em>7</em></div>
+        <p>Komplex szolgáltatási terület egy kézben</p>
+      </div>
+      <div class="lp-proof-cell">
+        <div class="lp-proof-num">Sikerdíjas</div>
+        <p>Akkor fizetsz, ha tényleg sikerült — közös érdekeltség</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALÓS TÖRTÉNET — kotrógép — információs rés -->
+<section class="lp-story">
+  <div class="container">
+    <div class="split split--57">
+      <div class="reveal">
+        <div class="eyebrow">Valós eset a Kisokosból</div>
+        <p class="lp-story-quote">A kotrógép 2,98 m. A kapu 2,81 m. A pályázat <em>elbukott</em>.</p>
+      </div>
+      <div class="reveal delay-1">
+        <p class="lp-story-body">Egy ügyfél kotrógépet akart beszerezni pályázati támogatásból. Minden papír stimmelt — TEÁOR, árajánlat, költségvetés. A kezelő szervezet a fotódokumentáció alapján <strong>megmérte a kapubejárót</strong>, és visszaírta: a gép <strong>17 centiméterrel szélesebb</strong>, mint a bejárat.</p>
+        <p class="lp-story-body">A kérelmet elutasították. Nem azért, mert a vállalkozó hibás döntést hozott — hanem mert <strong>nem tudta</strong>, mit fognak vizsgálni. A Kisokosban pontosan ezt mutatjuk meg: <em>mire figyel a kezelő szervezet</em>, és hogyan készülj fel rá <strong>előre</strong>.</p>
+        <a href="#letoltes" class="lp-story-tease">
+          Töltsd le a Kisokost
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM — 1-lépcsős, erőfeszítés igazolása copy -->
+<section class="lp-form" id="letoltes">
+  <div class="container">
+    <div class="lp-form-grid">
+      <div class="lp-form-text reveal">
+        <div class="eyebrow ink">Töltsd le ingyen</div>
+        <h2>Még <em>1 lépés</em>, és Önhöz repül a Kisokos.</h2>
+        <p class="lede">Add meg az adataidat, és a köszönő oldalon azonnal letöltheted a 12 oldalas PDF-et. Nincs spam, nincs napi e-mail.</p>
+        <div class="lp-form-bullets">
+          <div class="lp-form-bullet">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Azonnali hozzáférés</strong> — a köszönő oldalon egy kattintásra letölthető.</span>
+          </div>
+          <div class="lp-form-bullet">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Nincs kötelezettség</strong> — a Kisokos önmagában is teljes értékű útmutató.</span>
+          </div>
+          <div class="lp-form-bullet">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span><strong>Adatvédelem</strong> — adatait soha nem adjuk ki harmadik félnek.</span>
+          </div>
+        </div>
+      </div>
+      <div class="lp-form-card reveal delay-1">
+        <h3 class="form-title">Kérem ingyen a <em>Pályázati Kisokost</em></h3>
+        <p class="form-subtitle">A megadott e-mail címre is elküldjük a letöltési linket — biztonság kedvéért.</p>
+        <div class="form-error" id="formError"></div>
+        <form id="ebookForm" class="kreativo-form" novalidate>
+          <div class="form-row">
+            <div class="form-group"><label for="vezeteknev">Vezetéknév <span class="required">*</span></label><input type="text" id="vezeteknev" name="vezeteknev" placeholder="Kovács" required></div>
+            <div class="form-group"><label for="keresztnev">Keresztnév <span class="required">*</span></label><input type="text" id="keresztnev" name="keresztnev" placeholder="János" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width"><label for="cegnev">Cégnév <span class="required">*</span></label><input type="text" id="cegnev" name="cegnev" placeholder="Példa Kft." required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label for="email">E-mail <span class="required">*</span></label><input type="email" id="email" name="email" placeholder="kovacs@ceg.hu" required></div>
+            <div class="form-group"><label for="telefonszam">Telefonszám <span class="required">*</span></label><input type="tel" id="telefonszam" name="telefonszam" placeholder="+36 30 123 4567" required></div>
+          </div>
+          <input type="hidden" id="forras" name="forras" value="">
+          <button type="submit" class="form-submit-btn" id="submitBtn">
+            <span class="btn-text">Kérem ingyen a Kisokost</span>
+            <span class="btn-spinner"></span>
+          </button>
+          <p style="text-align:center; margin-top:14px; font-size:12px; color:var(--ink-soft);">A küldéssel elfogadod, hogy felvegyük veled a kapcsolatot.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GYIK — információs rés mikro -->
+<section class="lp-faq">
+  <div class="container">
+    <div class="lp-faq-head reveal">
+      <div class="eyebrow ink">Gyakori kérdések</div>
+      <h2>Mielőtt letöltöd — itt vannak a leggyakoribb <em>kérdések</em>.</h2>
+    </div>
+    <div class="lp-faq-list reveal">
+      <details class="lp-faq-item">
+        <summary class="lp-faq-q">
+          <span>Tényleg ingyenes a Kisokos?</span>
+          <span class="lp-faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </summary>
+        <div class="lp-faq-a">Igen. Sem most, sem később nem fogunk a Kisokosért pénzt kérni. Ez egy tényleges szakmai útmutató, amit azért osztunk meg, mert hiszünk benne: aki informáltan dönt, jobb partner lesz.</div>
+      </details>
+      <details class="lp-faq-item">
+        <summary class="lp-faq-q">
+          <span>Mi történik, miután kitöltöm az űrlapot?</span>
+          <span class="lp-faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </summary>
+        <div class="lp-faq-a">Azonnal egy köszönő oldalra kerülsz, ahol egy kattintással letölthető a 12 oldalas PDF. Az e-mail címedre is elküldjük a letöltési linket, hogy később is elérd.</div>
+      </details>
+      <details class="lp-faq-item">
+        <summary class="lp-faq-q">
+          <span>Köteles vagyok bármire a letöltés után?</span>
+          <span class="lp-faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </summary>
+        <div class="lp-faq-a">Egyáltalán nem. A Kisokos önállóan is teljes értékű — ha úgy érzed, hogy egyedül is boldogulsz, sok sikert. Ha viszont szeretnél szakértői támogatást, az adataid alapján egy kollégánk fel fog hívni egy ingyenes konzultációra. Ezt bármikor visszautasíthatod.</div>
+      </details>
+      <details class="lp-faq-item">
+        <summary class="lp-faq-q">
+          <span>Mit csináltok az adataimmal?</span>
+          <span class="lp-faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </summary>
+        <div class="lp-faq-a">Semmilyen körülmények között nem adjuk ki harmadik félnek. Kizárólag arra használjuk, hogy a Kisokost elküldjük, és — ha kéred — egy ingyenes konzultációra felvegyük veled a kapcsolatot.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ZÁRÓ CTA — puszta kitettség (ismétlés) -->
+<section class="lp-final">
+  <div class="container">
+    <div class="lp-final-card reveal">
+      <div>
+        <div class="eyebrow ink" style="margin-bottom:18px;">Még itt vagy?</div>
+        <h2>Ne kezd el a pályázatot vakon. Tölts le mindent, amit <em>tudnod kell</em>.</h2>
+        <p>12 oldal, 5 fejezet, valós esetek — ingyen. Add meg az adataidat, és pár másodperc múlva a tiéd.</p>
+        <a href="#letoltes" class="lp-cta">
+          Kérem ingyen a Kisokost
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="lp-final-mini" aria-hidden="true">
+        <span class="lp-final-mini-meta">Kreativo · 2025</span>
+        <h3 class="lp-final-mini-title">Pályázati<br><em>Kisokos</em></h3>
+        <span class="lp-final-mini-meta">12 oldal · PDF</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-cta">
+      <div class="footer-cta-text">
+        <h3>Kérjen ingyenes <em>konzultációt</em></h3>
+        <p>Vegye fel velünk a kapcsolatot, és közösen megtervezzük az Ön cégére szabott pályázati stratégiát.</p>
+      </div>
+      <a href="/kapcsolat" class="footer-cta-btn">
+        Kapcsolatfelvétel
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="img/favicon.png" alt="Kreativo Magyarország Kft.">
+        <p>2015 óta segítjük a magyar vállalkozásokat pályázati forrásokhoz jutni. Sikerdíjas modellünkkel mi is érdekeltek vagyunk az Ön sikerében.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/kreativomagyarorszagkft" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Szolgáltatások</h4>
+        <ul>
+          <li><a href="/szolgaltatasaink-palyazatfigyeles">Pályázatfigyelés</a></li>
+          <li><a href="/szolgaltatasaink-palyazati-tanacsadas">Pályázatírás, tanácsadás</a></li>
+          <li><a href="/szolgaltatasaink-projektmenedzsment">Projektmenedzsment</a></li>
+          <li><a href="/szolgaltatasaink-kozbeszerzesi-tanacsadas">Közbeszerzési tanácsadás</a></li>
+          <li><a href="/szolgaltatasaink-uzletviteli-tanacsadas">Üzletviteli tanácsadás</a></li>
+          <li><a href="/szolgaltatasaink-biztositeknyujtas">Biztosítéknyújtás</a></li>
+          <li><a href="/szolgaltatasaink-hitelkozvetites">Hitelközvetítés</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Cégünk</h4>
+        <ul>
+          <li><a href="/referenciaink">Referenciáink</a></li>
+          <li><a href="/palyazatfigyeles">Pályázatfigyelés</a></li>
+          <li><a href="/kapcsolat">Kapcsolat</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Elérhetőségek</h4>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>1142 Budapest,<br>Szőnyi út 50/a.</span>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:info@kreativo.hu">info@kreativo.hu</a>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          <a href="tel:+36205295153">+36 20 529 5153</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 Kreativo Magyarország Kft. Minden jog fenntartva.</span>
+      <div class="footer-bottom-links">
+        <a href="/kapcsolat">Kapcsolat</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Form submit logika -->
+<script>
+(function() {
+  var form = document.getElementById("ebookForm");
+  if (!form) return;
+  var errorDiv = document.getElementById("formError");
+  var submitBtn = document.getElementById("submitBtn");
+  var forrasField = document.getElementById("forras");
+  forrasField.value = window.location.href;
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+    errorDiv.classList.remove("visible");
+    errorDiv.textContent = "";
+
+    var required = ["vezeteknev", "keresztnev", "cegnev", "email", "telefonszam"];
+    var labels = {
+      vezeteknev: "Vezetéknév", keresztnev: "Keresztnév", cegnev: "Cégnév",
+      email: "E-mail", telefonszam: "Telefonszám"
+    };
+    var missing = [];
+    for (var i = 0; i < required.length; i++) {
+      var input = document.getElementById(required[i]);
+      if (!input.value.trim()) {
+        missing.push(labels[required[i]]);
+        input.style.borderBottomColor = "#C14D4D";
+      } else {
+        input.style.borderBottomColor = "";
+      }
+    }
+    var emailInput = document.getElementById("email");
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailInput.value.trim() && !emailRegex.test(emailInput.value.trim())) {
+      missing.push("Érvényes e-mail cím");
+      emailInput.style.borderBottomColor = "#C14D4D";
+    }
+
+    if (missing.length > 0) {
+      errorDiv.textContent = "Kérjük töltse ki a kötelező mezőket: " + missing.join(", ");
+      errorDiv.classList.add("visible");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.classList.add("loading");
+
+    var payload = {
+      vezeteknev: document.getElementById("vezeteknev").value.trim(),
+      keresztnev: document.getElementById("keresztnev").value.trim(),
+      cegnev: document.getElementById("cegnev").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      telefonszam: document.getElementById("telefonszam").value.trim(),
+      lead_type: "ebook",
+      forras: forrasField.value,
+      submitted_at: new Date().toISOString()
+    };
+
+    try {
+      var response = await fetch("https://traininghungary.app.n8n.cloud/webhook/35919594-6d84-45ee-b920-fc1f8067cce0", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (response.ok) {
+        if (typeof fbq !== "undefined") {
+          fbq("track", "Lead", { content_name: "Pályázati Kisokos", content_category: forrasField.value });
+        }
+        window.location.href = "https://kreativo.hu/koszonjuk-az-erdeklodest";
+      } else { throw new Error("Hiba"); }
+    } catch (err) {
+      errorDiv.textContent = "Sajnos hiba történt a küldés során. Kérjük próbálja újra, vagy keressen minket e-mailben az info@kreativo.hu címen.";
+      errorDiv.classList.add("visible");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("loading");
+    }
+  });
+})();
+</script>
+
+<script>
+document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+  document.getElementById('main-nav').classList.toggle('open');
+});
+window.addEventListener('scroll', function() {
+  document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 10);
+});
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+}
+</script>
+</body>
+</html>

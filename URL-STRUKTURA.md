@@ -16,6 +16,8 @@
 | 10 | `palyazatfigyeles.html` | `/palyazatfigyeles/` | Pályázatfigyelés (landing) | Önálló landing page |
 | 11 | `referenciaink.html` | `/referenciaink/` | Partnereink és referenciáink | Referencia oldal |
 | 12 | `kapcsolat.html` | `/kapcsolat/` | Kapcsolat | Kapcsolat oldal — form + elérhetőségek |
+| 13 | `koszonjuk-a-kapcsolatfelvetelt.html` | `/koszonjuk-a-kapcsolatfelvetelt/` | Köszönjük a kapcsolatfelvételt | Form submit utáni köszönő oldal (noindex) |
+| 14 | `koszonjuk-az-erdeklodest.html` | `/koszonjuk-az-erdeklodest/` | Köszönjük az érdeklődést | E-book letöltő köszönő oldal (noindex) |
 
 ---
 
@@ -35,7 +37,8 @@ kreativo.hu/
 ├── /palyazatfigyeles/ ........... Pályázatfigyelés landing
 ├── /referenciaink/ .............. Referenciáink
 ├── /kapcsolat/ .................. Kapcsolat (form + elérhetőségek + térkép)
-└── /koszonjuk-a-kapcsoaltfelvetelt/ ... Köszönő oldal (már létezik WP-ben)
+├── /koszonjuk-a-kapcsolatfelvetelt/ ... Köszönő oldal — kapcsolatfelvétel után
+└── /koszonjuk-az-erdeklodest/ ... Köszönő oldal — e-book letöltés (Pályázati Kisokos)
 ```
 
 ---
@@ -56,7 +59,11 @@ kreativo.hu/
 - `index.html#kapcsolat` → `/#kapcsolat` vagy `/szolgaltatasaink/#kapcsolat`
 
 ### Form (minden oldalon):
-- Sikeres küldés után → `https://kreativo.hu/koszonjuk-a-kapcsoaltfelvetelt/`
+- Webhook (POST JSON) → `https://traininghungary.app.n8n.cloud/webhook/35919594-6d84-45ee-b920-fc1f8067cce0`
+- Sikeres küldés után redirect → `https://kreativo.hu/koszonjuk-a-kapcsolatfelvetelt/` (`koszonjuk-a-kapcsolatfelvetelt.html`)
+- E-book űrlap sikeres küldés után → `/koszonjuk-az-erdeklodest/` (`koszonjuk-az-erdeklodest.html`)
+
+> **WP-teendő:** a régi `/koszonjuk-a-kapcsoaltfelvetelt/` (typo-s) WP oldal slugját át kell nevezni `/koszonjuk-a-kapcsolatfelvetelt/`-re, vagy 301 redirect-et kell beállítani róla az új slug-ra, hogy a formok megfelelően landoljanak.
 
 ---
 
@@ -66,4 +73,8 @@ kreativo.hu/
 2. **Oldalak létrehozása:** A fenti hierarchia szerint, szülő oldalak megadásával
 3. **Kezdőlap:** Beállítások → Olvasás → „Statikus oldal" → Kezdőlap: `index.html` tartalma
 4. **Menü:** A WordPress menüben a header/footer navigációt kell beállítani
-5. **Köszönő oldal:** `/koszonjuk-a-kapcsoaltfelvetelt/` — már létezik a WordPress-ben
+5. **Köszönő oldalak:**
+   - `/koszonjuk-a-kapcsolatfelvetelt/` — kapcsolatfelvételi form sikeres küldés után (`koszonjuk-a-kapcsolatfelvetelt.html`)
+   - `/koszonjuk-az-erdeklodest/` — e-book letöltési form sikeres küldés után (`koszonjuk-az-erdeklodest.html`)
+   - Mindkét oldal `noindex` meta-tagot kap, hogy ne kerüljenek a keresőbe.
+6. **E-book fájl:** `/ebook/palyazati-kisokos-kreativo.pdf` — a köszönő oldalon letölthető (Pályázati Kisokos PDF, 873 KB)

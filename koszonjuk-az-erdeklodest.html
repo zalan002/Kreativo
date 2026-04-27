@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Köszönjük az érdeklődést! — Pályázati Kisokos | Kreativo Magyarország Kft.</title>
+<meta name="description" content="Köszönjük az érdeklődést! Töltse le a Pályázati Kisokos e-bookot, amely segít eligazodni a hazai pályázati lehetőségek között.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" href="img/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ── E-book köszönő oldal — egyedi részek ── */
+  .eb-hero {
+    position: relative;
+    padding: clamp(120px, 16vw, 200px) 0 clamp(80px, 10vw, 140px);
+    background:
+      radial-gradient(circle at 85% 10%, rgba(184, 151, 90, 0.10), transparent 55%),
+      radial-gradient(circle at 10% 90%, rgba(123, 94, 167, 0.14), transparent 55%),
+      var(--paper);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .eb-hero-grid {
+    display: grid;
+    grid-template-columns: 6fr 5fr;
+    gap: clamp(48px, 6vw, 96px);
+    align-items: center;
+  }
+  .eb-hero h1 {
+    font-size: var(--display-2xl);
+    line-height: 1.02;
+    margin: 24px 0 24px;
+  }
+  .eb-hero .lede {
+    font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+    margin-bottom: 36px;
+    max-width: 56ch;
+  }
+
+  /* ── E-book "borító" — tipográfiai mockup ── */
+  .eb-cover-stage {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    perspective: 1400px;
+    display: grid;
+    place-items: center;
+  }
+  .eb-cover-stage::after {
+    content: '';
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: 6%;
+    height: 22px;
+    background: radial-gradient(ellipse at center, rgba(26,27,46,0.28), transparent 70%);
+    filter: blur(8px);
+    z-index: -1;
+  }
+  .eb-cover {
+    position: relative;
+    width: min(100%, 360px);
+    aspect-ratio: 3 / 4;
+    border-radius: 4px;
+    background:
+      linear-gradient(135deg, #2E2547 0%, #5B3F8A 55%, #3F2A6B 100%);
+    color: #fff;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.10) inset,
+      0 30px 60px -20px rgba(63, 42, 107, 0.55),
+      0 60px 120px -40px rgba(26, 27, 46, 0.45);
+    transform: rotateY(-8deg) rotateX(2deg);
+    overflow: hidden;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+  .eb-cover:hover { transform: rotateY(-3deg) rotateX(1deg); }
+  .eb-cover::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 18px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.32), transparent);
+  }
+  .eb-cover::after {
+    content: '';
+    position: absolute;
+    inset: 16px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .eb-cover-inner {
+    position: relative;
+    height: 100%;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .eb-cover-eyebrow {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eb-cover-eyebrow::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: rgba(255,255,255,0.55);
+  }
+  .eb-cover-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+  .eb-cover-title em {
+    font-style: italic;
+    font-weight: 500;
+    color: #E8D7B0;
+  }
+  .eb-cover-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+  }
+  .eb-cover-foot strong {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #fff;
+    margin-top: 4px;
+  }
+  .eb-cover-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.4);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  /* ── Letöltés gomb ── */
+  .eb-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 32px 22px 28px;
+    background: var(--plum-deep);
+    color: #fff;
+    border-radius: var(--r-md);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    transition: all var(--duration) var(--ease-out);
+    box-shadow: 0 12px 32px -12px rgba(91, 63, 138, 0.5);
+    border: 1px solid var(--plum-darker);
+  }
+  .eb-download:hover {
+    background: var(--plum-darker);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 48px -16px rgba(91, 63, 138, 0.6);
+  }
+  .eb-download-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.18);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .eb-download-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .eb-download-meta-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+  }
+  .eb-download-meta-name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.1;
+    color: #fff;
+  }
+  .eb-download-meta-name em { font-style: italic; color: #E8D7B0; }
+
+  .eb-filemeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .eb-filemeta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eb-filemeta-item svg { color: var(--plum); }
+
+  /* ── Mi van benne ── */
+  .eb-inside {
+    background: var(--paper-tint);
+    padding: clamp(80px, 10vw, 140px) 0;
+  }
+  .eb-inside-head {
+    max-width: 720px;
+    margin-bottom: clamp(48px, 6vw, 80px);
+  }
+  .eb-inside-head .eyebrow { margin-bottom: 20px; }
+  .eb-inside-head h2 {
+    font-size: var(--display-lg);
+    margin-bottom: 16px;
+  }
+  .eb-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--ink-line);
+    border-left: 1px solid var(--ink-line);
+  }
+  .eb-card {
+    padding: 40px;
+    border-right: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+    background: rgba(251, 248, 243, 0.4);
+    transition: background var(--duration) var(--ease-out);
+  }
+  .eb-card:hover { background: var(--paper-pure); }
+  .eb-card-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--plum);
+    margin-bottom: 18px;
+    display: block;
+  }
+  .eb-card h3 {
+    font-size: var(--display-sm);
+    margin-bottom: 10px;
+  }
+  .eb-card p {
+    color: var(--ink-mute);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Lábléc CTA blokk ── */
+  .eb-aside {
+    padding: clamp(80px, 10vw, 120px) 0;
+    background: var(--paper);
+  }
+  .eb-aside-card {
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-lg);
+    padding: clamp(40px, 5vw, 64px);
+    background: var(--paper-pure);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(32px, 4vw, 56px);
+    align-items: center;
+  }
+  .eb-aside-card h2 {
+    font-size: var(--display-md);
+    margin-bottom: 14px;
+  }
+  .eb-aside-card p { color: var(--ink-mute); margin-bottom: 0; }
+  .eb-aside-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-self: end;
+  }
+
+  @media (max-width: 900px) {
+    .eb-hero-grid { grid-template-columns: 1fr; gap: 64px; }
+    .eb-cover-stage { max-width: 320px; margin: 0 auto; }
+    .eb-grid { grid-template-columns: 1fr; }
+    .eb-aside-card { grid-template-columns: 1fr; }
+    .eb-aside-actions { justify-self: start; }
+    .eb-download { width: 100%; }
+  }
+  @media (max-width: 480px) {
+    .eb-download { padding: 18px 20px; gap: 14px; }
+    .eb-download-meta-name { font-size: 18px; }
+    .eb-download-icon { width: 38px; height: 38px; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <img src="img/logo-header.png" alt="Kreativo Magyarország Kft.">
+    </a>
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menü">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="main-nav">
+      <a href="index.html">Kezdőlap</a>
+      <div class="nav-dropdown">
+        <a href="szolgaltatasaink.html" class="nav-link">
+          Szolgáltatásaink
+          <svg class="nav-caret" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
+        </a>
+        <div class="dropdown-menu">
+          <a href="szolgaltatasaink-palyazatfigyeles.html">Pályázatfigyelés</a>
+          <a href="szolgaltatasaink-palyazati-tanacsadas.html">Pályázatírás, tanácsadás</a>
+          <a href="szolgaltatasaink-projektmenedzsment.html">Projektmenedzsment</a>
+          <a href="szolgaltatasaink-kozbeszerzesi-tanacsadas.html">Közbeszerzési tanácsadás</a>
+          <a href="szolgaltatasaink-uzletviteli-tanacsadas.html">Üzletviteli tanácsadás</a>
+          <a href="szolgaltatasaink-biztositeknyujtas.html">Biztosítéknyújtás</a>
+          <a href="szolgaltatasaink-hitelkozvetites.html">Hitelközvetítés</a>
+        </div>
+      </div>
+      <a href="palyazatfigyeles.html">Pályázatfigyelés</a>
+      <a href="referenciaink.html">Referenciáink</a>
+      <a href="kapcsolat.html" class="nav-cta-btn">Kapcsolat</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO — e-book letöltés -->
+<section class="eb-hero">
+  <div class="container">
+    <div class="eb-hero-grid">
+      <div class="eb-hero-text reveal">
+        <div class="eyebrow">Köszönjük az érdeklődést</div>
+        <h1>Itt a <em>Pályázati Kisokos</em>.</h1>
+        <p class="lede">Köszönjük, hogy érdeklődik a pályázati lehetőségek iránt! Az alábbi gombra kattintva azonnal letöltheti az e-bookot — szakértői útmutatónk segít eligazodni a hazai pályázati világban.</p>
+        <a class="eb-download" href="ebook/palyazati-kisokos-kreativo.pdf" download="Palyazati-Kisokos-Kreativo.pdf" target="_blank" rel="noopener">
+          <span class="eb-download-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </span>
+          <span class="eb-download-meta">
+            <span class="eb-download-meta-label">E-book letöltése</span>
+            <span class="eb-download-meta-name">Pályázati <em>Kisokos</em></span>
+          </span>
+        </a>
+        <div class="eb-filemeta">
+          <span class="eb-filemeta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            PDF · 873 KB
+          </span>
+          <span class="eb-filemeta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+            Magyar nyelvű
+          </span>
+          <span class="eb-filemeta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Kb. 15 perc olvasás
+          </span>
+        </div>
+      </div>
+      <div class="eb-hero-visual reveal delay-1" aria-hidden="true">
+        <div class="eb-cover-stage">
+          <a class="eb-cover" href="ebook/palyazati-kisokos-kreativo.pdf" download="Palyazati-Kisokos-Kreativo.pdf" target="_blank" rel="noopener">
+            <div class="eb-cover-inner">
+              <div>
+                <span class="eb-cover-eyebrow">Kreativo · 2025</span>
+              </div>
+              <h2 class="eb-cover-title">Pályázati<br><em>Kisokos</em></h2>
+              <div class="eb-cover-foot">
+                <div>
+                  <span>Kiadta</span>
+                  <strong>Kreativo</strong>
+                </div>
+                <span class="eb-cover-mark">K</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MI VAN A KISOKOSBAN -->
+<section class="eb-inside">
+  <div class="container">
+    <div class="eb-inside-head reveal">
+      <div class="eyebrow ink">Az e-bookból</div>
+      <h2>Mit talál a <em>Kisokosban</em>?</h2>
+      <p class="lede">Tömör, gyakorlati útmutató a pályázati alapfogalmakhoz, lépésekhez és buktatókhoz — hogy magabiztosan induljon neki a folyamatnak.</p>
+    </div>
+    <div class="eb-grid">
+      <div class="eb-card reveal">
+        <span class="eb-card-num">i.</span>
+        <h3>Pályázati alapfogalmak</h3>
+        <p>Mi az a vissza nem térítendő támogatás, mi a sikerdíj, és mit jelent a saját erő — világosan és példákkal.</p>
+      </div>
+      <div class="eb-card reveal delay-1">
+        <span class="eb-card-num">ii.</span>
+        <h3>Forrástípusok áttekintése</h3>
+        <p>Hazai és uniós források, KKV-kra fókuszált programok — melyik mire való, kinek érdemes.</p>
+      </div>
+      <div class="eb-card reveal delay-2">
+        <span class="eb-card-num">iii.</span>
+        <h3>A pályázás folyamata</h3>
+        <p>Az előkészítéstől a benyújtáson át az elszámolásig — minden szakasz, minden teendő.</p>
+      </div>
+      <div class="eb-card reveal delay-3">
+        <span class="eb-card-num">iv.</span>
+        <h3>Tipikus buktatók</h3>
+        <p>Azok a hibák, amelyek miatt a pályázatok elbuknak — és hogyan kerülhetők el.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALSÓ CTA -->
+<section class="eb-aside">
+  <div class="container">
+    <div class="eb-aside-card reveal">
+      <div>
+        <div class="eyebrow ink" style="margin-bottom:18px;">Következő lépés</div>
+        <h2>Készen áll egy <em>személyes</em> stratégiára?</h2>
+        <p>Az e-book egy jó alap — de cégének helyzete egyedi. Kérjen ingyenes konzultációt, és közösen kidolgozzuk az Önre szabott pályázati tervet.</p>
+      </div>
+      <div class="eb-aside-actions">
+        <a href="szolgaltatasaink.html" class="btn btn-ghost">Szolgáltatásaink</a>
+        <a href="kapcsolat.html" class="btn btn-primary">
+          Konzultációt kérek
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-cta">
+      <div class="footer-cta-text">
+        <h3>Kérjen ingyenes <em>konzultációt</em></h3>
+        <p>Vegye fel velünk a kapcsolatot, és közösen megtervezzük az Ön cégére szabott pályázati stratégiát.</p>
+      </div>
+      <a href="kapcsolat.html" class="footer-cta-btn">
+        Kapcsolatfelvétel
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="img/favicon.png" alt="Kreativo Magyarország Kft.">
+        <p>2015 óta segítjük a magyar vállalkozásokat pályázati forrásokhoz jutni. Sikerdíjas modellünkkel mi is érdekeltek vagyunk az Ön sikerében.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/kreativomagyarorszagkft" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Szolgáltatások</h4>
+        <ul>
+          <li><a href="szolgaltatasaink-palyazatfigyeles.html">Pályázatfigyelés</a></li>
+          <li><a href="szolgaltatasaink-palyazati-tanacsadas.html">Pályázatírás, tanácsadás</a></li>
+          <li><a href="szolgaltatasaink-projektmenedzsment.html">Projektmenedzsment</a></li>
+          <li><a href="szolgaltatasaink-kozbeszerzesi-tanacsadas.html">Közbeszerzési tanácsadás</a></li>
+          <li><a href="szolgaltatasaink-uzletviteli-tanacsadas.html">Üzletviteli tanácsadás</a></li>
+          <li><a href="szolgaltatasaink-biztositeknyujtas.html">Biztosítéknyújtás</a></li>
+          <li><a href="szolgaltatasaink-hitelkozvetites.html">Hitelközvetítés</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Cégünk</h4>
+        <ul>
+          <li><a href="referenciaink.html">Referenciáink</a></li>
+          <li><a href="palyazatfigyeles.html">Pályázatfigyelés</a></li>
+          <li><a href="kapcsolat.html">Kapcsolat</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Elérhetőségek</h4>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>1142 Budapest,<br>Szőnyi út 50/a.</span>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:info@kreativo.hu">info@kreativo.hu</a>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          <a href="tel:+36205295153">+36 20 529 5153</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 Kreativo Magyarország Kft. Minden jog fenntartva.</span>
+      <div class="footer-bottom-links">
+        <a href="kapcsolat.html">Kapcsolat</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- NAV + REVEAL JS -->
+<script>
+document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+  document.getElementById('main-nav').classList.toggle('open');
+});
+window.addEventListener('scroll', function() {
+  document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 10);
+});
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+}
+</script>
+
+</body>
+</html>

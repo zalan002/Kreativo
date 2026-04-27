@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Köszönjük a kapcsolatfelvételt! — Kreativo Magyarország Kft.</title>
+<meta name="description" content="Köszönjük, hogy felvette velünk a kapcsolatot. Kollégánk 24 órán belül felveszi Önnel a kapcsolatot.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" href="img/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ── Köszönő oldal — egyedi részek ── */
+  .ty-hero {
+    position: relative;
+    padding: clamp(120px, 16vw, 200px) 0 clamp(80px, 10vw, 140px);
+    background: var(--paper);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .ty-hero::before {
+    content: '';
+    position: absolute;
+    inset: -20% -10% auto auto;
+    width: 70vw;
+    max-width: 900px;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at 30% 30%, rgba(123, 94, 167, 0.18), transparent 60%);
+    z-index: -1;
+    filter: blur(8px);
+  }
+  .ty-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto auto -40% -10%;
+    width: 60vw;
+    max-width: 720px;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at 60% 60%, rgba(184, 151, 90, 0.10), transparent 60%);
+    z-index: -1;
+    filter: blur(10px);
+  }
+  .ty-hero-grid {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: clamp(48px, 6vw, 96px);
+    align-items: center;
+  }
+  .ty-mark {
+    position: relative;
+    width: clamp(220px, 30vw, 360px);
+    aspect-ratio: 1;
+    margin-left: auto;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(255,255,255,0.55), transparent 55%),
+      linear-gradient(135deg, var(--plum) 0%, var(--plum-deep) 60%, var(--plum-darker) 100%);
+    box-shadow:
+      0 1px 2px rgba(63, 42, 107, 0.20),
+      0 32px 80px -24px rgba(63, 42, 107, 0.55),
+      inset 0 1px 0 rgba(255,255,255,0.18);
+    display: grid;
+    place-items: center;
+  }
+  .ty-mark::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.22);
+  }
+  .ty-mark-glyph {
+    position: relative;
+    width: 38%;
+    height: 38%;
+    color: #fff;
+  }
+  .ty-mark-ring {
+    position: absolute;
+    inset: -28px;
+    border-radius: 50%;
+    border: 1px dashed var(--ink-line-2);
+    animation: ty-ring-rot 60s linear infinite;
+  }
+  @keyframes ty-ring-rot {
+    to { transform: rotate(360deg); }
+  }
+  .ty-hero h1 {
+    font-size: var(--display-2xl);
+    line-height: 1.02;
+    margin: 24px 0 28px;
+  }
+  .ty-hero .lede {
+    font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+    margin-bottom: 40px;
+  }
+  .ty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .ty-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    margin-top: 28px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid var(--ink-line);
+    font-size: 13px;
+    color: var(--ink-mute);
+  }
+  .ty-meta-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--plum);
+    box-shadow: 0 0 0 4px rgba(123, 94, 167, 0.18);
+    animation: ty-pulse 2s var(--ease-soft) infinite;
+  }
+  @keyframes ty-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(123, 94, 167, 0.18); }
+    50%      { box-shadow: 0 0 0 8px rgba(123, 94, 167, 0.06); }
+  }
+
+  /* ── Mi következik — időrendi panel ── */
+  .ty-steps {
+    background: var(--paper-tint);
+    padding: clamp(80px, 10vw, 140px) 0;
+    position: relative;
+  }
+  .ty-steps-head {
+    max-width: 720px;
+    margin-bottom: clamp(48px, 6vw, 80px);
+  }
+  .ty-steps-head .eyebrow { margin-bottom: 20px; }
+  .ty-steps-head h2 {
+    font-size: var(--display-lg);
+    margin-bottom: 16px;
+  }
+  .ty-timeline {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .ty-step {
+    padding: 40px 32px 40px 0;
+    border-right: 1px solid var(--ink-line);
+    position: relative;
+  }
+  .ty-step:last-child { border-right: 0; padding-right: 0; }
+  .ty-step + .ty-step { padding-left: 32px; }
+  .ty-step-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--plum);
+    margin-bottom: 24px;
+  }
+  .ty-step h3 {
+    font-size: var(--display-sm);
+    margin-bottom: 10px;
+  }
+  .ty-step p {
+    color: var(--ink-mute);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .ty-step-time {
+    display: inline-block;
+    margin-top: 18px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--plum-deep);
+  }
+
+  /* ── Lábléc CTA blokk ── */
+  .ty-aside {
+    padding: clamp(80px, 10vw, 120px) 0;
+    background: var(--paper);
+  }
+  .ty-aside-card {
+    border: 1px solid var(--ink-line);
+    border-radius: var(--r-lg);
+    padding: clamp(40px, 5vw, 64px);
+    background: var(--paper-pure);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(32px, 4vw, 56px);
+    align-items: center;
+  }
+  .ty-aside-card h2 {
+    font-size: var(--display-md);
+    margin-bottom: 14px;
+  }
+  .ty-aside-card p {
+    color: var(--ink-mute);
+    margin-bottom: 0;
+  }
+  .ty-aside-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-self: end;
+  }
+
+  @media (max-width: 900px) {
+    .ty-hero-grid { grid-template-columns: 1fr; gap: 56px; }
+    .ty-mark { margin: 0 auto; width: clamp(200px, 60vw, 280px); }
+    .ty-timeline { grid-template-columns: 1fr; }
+    .ty-step { border-right: 0; border-bottom: 1px solid var(--ink-line); padding: 32px 0; }
+    .ty-step + .ty-step { padding-left: 0; }
+    .ty-step:last-child { border-bottom: 0; }
+    .ty-aside-card { grid-template-columns: 1fr; }
+    .ty-aside-actions { justify-self: start; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <img src="img/logo-header.png" alt="Kreativo Magyarország Kft.">
+    </a>
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menü">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="main-nav">
+      <a href="index.html">Kezdőlap</a>
+      <div class="nav-dropdown">
+        <a href="szolgaltatasaink.html" class="nav-link">
+          Szolgáltatásaink
+          <svg class="nav-caret" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l4 4 4-4"/></svg>
+        </a>
+        <div class="dropdown-menu">
+          <a href="szolgaltatasaink-palyazatfigyeles.html">Pályázatfigyelés</a>
+          <a href="szolgaltatasaink-palyazati-tanacsadas.html">Pályázatírás, tanácsadás</a>
+          <a href="szolgaltatasaink-projektmenedzsment.html">Projektmenedzsment</a>
+          <a href="szolgaltatasaink-kozbeszerzesi-tanacsadas.html">Közbeszerzési tanácsadás</a>
+          <a href="szolgaltatasaink-uzletviteli-tanacsadas.html">Üzletviteli tanácsadás</a>
+          <a href="szolgaltatasaink-biztositeknyujtas.html">Biztosítéknyújtás</a>
+          <a href="szolgaltatasaink-hitelkozvetites.html">Hitelközvetítés</a>
+        </div>
+      </div>
+      <a href="palyazatfigyeles.html">Pályázatfigyelés</a>
+      <a href="referenciaink.html">Referenciáink</a>
+      <a href="kapcsolat.html" class="nav-cta-btn">Kapcsolat</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO — köszönő oldal -->
+<section class="ty-hero">
+  <div class="container">
+    <div class="ty-hero-grid">
+      <div class="ty-hero-text reveal">
+        <div class="eyebrow">Megerősítés</div>
+        <h1>Köszönjük, hogy felvette velünk a <em>kapcsolatot</em>.</h1>
+        <p class="lede">Megkeresését rögzítettük. Kollégánk <strong>24 órán belül</strong> felveszi Önnel a kapcsolatot, hogy közösen átbeszéljük az Ön cégére szabott pályázati lehetőségeket.</p>
+        <div class="ty-actions">
+          <a href="index.html" class="btn btn-primary">
+            Vissza a főoldalra
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="szolgaltatasaink.html" class="btn btn-ghost">Szolgáltatásaink böngészése</a>
+        </div>
+        <div class="ty-meta">
+          <span class="ty-meta-dot" aria-hidden="true"></span>
+          Sürgős esetben hívjon: <a href="tel:+36205295153" style="color:var(--ink); font-weight:600;">+36 20 529 5153</a>
+        </div>
+      </div>
+      <div class="ty-hero-visual reveal delay-1" aria-hidden="true">
+        <div style="position:relative; display:inline-block;">
+          <div class="ty-mark-ring"></div>
+          <div class="ty-mark">
+            <svg class="ty-mark-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MI KÖVETKEZIK -->
+<section class="ty-steps">
+  <div class="container">
+    <div class="ty-steps-head reveal">
+      <div class="eyebrow ink">A folyamat</div>
+      <h2>Így <em>haladunk</em> tovább.</h2>
+      <p class="lede">Három tiszta lépés a megkereséstől a közös munkáig — hogy pontosan tudja, mire számíthat.</p>
+    </div>
+    <div class="ty-timeline">
+      <div class="ty-step reveal">
+        <div class="ty-step-num">01</div>
+        <h3>Visszahívás</h3>
+        <p>Egy szakértő kollégánk telefonon vagy e-mailben jelentkezik, és megerősíti a megkeresését.</p>
+        <span class="ty-step-time">24 órán belül</span>
+      </div>
+      <div class="ty-step reveal delay-1">
+        <div class="ty-step-num">02</div>
+        <h3>Konzultáció</h3>
+        <p>Áttekintjük cége helyzetét és céljait, majd bemutatjuk a leginkább releváns pályázati forrásokat.</p>
+        <span class="ty-step-time">30–45 perc</span>
+      </div>
+      <div class="ty-step reveal delay-2">
+        <div class="ty-step-num">03</div>
+        <h3>Stratégia</h3>
+        <p>Személyre szabott javaslatot készítünk, sikerdíjas modellben — csak akkor fizet, ha sikerül.</p>
+        <span class="ty-step-time">3–5 munkanap</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALSÓ CTA -->
+<section class="ty-aside">
+  <div class="container">
+    <div class="ty-aside-card reveal">
+      <div>
+        <div class="eyebrow ink" style="margin-bottom:18px;">Ezalatt</div>
+        <h2>Tudjon meg többet a <em>munkánkról</em>.</h2>
+        <p>Nézze meg referenciáinkat, vagy ismerje meg részletesen a pályázati szolgáltatásainkat — hogy a beszélgetésünk már informáltan kezdődhessen.</p>
+      </div>
+      <div class="ty-aside-actions">
+        <a href="referenciaink.html" class="btn btn-ghost">Referenciáink</a>
+        <a href="palyazatfigyeles.html" class="btn btn-primary">
+          Pályázatfigyelés
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-cta">
+      <div class="footer-cta-text">
+        <h3>Kérjen ingyenes <em>konzultációt</em></h3>
+        <p>Vegye fel velünk a kapcsolatot, és közösen megtervezzük az Ön cégére szabott pályázati stratégiát.</p>
+      </div>
+      <a href="kapcsolat.html" class="footer-cta-btn">
+        Kapcsolatfelvétel
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="img/favicon.png" alt="Kreativo Magyarország Kft.">
+        <p>2015 óta segítjük a magyar vállalkozásokat pályázati forrásokhoz jutni. Sikerdíjas modellünkkel mi is érdekeltek vagyunk az Ön sikerében.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/kreativomagyarorszagkft" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Szolgáltatások</h4>
+        <ul>
+          <li><a href="szolgaltatasaink-palyazatfigyeles.html">Pályázatfigyelés</a></li>
+          <li><a href="szolgaltatasaink-palyazati-tanacsadas.html">Pályázatírás, tanácsadás</a></li>
+          <li><a href="szolgaltatasaink-projektmenedzsment.html">Projektmenedzsment</a></li>
+          <li><a href="szolgaltatasaink-kozbeszerzesi-tanacsadas.html">Közbeszerzési tanácsadás</a></li>
+          <li><a href="szolgaltatasaink-uzletviteli-tanacsadas.html">Üzletviteli tanácsadás</a></li>
+          <li><a href="szolgaltatasaink-biztositeknyujtas.html">Biztosítéknyújtás</a></li>
+          <li><a href="szolgaltatasaink-hitelkozvetites.html">Hitelközvetítés</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Cégünk</h4>
+        <ul>
+          <li><a href="referenciaink.html">Referenciáink</a></li>
+          <li><a href="palyazatfigyeles.html">Pályázatfigyelés</a></li>
+          <li><a href="kapcsolat.html">Kapcsolat</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Elérhetőségek</h4>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>1142 Budapest,<br>Szőnyi út 50/a.</span>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:info@kreativo.hu">info@kreativo.hu</a>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          <a href="tel:+36205295153">+36 20 529 5153</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 Kreativo Magyarország Kft. Minden jog fenntartva.</span>
+      <div class="footer-bottom-links">
+        <a href="kapcsolat.html">Kapcsolat</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- NAV + REVEAL JS -->
+<script>
+document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+  document.getElementById('main-nav').classList.toggle('open');
+});
+window.addEventListener('scroll', function() {
+  document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 10);
+});
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+}
+</script>
+
+</body>
+</html>

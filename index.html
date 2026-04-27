@@ -525,9 +525,24 @@ src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
         body: JSON.stringify(payload)
       });
       if (response.ok) {
-        if (typeof fbq !== "undefined") {
-          fbq("track", "Lead", { content_name: document.title, content_category: forrasField.value });
-        }
+        // Lead esemény (Pixel + CAPI) a köszönő oldalon tüzel — ott
+        // konvertál jobban. Itt csak előkészítjük az adatokat.
+        try {
+          var _eid = (window.crypto && window.crypto.randomUUID)
+            ? window.crypto.randomUUID()
+            : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0;
+                return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
+              });
+          sessionStorage.setItem("kreativo_lead", JSON.stringify({
+            event_id: _eid,
+            email: payload.email,
+            phone: payload.telefonszam,
+            forras: forrasField.value,
+            content_name: document.title,
+            ts: Date.now()
+          }));
+        } catch (_) { /* sessionStorage nem érhető el — ignoráljuk */ }
         window.location.href = "https://kreativo.hu/koszonjuk-a-kapcsolatfelvetelt";
       } else { throw new Error("Hiba"); }
     } catch (err) {

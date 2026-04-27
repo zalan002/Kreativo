@@ -28,6 +28,47 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+
+<!-- Conversions API helper + ViewContent — Pixel/CAPI deduplikált -->
+<script>
+window.kreativoCAPI = (function() {
+  function uuid() {
+    if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0;
+      var v = c === "x" ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  function send(payload) {
+    return fetch("/api/capi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function() {});
+  }
+  return { uuid: uuid, send: send };
+})();
+
+// ViewContent — page-load esemény, Pixel + CAPI dedup ugyanazzal az event_id-vel
+(function() {
+  var eventId = window.kreativoCAPI.uuid();
+  if (typeof fbq !== "undefined") {
+    fbq("track", "ViewContent",
+      { content_name: "Pályázati Kisokos — landing" },
+      { eventID: eventId }
+    );
+  }
+  window.kreativoCAPI.send({
+    event_name: "ViewContent",
+    event_id: eventId,
+    event_source_url: window.location.href,
+    event_time: Math.floor(Date.now() / 1000),
+    custom_data: { content_name: "Pályázati Kisokos — landing" }
+  });
+})();
+</script>
 <style id="lp-styles">
 /* ── Pályázati Kisokos landing — scoped ── */
 /* Anchor scroll offset — fix header alá ne kerüljön a szekció eleje */
@@ -1119,9 +1160,22 @@ src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
         body: JSON.stringify(payload)
       });
       if (response.ok) {
-        if (typeof fbq !== "undefined") {
-          fbq("track", "Lead", { content_name: "Pályázati Kisokos", content_category: forrasField.value });
-        }
+        // A Lead esemény (Pixel + CAPI) a köszönő oldalon tüzel — ott
+        // konvertál jobban. Itt csak előkészítjük az adatokat: az
+        // event_id-t, a hash-elendő PII-t és a forrást elraktározzuk
+        // sessionStorage-be, hogy a /koszonjuk-az-erdeklodest oldal
+        // betöltéskor el tudja küldeni az eseményt.
+        try {
+          var leadEventId = window.kreativoCAPI.uuid();
+          sessionStorage.setItem("kreativo_lead", JSON.stringify({
+            event_id: leadEventId,
+            email: payload.email,
+            phone: payload.telefonszam,
+            forras: forrasField.value,
+            content_name: "Pályázati Kisokos",
+            ts: Date.now()
+          }));
+        } catch (_) { /* sessionStorage nem érhető el — ignoráljuk */ }
         window.location.href = "https://kreativo.hu/koszonjuk-az-erdeklodest";
       } else { throw new Error("Hiba"); }
     } catch (err) {

@@ -45,25 +45,29 @@ kreativo.hu/
 
 ## Belső hivatkozások összesítése
 
-### index.html (Kezdőlap) hivatkozásai:
-- `szolgaltatasaink-palyazatfigyeles.html` → `/szolgaltatasaink/palyazatfigyeles/`
-- `szolgaltatasaink-palyazati-tanacsadas.html` → `/szolgaltatasaink/palyazati-tanacsadas/`
-- `szolgaltatasaink-projektmenedzsment.html` → `/szolgaltatasaink/projektmenedzsment/`
-- `szolgaltatasaink-kozbeszerzesi-tanacsadas.html` → `/szolgaltatasaink/kozbeszerzesi-tanacsadas/`
-- `szolgaltatasaink-uzletviteli-tanacsadas.html` → `/szolgaltatasaink/uzletviteli-tanacsadas/`
-- `szolgaltatasaink-hitelkozvetites.html` → `/szolgaltatasaink/hitelkozvetites/`
-- `#kapcsolat` → oldal belső anchor (marad)
+A linkek root-relatív, `.html` nélküli formátumban szerepelnek minden HTML-ben (Vercel `cleanUrls`):
 
-### szolgaltatasaink.html (Szolgáltatások áttekintő) hivatkozásai:
-- Ugyanazok a szolgáltatás aloldalak, mint a kezdőlapon
-- `index.html#kapcsolat` → `/#kapcsolat` vagy `/szolgaltatasaink/#kapcsolat`
+| Cél oldal | Link a HTML-ekben |
+|-----------|-------------------|
+| Kezdőlap | `/` |
+| Szolgáltatásaink | `/szolgaltatasaink` |
+| Pályázatfigyelés (szolg.) | `/szolgaltatasaink-palyazatfigyeles` |
+| Pályázatírás, tanácsadás | `/szolgaltatasaink-palyazati-tanacsadas` |
+| Projektmenedzsment | `/szolgaltatasaink-projektmenedzsment` |
+| Közbeszerzési tanácsadás | `/szolgaltatasaink-kozbeszerzesi-tanacsadas` |
+| Üzletviteli tanácsadás | `/szolgaltatasaink-uzletviteli-tanacsadas` |
+| Biztosítéknyújtás | `/szolgaltatasaink-biztositeknyujtas` |
+| Hitelközvetítés | `/szolgaltatasaink-hitelkozvetites` |
+| Pályázatfigyelés (landing) | `/palyazatfigyeles` |
+| Referenciáink | `/referenciaink` |
+| Kapcsolat | `/kapcsolat` |
 
 ### Form (minden oldalon):
 - Webhook (POST JSON) → `https://traininghungary.app.n8n.cloud/webhook/35919594-6d84-45ee-b920-fc1f8067cce0`
-- Sikeres küldés után redirect → `https://kreativo.hu/koszonjuk-a-kapcsolatfelvetelt/` (`koszonjuk-a-kapcsolatfelvetelt.html`)
-- E-book űrlap sikeres küldés után → `/koszonjuk-az-erdeklodest/` (`koszonjuk-az-erdeklodest.html`)
+- Sikeres küldés után redirect → `https://kreativo.hu/koszonjuk-a-kapcsolatfelvetelt`
+- E-book űrlap sikeres küldés után → `/koszonjuk-az-erdeklodest`
 
-> **WP-teendő:** a régi `/koszonjuk-a-kapcsoaltfelvetelt/` (typo-s) WP oldal slugját át kell nevezni `/koszonjuk-a-kapcsolatfelvetelt/`-re, vagy 301 redirect-et kell beállítani róla az új slug-ra, hogy a formok megfelelően landoljanak.
+> **Vercel cleanUrls aktív** (`vercel.json`): a HTML-ek `.html` kiterjesztés nélkül érhetők el (pl. `/kapcsolat`, `/koszonjuk-a-kapcsolatfelvetelt`). A belső linkek és a form redirect ennek megfelelően root-relatív, kiterjesztés nélküli URL-eket használnak. Ha valaki `.html`-es URL-re érkezik, a Vercel 308-as redirect-tel viszi a tiszta változatra.
 
 ---
 

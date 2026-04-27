@@ -60,10 +60,10 @@ kreativo.hu/
 
 ### Form (minden oldalon):
 - Webhook (POST JSON) → `https://traininghungary.app.n8n.cloud/webhook/35919594-6d84-45ee-b920-fc1f8067cce0`
-- Sikeres küldés után redirect → `https://kreativo.hu/koszonjuk-a-kapcsolatfelvetelt/` (`koszonjuk-a-kapcsolatfelvetelt.html`)
-- E-book űrlap sikeres küldés után → `/koszonjuk-az-erdeklodest/` (`koszonjuk-az-erdeklodest.html`)
+- Sikeres küldés után redirect → `https://kreativo.hu/koszonjuk-a-kapcsolatfelvetelt.html`
+- E-book űrlap sikeres küldés után → `koszonjuk-az-erdeklodest.html`
 
-> **WP-teendő:** a régi `/koszonjuk-a-kapcsoaltfelvetelt/` (typo-s) WP oldal slugját át kell nevezni `/koszonjuk-a-kapcsolatfelvetelt/`-re, vagy 301 redirect-et kell beállítani róla az új slug-ra, hogy a formok megfelelően landoljanak.
+> **Megjegyzés:** a redirect az `.html` kiterjesztést használja, mert a site jelenleg statikus fájlokból van kiszolgálva (Vercel). Ha később WordPress-re vagy `cleanUrls`-szel rendelkező hostingra kerül, a redirect URL átállítható `/koszonjuk-a-kapcsolatfelvetelt/`-re.
 
 ---
 

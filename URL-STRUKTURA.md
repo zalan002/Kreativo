@@ -59,9 +59,11 @@ kreativo.hu/
 - `index.html#kapcsolat` → `/#kapcsolat` vagy `/szolgaltatasaink/#kapcsolat`
 
 ### Form (minden oldalon):
-- Sikeres küldés után → `https://kreativo.hu/koszonjuk-a-kapcsoaltfelvetelt/` *(jelenlegi WP slug — typo-val)*
-- Új helyes slug: `/koszonjuk-a-kapcsolatfelvetelt/` — a HTML fájl ezzel a névvel készült (`koszonjuk-a-kapcsolatfelvetelt.html`)
+- Webhook (POST JSON) → `https://traininghungary.app.n8n.cloud/webhook/35919594-6d84-45ee-b920-fc1f8067cce0`
+- Sikeres küldés után redirect → `https://kreativo.hu/koszonjuk-a-kapcsolatfelvetelt/` (`koszonjuk-a-kapcsolatfelvetelt.html`)
 - E-book űrlap sikeres küldés után → `/koszonjuk-az-erdeklodest/` (`koszonjuk-az-erdeklodest.html`)
+
+> **WP-teendő:** a régi `/koszonjuk-a-kapcsoaltfelvetelt/` (typo-s) WP oldal slugját át kell nevezni `/koszonjuk-a-kapcsolatfelvetelt/`-re, vagy 301 redirect-et kell beállítani róla az új slug-ra, hogy a formok megfelelően landoljanak.
 
 ---
 

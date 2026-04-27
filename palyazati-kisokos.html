@@ -1160,26 +1160,22 @@ window.kreativoCAPI = (function() {
         body: JSON.stringify(payload)
       });
       if (response.ok) {
-        var leadEventId = window.kreativoCAPI.uuid();
-        if (typeof fbq !== "undefined") {
-          fbq("track", "Lead",
-            { content_name: "Pályázati Kisokos", content_category: forrasField.value },
-            { eventID: leadEventId }
-          );
-        }
-        // CAPI Lead — szerveroldali párja a Pixel eseménynek (dedup)
-        window.kreativoCAPI.send({
-          event_name: "Lead",
-          event_id: leadEventId,
-          event_source_url: window.location.href,
-          event_time: Math.floor(Date.now() / 1000),
-          email: payload.email,
-          phone: payload.telefonszam,
-          custom_data: {
+        // A Lead esemény (Pixel + CAPI) a köszönő oldalon tüzel — ott
+        // konvertál jobban. Itt csak előkészítjük az adatokat: az
+        // event_id-t, a hash-elendő PII-t és a forrást elraktározzuk
+        // sessionStorage-be, hogy a /koszonjuk-az-erdeklodest oldal
+        // betöltéskor el tudja küldeni az eseményt.
+        try {
+          var leadEventId = window.kreativoCAPI.uuid();
+          sessionStorage.setItem("kreativo_lead", JSON.stringify({
+            event_id: leadEventId,
+            email: payload.email,
+            phone: payload.telefonszam,
+            forras: forrasField.value,
             content_name: "Pályázati Kisokos",
-            content_category: forrasField.value
-          }
-        });
+            ts: Date.now()
+          }));
+        } catch (_) { /* sessionStorage nem érhető el — ignoráljuk */ }
         window.location.href = "https://kreativo.hu/koszonjuk-az-erdeklodest";
       } else { throw new Error("Hiba"); }
     } catch (err) {

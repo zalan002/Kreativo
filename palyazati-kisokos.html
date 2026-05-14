@@ -563,23 +563,60 @@ window.kreativoAttribution = (function() {
   font-size: clamp(1.1rem, 1.8vw, 1.4rem);
   line-height: 1.25;
   color: var(--ink);
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
-.lf-input {
+.lf-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.lf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.lf-group {
+  display: flex;
+  flex-direction: column;
+}
+.lf-sublabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.lf-input,
+.lf-textarea {
   width: 100%;
-  padding: 14px 0;
   border: none;
   border-bottom: 1px solid var(--ink-line-2);
   border-radius: 0;
   background: transparent;
   font-family: var(--font-body);
-  font-size: 1.1rem;
   color: var(--ink);
   transition: border-color var(--duration-fast) var(--ease-out);
 }
-.lf-input::placeholder { color: var(--ink-faint); font-style: italic; }
+.lf-input {
+  padding: 12px 0;
+  font-size: 1.05rem;
+}
+.lf-textarea {
+  padding: 12px 14px;
+  font-size: 1rem;
+  line-height: 1.55;
+  min-height: 110px;
+  resize: vertical;
+  border: 1px solid var(--ink-line-2);
+  border-radius: var(--r-sm);
+}
+.lf-input::placeholder,
+.lf-textarea::placeholder { color: var(--ink-faint); font-style: italic; }
 .lf-input:focus { outline: none; border-bottom-color: var(--plum); }
+.lf-textarea:focus { outline: none; border-color: var(--plum); }
 .lf-input[aria-invalid="true"] { border-bottom-color: var(--error); }
+.lf-textarea[aria-invalid="true"] { border-color: var(--error); }
 .lf-actions {
   display: flex;
   align-items: center;
@@ -744,6 +781,7 @@ window.kreativoAttribution = (function() {
   .lp-proof-cell { border-left: 0; padding-left: 0; padding-bottom: 24px; border-bottom: 1px solid var(--ink-line); }
   .lp-proof-cell:last-child { border-bottom: 0; padding-bottom: 0; }
   .lp-cta { width: 100%; justify-content: center; }
+  .lf-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -783,8 +821,8 @@ window.kreativoAttribution = (function() {
           <div class="form-error" id="formError" role="alert"></div>
           <form id="ebookForm" novalidate>
             <div class="lf-field lf-field-enter" id="lfField">
-              <label class="lf-label" id="lfLabel" for="lfInput"></label>
-              <input class="lf-input" id="lfInput" required>
+              <p class="lf-label" id="lfHeading"></p>
+              <div class="lf-fields" id="lfFields"></div>
             </div>
             <div class="lf-actions">
               <button type="button" class="lf-back" id="lfBack">Vissza</button>
@@ -1041,7 +1079,7 @@ window.kreativoAttribution = (function() {
   </div>
 </footer>
 
-<!-- Multi-step lead form — mezőnként egy lépcső, partial save a telefon lépcső után -->
+<!-- Multi-step lead form — lépésenként 1-2 mező, partial save a cégnév lépcső után -->
 <script>
 (function() {
   var form = document.getElementById("ebookForm");
@@ -1051,43 +1089,71 @@ window.kreativoAttribution = (function() {
   var FORRAS = "palyazati-kisokos";
   var REDIRECT = "/koszonjuk-az-erdeklodest";
 
-  // A lépcsők sorrendje úgy van, hogy a telefon lépcső után már megvan a
-  // név + e-mail + telefon — ekkor fut a partial save, a cégnév pedig az
-  // egyetlen mező, ami még lemorzsolódhat.
+  function vName(msg) {
+    return function(v) { return v.trim().length >= 2 ? null : msg; };
+  }
+
+  // A cégnév lépcső után (partialAfter) fut a partial save: ekkor már megvan
+  // a név + e-mail + telefon + cégnév. Az adószám és a megjegyzés az, ami
+  // még lemorzsolódhat — azt is elmenti a partial.
   var STEPS = [
     {
-      key: "vezeteknev", label: "Mi a vezetékneved?", type: "text",
-      autoComplete: "family-name", inputMode: "text", placeholder: "Kovács",
-      validate: function(v) { return v.trim().length >= 2 ? null : "Kérjük add meg a vezetékneved."; }
+      heading: "Kezdjük — hogy hívják?",
+      fields: [
+        { key: "vezeteknev", label: "Vezetéknév", type: "text", autoComplete: "family-name",
+          inputMode: "text", placeholder: "Kovács", validate: vName("Kérjük adja meg a vezetéknevét.") },
+        { key: "keresztnev", label: "Keresztnév", type: "text", autoComplete: "given-name",
+          inputMode: "text", placeholder: "János", validate: vName("Kérjük adja meg a keresztnevét.") }
+      ]
     },
     {
-      key: "keresztnev", label: "És a keresztneved?", type: "text",
-      autoComplete: "given-name", inputMode: "text", placeholder: "János",
-      validate: function(v) { return v.trim().length >= 2 ? null : "Kérjük add meg a keresztneved."; }
+      heading: "Hogyan érjük el?",
+      fields: [
+        { key: "email", label: "E-mail", type: "email", autoComplete: "email",
+          inputMode: "email", placeholder: "kovacs@ceg.hu",
+          validate: function(v) { return EMAIL.test(v.trim()) ? null : "Kérjük adjon meg egy érvényes e-mail címet."; } },
+        { key: "telefonszam", label: "Telefonszám", type: "tel", autoComplete: "tel",
+          inputMode: "tel", placeholder: "+36 30 123 4567",
+          validate: function(v) {
+            var d = v.replace(/\D/g, "");
+            return (d.length >= 7 && d.length <= 15) ? null : "Kérjük adjon meg egy érvényes telefonszámot.";
+          } }
+      ]
     },
     {
-      key: "email", label: "Hova küldjük a Kisokost?", type: "email",
-      autoComplete: "email", inputMode: "email", placeholder: "kovacs@ceg.hu",
-      validate: function(v) { return EMAIL.test(v.trim()) ? null : "Kérjük adj meg egy érvényes e-mail címet."; }
+      heading: "Melyik cég nevében érdeklődik?",
+      partialAfter: true,
+      fields: [
+        { key: "cegnev", label: "Cégnév", type: "text", autoComplete: "organization",
+          inputMode: "text", placeholder: "Példa Kft.", validate: vName("Kérjük adja meg a cég nevét.") }
+      ]
     },
     {
-      key: "telefonszam", label: "Milyen telefonszámon érünk el?", type: "tel",
-      autoComplete: "tel", inputMode: "tel", placeholder: "+36 30 123 4567",
-      validate: function(v) {
-        var d = v.replace(/\D/g, "");
-        return (d.length >= 7 && d.length <= 15) ? null : "Kérjük adj meg egy érvényes telefonszámot.";
-      }
+      heading: "A cég adószáma",
+      fields: [
+        { key: "adoszam", label: "Adószám", type: "text", autoComplete: "off",
+          inputMode: "numeric", placeholder: "12345678-1-23",
+          validate: function(v) {
+            var d = v.replace(/\D/g, "");
+            return d.length === 11 ? null : "Az adószám 11 számjegyből áll.";
+          } }
+      ]
     },
     {
-      key: "cegnev", label: "Melyik cég nevében érdeklődsz?", type: "text",
-      autoComplete: "organization", inputMode: "text", placeholder: "Példa Kft.",
-      validate: function(v) { return v.trim().length >= 2 ? null : "Kérjük add meg a cégneved."; }
+      heading: "Van bármi, amit tudnunk kellene?",
+      fields: [
+        { key: "megjegyzes", label: "Megjegyzés (nem kötelező)", type: "textarea", autoComplete: "off",
+          inputMode: "text", placeholder: "Pl. milyen fejlesztéshez keres pályázati forrást…",
+          validate: null }
+      ]
     }
   ];
   var NUM_STEPS = STEPS.length;
 
   var state = {};
-  STEPS.forEach(function(s) { state[s.key] = ""; });
+  STEPS.forEach(function(s) {
+    s.fields.forEach(function(f) { state[f.key] = ""; });
+  });
   var stepIndex = 0;
   var submitting = false;
   var partialSent = false;
@@ -1099,8 +1165,8 @@ window.kreativoAttribution = (function() {
   var progressBar = document.getElementById("lfProgressBar");
   var stepCount = document.getElementById("lfStepCount");
   var field = document.getElementById("lfField");
-  var label = document.getElementById("lfLabel");
-  var input = document.getElementById("lfInput");
+  var heading = document.getElementById("lfHeading");
+  var fieldsEl = document.getElementById("lfFields");
   var backBtn = document.getElementById("lfBack");
   var nextBtn = document.getElementById("lfNext");
   var nextText = nextBtn.querySelector(".btn-text");
@@ -1119,6 +1185,28 @@ window.kreativoAttribution = (function() {
     backBtn.disabled = on;
     nextBtn.classList.toggle("loading", on);
   }
+  function fieldEl(key) {
+    return document.getElementById("lf-" + key);
+  }
+
+  // A mező-markup statikus konfigból épül (label, placeholder, kulcs) — nincs
+  // benne felhasználói adat, ezért az innerHTML biztonságos. Az értékeket
+  // utólag .value-n keresztül állítjuk.
+  function buildFieldHtml(f) {
+    var id = "lf-" + f.key;
+    var control;
+    if (f.type === "textarea") {
+      control = '<textarea class="lf-textarea" id="' + id + '" name="' + f.key + '" rows="4" ' +
+        'placeholder="' + f.placeholder + '"></textarea>';
+    } else {
+      control = '<input class="lf-input" id="' + id + '" name="' + f.key + '" type="' + f.type + '" ' +
+        'inputmode="' + f.inputMode + '" autocomplete="' + f.autoComplete + '" ' +
+        'placeholder="' + f.placeholder + '">';
+    }
+    return '<div class="lf-group">' +
+      '<label class="lf-sublabel" for="' + id + '">' + f.label + '</label>' +
+      control + '</div>';
+  }
 
   function render(focus) {
     var step = STEPS[stepIndex];
@@ -1126,15 +1214,20 @@ window.kreativoAttribution = (function() {
     progressBar.style.width = (progress * 100) + "%";
     progressEl.setAttribute("aria-valuenow", Math.round(progress * 100));
     stepCount.textContent = (stepIndex + 1) + " / " + NUM_STEPS + ". lépés";
+    heading.textContent = step.heading;
 
-    label.textContent = step.label;
-    input.type = step.type;
-    input.name = step.key;
-    input.placeholder = step.placeholder;
-    input.setAttribute("autocomplete", step.autoComplete);
-    input.setAttribute("inputmode", step.inputMode);
-    input.value = state[step.key] || "";
-    input.removeAttribute("aria-invalid");
+    var groups = step.fields.map(buildFieldHtml).join("");
+    fieldsEl.innerHTML = step.fields.length === 2 ? '<div class="lf-row">' + groups + '</div>' : groups;
+
+    step.fields.forEach(function(f) {
+      var el = fieldEl(f.key);
+      el.value = state[f.key] || "";
+      el.addEventListener("input", function() {
+        state[f.key] = el.value;
+        el.removeAttribute("aria-invalid");
+        clearError();
+      });
+    });
 
     backBtn.style.visibility = stepIndex === 0 ? "hidden" : "visible";
     nextText.textContent = stepIndex === NUM_STEPS - 1 ? "Kérem ingyen a Kisokost" : "Tovább";
@@ -1143,7 +1236,32 @@ window.kreativoAttribution = (function() {
     void field.offsetWidth;
     field.classList.add("lf-field-enter");
     // Az első renderkor nem fókuszálunk — ne ugorjon fel azonnal a mobil billentyűzet.
-    if (focus) input.focus();
+    if (focus) {
+      var first = fieldEl(step.fields[0].key);
+      if (first) first.focus();
+    }
+  }
+
+  function collectStep() {
+    STEPS[stepIndex].fields.forEach(function(f) {
+      var el = fieldEl(f.key);
+      if (el) state[f.key] = el.value;
+    });
+  }
+
+  function validateStep() {
+    var firstError = null;
+    STEPS[stepIndex].fields.forEach(function(f) {
+      var el = fieldEl(f.key);
+      var err = f.validate ? f.validate(state[f.key] || "") : null;
+      if (err) {
+        el.setAttribute("aria-invalid", "true");
+        if (!firstError) firstError = { msg: err, key: f.key };
+      } else {
+        el.removeAttribute("aria-invalid");
+      }
+    });
+    return firstError;
   }
 
   function buildBody(isPartial) {
@@ -1153,6 +1271,8 @@ window.kreativoAttribution = (function() {
       cegnev: state.cegnev.trim(),
       email: state.email.trim(),
       telefonszam: state.telefonszam.trim(),
+      adoszam: state.adoszam.trim(),
+      megjegyzes: state.megjegyzes.trim(),
       partial: isPartial,
       forras: isPartial ? FORRAS + "-partial" : FORRAS,
       event_id: isPartial ? window.kreativoCAPI.uuid() : eventId,
@@ -1162,7 +1282,7 @@ window.kreativoAttribution = (function() {
     };
   }
 
-  // Partial save — a telefon lépcső sikeres validációja után, fire-and-forget.
+  // Partial save — a cégnév lépcső sikeres validációja után, fire-and-forget.
   // Munkamenetenként egyszer fut le; hiba esetén a flag visszaáll, hogy újrapróbálható legyen.
   function sendPartial() {
     if (partialSent) return;
@@ -1192,7 +1312,7 @@ window.kreativoAttribution = (function() {
     }).then(function(resp) {
       if (resp.ok) return resp;
       return resp.json().catch(function() { return {}; }).then(function(data) {
-        throw new Error(data.error || "Most nem sikerült beküldeni. Kérjük próbáld újra.");
+        throw new Error(data.error || "Most nem sikerült beküldeni. Kérjük próbálja újra.");
       });
     }).then(function() {
       // Pixel Lead — ugyanaz az event_id, mint a CAPI-ban → Meta deduplikálja.
@@ -1205,7 +1325,7 @@ window.kreativoAttribution = (function() {
       window.location.href = REDIRECT + "?nev=" + encodeURIComponent(state.keresztnev.trim());
     }).catch(function(err) {
       // Az eventId megmarad — retrynél ugyanaz megy, így nem lesz duplikált konverzió.
-      showError(err.message || "Hálózati hiba történt. Próbáld újra.");
+      showError(err.message || "Hálózati hiba történt. Próbálja újra.");
       submitting = false;
       setLoading(false);
     });
@@ -1213,19 +1333,17 @@ window.kreativoAttribution = (function() {
 
   function onNext() {
     if (submitting) return;
-    var step = STEPS[stepIndex];
-    state[step.key] = input.value;
-    var err = step.validate(input.value);
+    collectStep();
+    var err = validateStep();
     if (err) {
-      showError(err);
-      input.setAttribute("aria-invalid", "true");
-      input.focus();
+      showError(err.msg);
+      var el = fieldEl(err.key);
+      if (el) el.focus();
       return;
     }
     clearError();
-    input.removeAttribute("aria-invalid");
 
-    if (step.key === "telefonszam") sendPartial();
+    if (STEPS[stepIndex].partialAfter) sendPartial();
 
     if (stepIndex < NUM_STEPS - 1) {
       stepIndex++;
@@ -1235,18 +1353,13 @@ window.kreativoAttribution = (function() {
     }
   }
 
-  input.addEventListener("input", function() {
-    state[STEPS[stepIndex].key] = input.value;
-    clearError();
-    input.removeAttribute("aria-invalid");
-  });
   form.addEventListener("submit", function(e) {
     e.preventDefault();
     onNext();
   });
   backBtn.addEventListener("click", function() {
     if (submitting || stepIndex === 0) return;
-    state[STEPS[stepIndex].key] = input.value;
+    collectStep();
     stepIndex--;
     clearError();
     render(true);

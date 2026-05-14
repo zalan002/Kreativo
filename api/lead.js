@@ -27,6 +27,12 @@ function isValidPhone(v) {
   return digits.length >= 7 && digits.length <= 15;
 }
 
+function isValidTaxNumber(v) {
+  // Magyar adószám: 11 számjegy (kötőjeles formátum is elfogadott).
+  const digits = String(v || "").replace(/\D/g, "");
+  return digits.length === 11;
+}
+
 function getClientIp(req) {
   const xff = req.headers["x-forwarded-for"];
   if (xff) return String(xff).split(",")[0].trim();
@@ -115,12 +121,15 @@ export default async function handler(req, res) {
 
   const partial = body.partial === true;
 
-  // Validáció — a nev/email/telefon mezők mindig kötelezők; a cégnév csak teljes submitnél.
+  // Validáció — a partial save a cégnév lépcső után fut, így a név/e-mail/
+  // telefon/cégnév mindig kötelező; az adószám csak a teljes submitnél;
+  // a megjegyzés végig opcionális.
   if (
     !isString(body.vezeteknev) ||
     !isString(body.keresztnev) ||
     !isString(body.email) ||
-    !isString(body.telefonszam)
+    !isString(body.telefonszam) ||
+    !isString(body.cegnev)
   ) {
     return res.status(422).json({ error: "Hiányzó kötelező mező." });
   }
@@ -130,8 +139,13 @@ export default async function handler(req, res) {
   if (!isValidPhone(body.telefonszam)) {
     return res.status(422).json({ error: "Érvénytelen telefonszám." });
   }
-  if (!partial && !isString(body.cegnev)) {
-    return res.status(422).json({ error: "Hiányzó kötelező mező." });
+  if (!partial) {
+    if (!isString(body.adoszam)) {
+      return res.status(422).json({ error: "Hiányzó kötelező mező." });
+    }
+    if (!isValidTaxNumber(body.adoszam)) {
+      return res.status(422).json({ error: "Érvénytelen adószám." });
+    }
   }
 
   // Szerveroldali enrichment.
@@ -172,6 +186,7 @@ export default async function handler(req, res) {
     content_name: "Pályázati Kisokos",
     lead_source: body.forras || "",
     company: isString(body.cegnev) ? body.cegnev.trim() : "",
+    tax_number: isString(body.adoszam) ? body.adoszam.trim() : "",
     partial,
     utm_source: attribution.utm_source || "",
     utm_medium: attribution.utm_medium || "",
@@ -218,9 +233,11 @@ export default async function handler(req, res) {
   const n8nBody = {
     vezeteknev: body.vezeteknev.trim(),
     keresztnev: body.keresztnev.trim(),
-    cegnev: isString(body.cegnev) ? body.cegnev.trim() : "",
+    cegnev: body.cegnev.trim(),
     email: body.email.trim(),
     telefonszam: body.telefonszam.trim(),
+    adoszam: isString(body.adoszam) ? body.adoszam.trim() : "",
+    megjegyzes: isString(body.megjegyzes) ? body.megjegyzes.trim() : "",
     partial,
     lead_type: "ebook",
     forras: body.forras || "",

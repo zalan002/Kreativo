@@ -94,7 +94,7 @@ A két esemény ugyanazzal az `event_id`-vel és `event_name`-mel érkezik be Fa
 
 A multi-step form (`palyazati-kisokos.html`) ide POST-ol — teljes (`partial: false`) és részleges (`partial: true`) submitnél egyaránt. Az endpoint:
 
-1. Validálja a payloadot (`vezeteknev`, `keresztnev`, `email`, `telefonszam` mindig kötelező; `cegnev` csak teljes submitnél).
+1. Validálja a payloadot (`vezeteknev`, `keresztnev`, `email`, `telefonszam`, `cegnev` mindig kötelező; `adoszam` csak teljes submitnél; `megjegyzes` opcionális).
 2. Szerveroldali enrichment: kliens IP (`X-Forwarded-For`), User-Agent, `_fbp` / `_fbc` cookie-k.
 3. **n8n webhook** (`N8N_EBOOK_WEBHOOK_URL`) — blocking hívás, ez a source of truth. Non-2xx vagy timeout → 502. Ha az env változó nincs beállítva → 503 (dev környezetben devMode válasz).
 4. **Meta CAPI** — non-blocking, silent fail. Teljes submitnél `Lead`, részlegesnél `LeadPartial` event. SHA-256 hash-elt PII, `_fbc` rekonstrukció `fbclid`-ből, ha a cookie hiányzik.

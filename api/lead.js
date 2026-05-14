@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
+import nodemailer from "nodemailer";
 
 // Egyetlen lead capture endpoint — full + partial submit egyaránt ide érkezik.
-// Két kimenő hívás: n8n webhook (blocking, source of truth) + Meta CAPI (non-blocking, silent fail).
+// Három kimenő csatorna: n8n webhook (blocking, source of truth),
+// Meta CAPI és e-mail értesítés (mindkettő non-blocking, silent fail).
 
 const FB_API_VERSION = "v19.0";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -97,6 +99,100 @@ async function sendCapiEvent({ eventName, eventId, eventSourceUrl, userData, cus
     return { ok: true };
   } catch (err) {
     console.error("[lead] CAPI kivétel", String(err));
+    return { ok: false, error: String(err) };
+  }
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function buildLeadEmail(body, { ip, beerkezett }) {
+  const partial = body.partial === true;
+  const tipus = partial ? "részleges lead (folyamatban)" : "új lead";
+  const nev = `${body.vezeteknev.trim()} ${body.keresztnev.trim()}`.trim();
+  const subject = `Ebook letöltő — ${tipus}: ${nev}`;
+
+  const rows = [
+    ["Típus", "Ebook letöltő — Pályázati Kisokos"],
+    ["Állapot", partial ? "Részleges — a kitöltő még nem fejezte be a űrlapot" : "Teljes — beküldve"],
+    ["Név", nev],
+    ["E-mail", body.email.trim()],
+    ["Telefonszám", body.telefonszam.trim()],
+    ["Cégnév", body.cegnev.trim()],
+    ["Adószám", isString(body.adoszam) ? body.adoszam.trim() : "—"],
+    ["Megjegyzés", isString(body.megjegyzes) ? body.megjegyzes.trim() : "—"],
+    ["Forrás", body.forras || "—"],
+    ["Beérkezett", beerkezett],
+    ["IP", ip || "—"],
+  ];
+
+  const text =
+    `EBOOK LETÖLTŐ — ${tipus.toUpperCase()}\n\n` +
+    rows.map(([k, v]) => `${k}: ${v}`).join("\n");
+
+  const html =
+    `<div style="font-family:Arial,Helvetica,sans-serif;color:#1a1b2e;">` +
+    `<h2 style="margin:0 0 4px;">Ebook letöltő — ${escapeHtml(tipus)}</h2>` +
+    `<p style="margin:0 0 16px;color:#666;">Pályázati Kisokos landing oldal</p>` +
+    `<table style="border-collapse:collapse;width:100%;max-width:560px;">` +
+    rows
+      .map(
+        ([k, v]) =>
+          `<tr>` +
+          `<td style="padding:6px 12px;border:1px solid #e5e3dd;background:#faf8f3;font-weight:bold;white-space:nowrap;">${escapeHtml(k)}</td>` +
+          `<td style="padding:6px 12px;border:1px solid #e5e3dd;">${escapeHtml(v)}</td>` +
+          `</tr>`,
+      )
+      .join("") +
+    `</table></div>`;
+
+  return { subject, text, html };
+}
+
+// E-mail értesítés a leadekről — non-blocking, silent fail (mint a CAPI).
+// Címzettek: LEAD_EMAIL_TO env; ha üres, prodban info@kreativo.hu + zalan@…,
+// egyébként csak zalan@traininghungary.com (teszt).
+async function sendLeadEmail({ body, ip, beerkezett }) {
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || 587);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  if (!host || !user || !pass) {
+    console.warn("[lead] e-mail kihagyva — SMTP_HOST / SMTP_USER / SMTP_PASS nincs beállítva");
+    return { ok: false, error: "not_configured" };
+  }
+
+  const from = process.env.LEAD_EMAIL_FROM || "info@kreativo.hu";
+  const to =
+    process.env.LEAD_EMAIL_TO ||
+    (process.env.NODE_ENV === "production"
+      ? "info@kreativo.hu,zalan@traininghungary.com"
+      : "zalan@traininghungary.com");
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
+    });
+    const { subject, text, html } = buildLeadEmail(body, { ip, beerkezett });
+    await transporter.sendMail({
+      from,
+      to,
+      replyTo: body.email.trim(),
+      subject,
+      text,
+      html,
+    });
+    return { ok: true };
+  } catch (err) {
+    console.error("[lead] e-mail kivétel", String(err));
     return { ok: false, error: String(err) };
   }
 }
@@ -217,12 +313,22 @@ export default async function handler(req, res) {
     return { ok: false, error: String(err) };
   });
 
+  // ── E-mail értesítés — non-blocking, silent fail ──
+  const emailPromise = sendLeadEmail({ body, ip, beerkezett }).catch((err) => {
+    console.error("[lead] e-mail promise elutasítva", String(err));
+    return { ok: false, error: String(err) };
+  });
+
+  // A háttérhívásokat minden visszatérési ág előtt bevárjuk, hogy a serverless
+  // function ne álljon le, mielőtt a CAPI / e-mail ténylegesen kiszáll.
+  const sideChannels = () => Promise.all([capiPromise, emailPromise]);
+
   // ── n8n webhook — blocking, source of truth ──
   const N8N_URL = process.env.N8N_EBOOK_WEBHOOK_URL;
   const N8N_SECRET = process.env.N8N_EBOOK_WEBHOOK_SECRET;
 
   if (!N8N_URL) {
-    await capiPromise;
+    await sideChannels();
     if (process.env.NODE_ENV !== "production") {
       console.warn("[lead] N8N_EBOOK_WEBHOOK_URL nincs beállítva — devMode válasz");
       return res.status(200).json({ ok: true, devMode: true });
@@ -259,17 +365,17 @@ export default async function handler(req, res) {
       signal: AbortSignal.timeout(9000),
     });
     if (!n8nResp.ok) {
-      await capiPromise;
+      await sideChannels();
       return res
         .status(502)
         .json({ error: "A beküldés most nem sikerült. Próbáld pár perc múlva." });
     }
   } catch (err) {
     console.error("[lead] n8n kivétel", String(err));
-    await capiPromise;
+    await sideChannels();
     return res.status(502).json({ error: "Hálózati hiba történt. Próbáld újra." });
   }
 
-  await capiPromise;
+  await sideChannels();
   return res.status(200).json({ ok: true });
 }

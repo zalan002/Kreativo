@@ -1293,9 +1293,10 @@ window.kreativoAttribution = (function() {
     return function(v) { return v.trim().length >= 2 ? null : msg; };
   }
 
-  // A cégnév lépcső után (partialAfter) fut a partial save: ekkor már megvan
-  // a név + e-mail + telefon + cégnév. Az adószám és a megjegyzés az, ami
-  // még lemorzsolódhat — azt is elmenti a partial.
+  // A cégadatok lépcső után (partialAfter) fut a partial save: ekkor már megvan
+  // a név + e-mail + telefon + cégnév + adószám. A pályázati konstrukció, a
+  // megvalósítási helyszín és a megjegyzés az, ami még lemorzsolódhat — azokat
+  // is elmenti a partial.
   var STEPS = [
     {
       heading: "Kezdjük — hogy hívják?",
@@ -1325,12 +1326,7 @@ window.kreativoAttribution = (function() {
       partialAfter: true,
       fields: [
         { key: "cegnev", label: "Cégnév", type: "text", autoComplete: "organization",
-          inputMode: "text", placeholder: "Példa Kft.", validate: vName("Kérjük adja meg a cég nevét.") }
-      ]
-    },
-    {
-      heading: "A cég adószáma",
-      fields: [
+          inputMode: "text", placeholder: "Példa Kft.", validate: vName("Kérjük adja meg a cég nevét.") },
         { key: "adoszam", label: "Adószám", type: "text", autoComplete: "off",
           inputMode: "numeric", placeholder: "12345678-1-23",
           validate: function(v) {
@@ -1340,10 +1336,21 @@ window.kreativoAttribution = (function() {
       ]
     },
     {
-      heading: "Melyik pályázat érdekli?",
+      heading: "Mire pályázna?",
       fields: [
-        { key: "megjegyzes", label: "Pályázat / megjegyzés (nem kötelező)", type: "textarea", autoComplete: "off",
-          inputMode: "text", placeholder: "Pl. melyik pályázat érdekli, milyen fejlesztést tervez…",
+        { key: "palyazati_konstrukcio", label: "Pályázati konstrukció", type: "text", autoComplete: "off",
+          inputMode: "text", placeholder: "Pl. GINOP_PLUSZ-1.2.3-24",
+          validate: vName("Kérjük adja meg a pályázati konstrukciót.") },
+        { key: "megvalositasi_helyszin", label: "Megvalósítási helyszín", type: "text", autoComplete: "off",
+          inputMode: "text", placeholder: "Pl. Budapest",
+          validate: vName("Kérjük adja meg a megvalósítási helyszínt.") }
+      ]
+    },
+    {
+      heading: "Van még valami, amit tudnunk kell?",
+      fields: [
+        { key: "megjegyzes", label: "Megjegyzés (nem kötelező)", type: "textarea", autoComplete: "off",
+          inputMode: "text", placeholder: "Bármi, ami segít felmérni a projektet…",
           validate: null }
       ]
     }
@@ -1472,6 +1479,8 @@ window.kreativoAttribution = (function() {
       email: state.email.trim(),
       telefonszam: state.telefonszam.trim(),
       adoszam: state.adoszam.trim(),
+      palyazati_konstrukcio: state.palyazati_konstrukcio.trim(),
+      megvalositasi_helyszin: state.megvalositasi_helyszin.trim(),
       megjegyzes: state.megjegyzes.trim(),
       partial: isPartial,
       forras: isPartial ? FORRAS + "-partial" : FORRAS,
@@ -1517,13 +1526,19 @@ window.kreativoAttribution = (function() {
         throw new Error(data.error || "Most nem sikerült beküldeni. Kérjük próbálja újra.");
       });
     }).then(function() {
-      // Pixel Lead — ugyanaz az event_id, mint a CAPI-ban → Meta deduplikálja.
-      if (typeof fbq !== "undefined") {
-        fbq("track", "Lead",
-          { content_name: CONTENT_NAME, content_category: FORRAS },
-          { eventID: eventId }
-        );
-      }
+      // A Lead esemény (Pixel + CAPI, deduplikálva) a köszönőoldalon tüzel —
+      // itt csak előkészítjük az adatokat. Ugyanaz az event_id megy a köszönő-
+      // oldali Pixel + CAPI eseménybe, mint amit az n8n is megkapott.
+      try {
+        sessionStorage.setItem("kreativo_lead", JSON.stringify({
+          event_id: eventId,
+          email: state.email.trim(),
+          phone: state.telefonszam.trim(),
+          forras: FORRAS,
+          content_name: CONTENT_NAME,
+          ts: Date.now()
+        }));
+      } catch (_) { /* sessionStorage nem érhető el — ignoráljuk */ }
       window.location.href = REDIRECT;
     }).catch(function(err) {
       // Az eventId megmarad — retrynél ugyanaz megy, így nem lesz duplikált konverzió.

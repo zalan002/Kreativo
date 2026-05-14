@@ -8,7 +8,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Az n8n webhook URL-t env-ből olvassuk; ha nincs beállítva, a korábban használt
 // hardcode-olt URL a fallback, hogy a meglévő deploy ne törjön el.
-const N8N_WEBHOOK_URL_FALLBACK =
+const N8N_EBOOK_WEBHOOK_URL_FALLBACK =
   "https://traininghungary.app.n8n.cloud/webhook/35919594-6d84-45ee-b920-fc1f8067cce0";
 
 function sha256(value) {
@@ -208,13 +208,13 @@ export default async function handler(req, res) {
   });
 
   // ── n8n webhook — blocking, source of truth ──
-  const N8N_URL = process.env.N8N_WEBHOOK_URL || N8N_WEBHOOK_URL_FALLBACK;
-  const N8N_SECRET = process.env.N8N_WEBHOOK_SECRET;
+  const N8N_URL = process.env.N8N_EBOOK_WEBHOOK_URL || N8N_EBOOK_WEBHOOK_URL_FALLBACK;
+  const N8N_SECRET = process.env.N8N_EBOOK_WEBHOOK_SECRET;
 
   if (!N8N_URL) {
     await capiPromise;
     if (process.env.NODE_ENV !== "production") {
-      console.warn("[lead] N8N_WEBHOOK_URL nincs beállítva — devMode válasz");
+      console.warn("[lead] N8N_EBOOK_WEBHOOK_URL nincs beállítva — devMode válasz");
       return res.status(200).json({ ok: true, devMode: true });
     }
     return res.status(503).json({ error: "A leadrögzítés most nem elérhető." });

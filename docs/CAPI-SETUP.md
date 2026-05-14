@@ -42,8 +42,8 @@ A `/api/capi.js` két környezeti változót olvas. **Ezeket Vercel oldalán kel
 | `FB_PIXEL_ID` | `3511173002462631` | A Meta Pixel ID-ja (a böngészőben is látható, nem titkos) |
 | `FB_CAPI_TOKEN` | `EAA…` (lásd lejjebb) | **TITKOS** — Conversions API access token |
 | `META_TEST_EVENT_CODE` | `TEST12345` v. üres | Opcionális — Events Manager Test Events kód. **Prodban üresen!** |
-| `N8N_WEBHOOK_URL` | `https://…/webhook/…` | A lead routing webhook. Ha üres, a kód a korábbi hardcode-olt URL-re esik vissza. |
-| `N8N_WEBHOOK_SECRET` | tetszőleges titok | Opcionális — `Authorization: Bearer <secret>` header az n8n felé. |
+| `N8N_EBOOK_WEBHOOK_URL` | `https://…/webhook/…` | A lead routing webhook. Ha üres, a kód a korábbi hardcode-olt URL-re esik vissza. |
+| `N8N_EBOOK_WEBHOOK_SECRET` | tetszőleges titok | Opcionális — `Authorization: Bearer <secret>` header az n8n felé. |
 
 4. Redeploy a projektet (vagy a következő push-nál automatikusan érvénybe lép)
 
@@ -96,7 +96,7 @@ A multi-step form (`palyazati-kisokos.html`) ide POST-ol — teljes (`partial: f
 
 1. Validálja a payloadot (`vezeteknev`, `keresztnev`, `email`, `telefonszam` mindig kötelező; `cegnev` csak teljes submitnél).
 2. Szerveroldali enrichment: kliens IP (`X-Forwarded-For`), User-Agent, `_fbp` / `_fbc` cookie-k.
-3. **n8n webhook** (`N8N_WEBHOOK_URL`) — blocking hívás, ez a source of truth. Non-2xx vagy timeout → 502.
+3. **n8n webhook** (`N8N_EBOOK_WEBHOOK_URL`) — blocking hívás, ez a source of truth. Non-2xx vagy timeout → 502.
 4. **Meta CAPI** — non-blocking, silent fail. Teljes submitnél `Lead`, részlegesnél `LeadPartial` event. SHA-256 hash-elt PII, `_fbc` rekonstrukció `fbclid`-ből, ha a cookie hiányzik.
 
 A teljes `Lead` event_id a form betöltésekor generálódik, és ugyanaz megy a CAPI-ba **és** a kliens oldali Pixelbe (sikeres submit után) → Meta deduplikáció. A `LeadPartial` külön event_id-t kap, így nem dedupolódik a `Lead`-del.
@@ -105,12 +105,12 @@ A `/api/lead` endpoint válaszai:
 
 | HTTP kód | Jelentés |
 |---|---|
-| 200 | Sikeres beküldés (`{ ok: true }`), vagy dev mode (`{ ok: true, devMode: true }`, ha nincs `N8N_WEBHOOK_URL`). |
+| 200 | Sikeres beküldés (`{ ok: true }`), vagy dev mode (`{ ok: true, devMode: true }`, ha nincs `N8N_EBOOK_WEBHOOK_URL`). |
 | 400 | Érvénytelen JSON törzs. |
 | 405 | Nem POST request. |
 | 422 | Hiányzó kötelező mező / érvénytelen e-mail / érvénytelen telefonszám. |
 | 502 | Az n8n webhook hibát adott vagy nem elérhető. |
-| 503 | Prodban nincs `N8N_WEBHOOK_URL` beállítva. |
+| 503 | Prodban nincs `N8N_EBOOK_WEBHOOK_URL` beállítva. |
 
 ## Hibakeresés
 

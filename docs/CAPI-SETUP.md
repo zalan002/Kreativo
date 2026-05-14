@@ -2,14 +2,17 @@
 
 ## Áttekintés
 
-A `palyazati-kisokos.html` landing oldal a Facebook Pixel mellett szerveroldali **Conversions API (CAPI)** eseményeket is küld, deduplikált módon. Ez két eseményt érint:
+A `palyazati-kisokos.html` landing oldal a Facebook Pixel mellett szerveroldali **Conversions API (CAPI)** eseményeket is küld, deduplikált módon. Az eseménytérkép:
 
-| Esemény | Mikor tüzel | Pixel + CAPI dedup |
-|---|---|---|
-| **ViewContent** | Oldal betöltéskor | ✅ közös `event_id` |
-| **Lead** | Sikeres form-küldéskor | ✅ közös `event_id` |
+| Esemény | Mikor tüzel | Hol | Pixel + CAPI dedup |
+|---|---|---|---|
+| **PageView** | Oldal betöltéskor | landing | csak Pixel |
+| **ViewContent** | Oldal betöltéskor | landing (`/api/capi`) | ✅ közös `event_id` |
+| **LeadPartial** | A telefon lépcső után (partial save) | `/api/lead` → CAPI custom event | csak CAPI |
+| **Lead** | Sikeres teljes form-küldéskor | landing Pixel + `/api/lead` → CAPI | ✅ közös `event_id` |
+| **CompleteRegistration** | Köszönő oldal megnyitásakor | `koszonjuk-az-erdeklodest.html` | csak Pixel |
 
-A `PageView` továbbra is csak Pixel-oldalon tüzel (default Meta Pixel viselkedés).
+A multi-step lead form a `/api/lead` endpointra POST-ol (lásd lejjebb), ami az n8n webhookot (source of truth, blocking) és a Meta CAPI-t (non-blocking, silent fail) is hívja.
 
 ## Architektúra
 
@@ -38,16 +41,26 @@ A `/api/capi.js` két környezeti változót olvas. **Ezeket Vercel oldalán kel
 |---|---|---|
 | `FB_PIXEL_ID` | `3511173002462631` | A Meta Pixel ID-ja (a böngészőben is látható, nem titkos) |
 | `FB_CAPI_TOKEN` | `EAA…` (lásd lejjebb) | **TITKOS** — Conversions API access token |
+| `META_TEST_EVENT_CODE` | `TEST12345` v. üres | Opcionális — Events Manager Test Events kód. **Prodban üresen!** |
+| `N8N_EBOOK_WEBHOOK_URL` | `https://…/webhook/…` | A lead routing webhook. Prodban kötelező; Production és Preview scope-ban külön értékkel (prod / n8n teszt URL). |
+| `N8N_EBOOK_WEBHOOK_SECRET` | tetszőleges titok | Opcionális — `Authorization: Bearer <secret>` header az n8n felé. |
+| `SMTP_HOST` | `smtp.mandrillapp.com` | E-mail értesítés — SMTP host (Mandrill). |
+| `SMTP_PORT` | `587` | SMTP port (STARTTLS). |
+| `SMTP_USER` | `Training Hungary Kft.` | SMTP felhasználónév (Mandrillnál bármi elfogadott). |
+| `SMTP_PASS` | `md-…` | **TITKOS** — Mandrill SMTP jelszó / API kulcs. |
+| `LEAD_EMAIL_FROM` | `info@kreativo.hu` | Feladó cím (Mandrillban visszaigazolt domain ajánlott). |
+| `LEAD_EMAIL_TO` | üres v. `a@x,b@y` | Címzettek vesszővel. Üresen: prod → `info@kreativo.hu,zalan@traininghungary.com`, egyébként → `zalan@traininghungary.com`. |
 
 4. Redeploy a projektet (vagy a következő push-nál automatikusan érvénybe lép)
 
-### Token regenerálása
+### Token / jelszó regenerálása
 
-A jelenlegi access token egy chat felületen lett megosztva. **Erősen ajánlott regenerálni a tokent**, mielőtt élesbe kerül:
+A jelenlegi CAPI access token és a Mandrill SMTP jelszó is chat felületen lett megosztva. **Erősen ajánlott mindkettőt regenerálni**, mielőtt élesbe kerül:
 
 - Meta Events Manager → kiválasztott Pixel → Settings → Conversions API → Generate access token
+- Mandrill (Mailchimp Transactional) → Settings → SMTP & API Info → új API kulcs
 
-Az új tokent kizárólag a Vercel env változóba kell beilleszteni.
+Az új értékeket kizárólag a Vercel env változókba kell beilleszteni — soha ne kerüljenek git-be.
 
 ## Tesztelés
 
@@ -84,6 +97,29 @@ CAPI oldalról (szerver):
 
 A két esemény ugyanazzal az `event_id`-vel és `event_name`-mel érkezik be Facebookhoz, így a rendszer felismeri a duplikációt és csak egy eseményként számolja el — viszont a CAPI miatt akkor is megérkezik az adat, ha az ad-blocker vagy iOS tracking limitáció miatt a Pixel oldali esemény kiesett volna.
 
+## `/api/lead` — lead capture endpoint
+
+A multi-step form (`palyazati-kisokos.html`) ide POST-ol — teljes (`partial: false`) és részleges (`partial: true`) submitnél egyaránt. Az endpoint:
+
+1. Validálja a payloadot (`vezeteknev`, `keresztnev`, `email`, `telefonszam`, `cegnev` mindig kötelező; `adoszam` csak teljes submitnél; `megjegyzes` opcionális).
+2. Szerveroldali enrichment: kliens IP (`X-Forwarded-For`), User-Agent, `_fbp` / `_fbc` cookie-k.
+3. **n8n webhook** (`N8N_EBOOK_WEBHOOK_URL`) — blocking hívás, ez a source of truth. Non-2xx vagy timeout → 502. Ha az env változó nincs beállítva → 503 (dev környezetben devMode válasz).
+4. **Meta CAPI** — non-blocking, silent fail. Teljes submitnél `Lead`, részlegesnél `LeadPartial` event. SHA-256 hash-elt PII, `_fbc` rekonstrukció `fbclid`-ből, ha a cookie hiányzik.
+5. **E-mail értesítés** (nodemailer, `SMTP_*`) — non-blocking, silent fail. Minden leadről (teljes és részleges is) megy egy értesítő e-mail; a tárgy egyértelműen jelzi, hogy „Ebook letöltő” leadről van szó, és hogy teljes vagy részleges. A részleges és teljes submit külön e-mailt eredményez (a tárgysorban megkülönböztetve).
+
+A teljes `Lead` event_id a form betöltésekor generálódik, és ugyanaz megy a CAPI-ba **és** a kliens oldali Pixelbe (sikeres submit után) → Meta deduplikáció. A `LeadPartial` külön event_id-t kap, így nem dedupolódik a `Lead`-del.
+
+A `/api/lead` endpoint válaszai:
+
+| HTTP kód | Jelentés |
+|---|---|
+| 200 | Sikeres beküldés (`{ ok: true }`), vagy dev mode (`{ ok: true, devMode: true }`, ha nincs `N8N_EBOOK_WEBHOOK_URL`). |
+| 400 | Érvénytelen JSON törzs. |
+| 405 | Nem POST request. |
+| 422 | Hiányzó kötelező mező / érvénytelen e-mail / érvénytelen telefonszám. |
+| 502 | Az n8n webhook hibát adott vagy nem elérhető. |
+| 503 | Prodban nincs `N8N_EBOOK_WEBHOOK_URL` beállítva. |
+
 ## Hibakeresés
 
 A `/api/capi` endpoint válaszai:
@@ -96,4 +132,4 @@ A `/api/capi` endpoint válaszai:
 | 500 | Hiányzó env változó vagy belső hiba. A response body tartalmazza a részletet. |
 | 502 | Facebook API hibát adott. A response body-ban a Facebook hibakódja és üzenete. |
 
-A Vercel function log-jában (Vercel dashboard → Functions → /api/capi) látszanak a kérések.
+A Vercel function log-jában (Vercel dashboard → Functions → /api/capi, /api/lead) látszanak a kérések.

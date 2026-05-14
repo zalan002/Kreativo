@@ -27,47 +27,18 @@ src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 
-<!-- Lead esemény — a köszönő oldal megnyitásakor tüzel (Pixel + CAPI dedup) -->
+<!-- CompleteRegistration — a köszönő oldal megnyitásakor tüzel (kliens Pixel) -->
+<!-- A Lead esemény (Pixel + CAPI, deduplikált) a landing oldalon, sikeres beküldéskor tüzel. -->
 <script>
 (function() {
-  var raw;
-  try { raw = sessionStorage.getItem("kreativo_lead"); } catch (_) { return; }
-  if (!raw) return;
-  var data;
-  try { data = JSON.parse(raw); } catch (_) { return; }
-  // Azonnal töröljük, hogy oldal-újratöltésnél ne tüzeljen újra
-  try { sessionStorage.removeItem("kreativo_lead"); } catch (_) {}
-  if (!data || !data.event_id) return;
-
-  var fireLead = function() {
-    if (typeof fbq !== "undefined") {
-      fbq("track", "Lead",
-        { content_name: data.content_name || "Pályázati Kisokos", content_category: data.forras || "" },
-        { eventID: data.event_id }
-      );
-    }
-    // CAPI Lead — szerveroldali párja a Pixel eseménynek (dedup ugyanazzal az event_id-vel)
-    fetch("/api/capi", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        event_name: "Lead",
-        event_id: data.event_id,
-        event_source_url: data.forras || window.location.href,
-        event_time: Math.floor(Date.now() / 1000),
-        email: data.email,
-        phone: data.phone,
-        custom_data: {
-          content_name: data.content_name || "Pályázati Kisokos",
-          content_category: data.forras || ""
-        }
-      }),
-      keepalive: true
-    }).catch(function() {});
+  var fired = false;
+  var fire = function() {
+    if (fired || typeof fbq === "undefined") return;
+    fired = true;
+    fbq("track", "CompleteRegistration", { content_name: "Pályázati Kisokos" });
   };
-
   if (typeof fbq !== "undefined") {
-    fireLead();
+    fire();
   } else {
     // Pixel script még nem töltődött be — várjunk rá
     var tries = 0;
@@ -75,7 +46,7 @@ src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
       tries++;
       if (typeof fbq !== "undefined" || tries > 40) {
         clearInterval(iv);
-        fireLead();
+        fire();
       }
     }, 50);
   }
@@ -431,7 +402,7 @@ src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
   <div class="container">
     <div class="eb-hero-grid">
       <div class="eb-hero-text reveal">
-        <div class="eyebrow">Köszönjük az érdeklődést</div>
+        <div class="eyebrow" id="ebEyebrow">Köszönjük az érdeklődést</div>
         <h1>Itt a <em>Pályázati Kisokos</em>.</h1>
         <p class="lede">Köszönjük, hogy érdeklődik a pályázati lehetőségek iránt! Az alábbi gombra kattintva azonnal letöltheti az e-bookot — szakértői útmutatónk segít eligazodni a hazai pályázati világban.</p>
         <a class="eb-download" href="ebook/palyazati-kisokos-kreativo.pdf" download="Palyazati-Kisokos-Kreativo.pdf" target="_blank" rel="noopener">
@@ -623,6 +594,18 @@ if ('IntersectionObserver' in window) {
   }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
   document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
 }
+
+// Köszöntés keresztnévvel — a landing ?nev= query paramból
+(function() {
+  try {
+    var nev = new URLSearchParams(window.location.search).get('nev');
+    if (!nev) return;
+    nev = nev.trim().split(/\s+/)[0];
+    if (!nev) return;
+    var el = document.getElementById('ebEyebrow');
+    if (el) el.textContent = 'Köszönjük, ' + nev + '!';
+  } catch (_) {}
+})();
 </script>
 
 </body>

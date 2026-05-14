@@ -111,29 +111,37 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-function buildLeadEmail(body, { ip, beerkezett, contentName }) {
+function buildLeadEmail(body, { ip, beerkezett, contentName, isDirektLead }) {
   const nev = `${body.vezeteknev.trim()} ${body.keresztnev.trim()}`.trim();
-  const subject = `Új lead — ${contentName}: ${nev}`;
+  const leadLabel = isDirektLead ? "Direkt érdeklődő" : "Új lead";
+  const subject = `${leadLabel} — ${contentName}: ${nev}`;
 
   const rows = [
     ["Típus", contentName],
+    ["Lead jellege", isDirektLead ? "Direkt érdeklődő" : "Ebook letöltő"],
     ["Név", nev],
     ["E-mail", body.email.trim()],
     ["Telefonszám", body.telefonszam.trim()],
     ["Cégnév", body.cegnev.trim()],
     ["Adószám", isString(body.adoszam) ? body.adoszam.trim() : "—"],
-    ["Megjegyzés", isString(body.megjegyzes) ? body.megjegyzes.trim() : "—"],
-    ["Forrás", body.forras || "—"],
-    ["Beérkezett", beerkezett],
-    ["IP", ip || "—"],
   ];
+  if (isString(body.palyazati_konstrukcio)) {
+    rows.push(["Pályázati konstrukció", body.palyazati_konstrukcio.trim()]);
+  }
+  if (isString(body.megvalositasi_helyszin)) {
+    rows.push(["Megvalósítási helyszín", body.megvalositasi_helyszin.trim()]);
+  }
+  rows.push(["Megjegyzés", isString(body.megjegyzes) ? body.megjegyzes.trim() : "—"]);
+  rows.push(["Forrás", body.forras || "—"]);
+  rows.push(["Beérkezett", beerkezett]);
+  rows.push(["IP", ip || "—"]);
 
   const text =
-    `ÚJ LEAD — ${contentName}\n\n` + rows.map(([k, v]) => `${k}: ${v}`).join("\n");
+    `${leadLabel.toUpperCase()} — ${contentName}\n\n` + rows.map(([k, v]) => `${k}: ${v}`).join("\n");
 
   const html =
     `<div style="font-family:Arial,Helvetica,sans-serif;color:#1a1b2e;">` +
-    `<h2 style="margin:0 0 4px;">Új lead — ${escapeHtml(contentName)}</h2>` +
+    `<h2 style="margin:0 0 4px;">${escapeHtml(leadLabel)} — ${escapeHtml(contentName)}</h2>` +
     `<p style="margin:0 0 16px;color:#666;">${escapeHtml(body.forras || "landing oldal")}</p>` +
     `<table style="border-collapse:collapse;width:100%;max-width:560px;">` +
     rows
@@ -155,7 +163,7 @@ function buildLeadEmail(body, { ip, beerkezett, contentName }) {
 // CAPI-hoz jut el.
 // Címzettek: LEAD_EMAIL_TO env; ha üres, prodban info@kreativo.hu + zalan@…,
 // egyébként csak zalan@traininghungary.com (teszt).
-async function sendLeadEmail({ body, ip, beerkezett, contentName }) {
+async function sendLeadEmail({ body, ip, beerkezett, contentName, isDirektLead }) {
   const host = process.env.SMTP_HOST;
   const port = Number(process.env.SMTP_PORT || 587);
   const user = process.env.SMTP_USER;
@@ -179,7 +187,12 @@ async function sendLeadEmail({ body, ip, beerkezett, contentName }) {
       secure: port === 465,
       auth: { user, pass },
     });
-    const { subject, text, html } = buildLeadEmail(body, { ip, beerkezett, contentName });
+    const { subject, text, html } = buildLeadEmail(body, {
+      ip,
+      beerkezett,
+      contentName,
+      isDirektLead,
+    });
     await transporter.sendMail({
       from,
       to,
@@ -219,6 +232,10 @@ export default async function handler(req, res) {
   // de bármely landing felülírhatja a lead_type / content_name mezőkkel.
   const leadType = isString(body.lead_type) ? body.lead_type.trim() : "ebook";
   const contentName = isString(body.content_name) ? body.content_name.trim() : "Pályázati Kisokos";
+
+  // A sikerdíjas pályázatírás landing direkt érdeklődői külön n8n csatornára
+  // mennek (DirektLead webhook), hogy ne keveredjenek az ebook leadekkel.
+  const isDirektLead = leadType === "sikerdijas-palyazatiras";
 
   // Validáció — a partial save a cégnév lépcső után fut, így a név/e-mail/
   // telefon/cégnév mindig kötelező; az adószám csak a teljes submitnél;
@@ -286,6 +303,10 @@ export default async function handler(req, res) {
     lead_source: body.forras || "",
     company: isString(body.cegnev) ? body.cegnev.trim() : "",
     tax_number: isString(body.adoszam) ? body.adoszam.trim() : "",
+    grant_scheme: isString(body.palyazati_konstrukcio) ? body.palyazati_konstrukcio.trim() : "",
+    project_location: isString(body.megvalositasi_helyszin)
+      ? body.megvalositasi_helyszin.trim()
+      : "",
     partial,
     utm_source: attribution.utm_source || "",
     utm_medium: attribution.utm_medium || "",
@@ -321,7 +342,7 @@ export default async function handler(req, res) {
   // CAPI-hoz jut el.
   const emailPromise = partial
     ? Promise.resolve({ ok: false, skipped: "partial" })
-    : sendLeadEmail({ body, ip, beerkezett, contentName }).catch((err) => {
+    : sendLeadEmail({ body, ip, beerkezett, contentName, isDirektLead }).catch((err) => {
         console.error("[lead] e-mail promise elutasítva", String(err));
         return { ok: false, error: String(err) };
       });
@@ -331,13 +352,19 @@ export default async function handler(req, res) {
   const sideChannels = () => Promise.all([capiPromise, emailPromise]);
 
   // ── n8n webhook — blocking, source of truth ──
-  const N8N_URL = process.env.N8N_EBOOK_WEBHOOK_URL;
-  const N8N_SECRET = process.env.N8N_EBOOK_WEBHOOK_SECRET;
+  // A direkt érdeklődők (sikerdíjas pályázatírás landing) a DirektLead
+  // webhookra mennek, minden más lead az ebook webhookra.
+  const N8N_URL = isDirektLead
+    ? process.env.N8N_DIREKTLEAD_WEBHOOK_URL
+    : process.env.N8N_EBOOK_WEBHOOK_URL;
+  const N8N_SECRET = isDirektLead
+    ? process.env.N8N_DIREKTLEAD_WEBHOOK_SECRET
+    : process.env.N8N_EBOOK_WEBHOOK_SECRET;
 
   if (!N8N_URL) {
     await sideChannels();
     if (process.env.NODE_ENV !== "production") {
-      console.warn("[lead] N8N_EBOOK_WEBHOOK_URL nincs beállítva — devMode válasz");
+      console.warn("[lead] n8n webhook URL nincs beállítva — devMode válasz");
       return res.status(200).json({ ok: true, devMode: true });
     }
     return res.status(503).json({ error: "A leadrögzítés most nem elérhető." });
@@ -350,6 +377,12 @@ export default async function handler(req, res) {
     email: body.email.trim(),
     telefonszam: body.telefonszam.trim(),
     adoszam: isString(body.adoszam) ? body.adoszam.trim() : "",
+    palyazati_konstrukcio: isString(body.palyazati_konstrukcio)
+      ? body.palyazati_konstrukcio.trim()
+      : "",
+    megvalositasi_helyszin: isString(body.megvalositasi_helyszin)
+      ? body.megvalositasi_helyszin.trim()
+      : "",
     megjegyzes: isString(body.megjegyzes) ? body.megjegyzes.trim() : "",
     partial,
     lead_type: leadType,

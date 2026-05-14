@@ -105,7 +105,7 @@ A multi-step form (`palyazati-kisokos.html`) ide POST-ol — teljes (`partial: f
 2. Szerveroldali enrichment: kliens IP (`X-Forwarded-For`), User-Agent, `_fbp` / `_fbc` cookie-k.
 3. **n8n webhook** (`N8N_EBOOK_WEBHOOK_URL`) — blocking hívás, ez a source of truth. Non-2xx vagy timeout → 502. Ha az env változó nincs beállítva → 503 (dev környezetben devMode válasz).
 4. **Meta CAPI** — non-blocking, silent fail. Teljes submitnél `Lead`, részlegesnél `LeadPartial` event. SHA-256 hash-elt PII, `_fbc` rekonstrukció `fbclid`-ből, ha a cookie hiányzik.
-5. **E-mail értesítés** (nodemailer, `SMTP_*`) — non-blocking, silent fail. Minden leadről (teljes és részleges is) megy egy értesítő e-mail; a tárgy egyértelműen jelzi, hogy „Ebook letöltő” leadről van szó, és hogy teljes vagy részleges. A részleges és teljes submit külön e-mailt eredményez (a tárgysorban megkülönböztetve).
+5. **E-mail értesítés** (nodemailer, `SMTP_*`) — non-blocking, silent fail. **Csak a teljes (`partial: false`) submitről** megy értesítő e-mail; a tárgy egyértelműen jelzi, hogy „Ebook letöltő” leadről van szó. Részleges (`partial: true`) leadről **soha nem** megy e-mail — az kizárólag az n8n-hez és a Meta CAPI-hoz (`LeadPartial`) jut el.
 
 A teljes `Lead` event_id a form betöltésekor generálódik, és ugyanaz megy a CAPI-ba **és** a kliens oldali Pixelbe (sikeres submit után) → Meta deduplikáció. A `LeadPartial` külön event_id-t kap, így nem dedupolódik a `Lead`-del.
 

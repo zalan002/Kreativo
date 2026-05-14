@@ -112,14 +112,11 @@ function escapeHtml(value) {
 }
 
 function buildLeadEmail(body, { ip, beerkezett }) {
-  const partial = body.partial === true;
-  const tipus = partial ? "részleges lead (folyamatban)" : "új lead";
   const nev = `${body.vezeteknev.trim()} ${body.keresztnev.trim()}`.trim();
-  const subject = `Ebook letöltő — ${tipus}: ${nev}`;
+  const subject = `Ebook letöltő — új lead: ${nev}`;
 
   const rows = [
     ["Típus", "Ebook letöltő — Pályázati Kisokos"],
-    ["Állapot", partial ? "Részleges — a kitöltő még nem fejezte be a űrlapot" : "Teljes — beküldve"],
     ["Név", nev],
     ["E-mail", body.email.trim()],
     ["Telefonszám", body.telefonszam.trim()],
@@ -132,12 +129,11 @@ function buildLeadEmail(body, { ip, beerkezett }) {
   ];
 
   const text =
-    `EBOOK LETÖLTŐ — ${tipus.toUpperCase()}\n\n` +
-    rows.map(([k, v]) => `${k}: ${v}`).join("\n");
+    "EBOOK LETÖLTŐ — ÚJ LEAD\n\n" + rows.map(([k, v]) => `${k}: ${v}`).join("\n");
 
   const html =
     `<div style="font-family:Arial,Helvetica,sans-serif;color:#1a1b2e;">` +
-    `<h2 style="margin:0 0 4px;">Ebook letöltő — ${escapeHtml(tipus)}</h2>` +
+    `<h2 style="margin:0 0 4px;">Ebook letöltő — új lead</h2>` +
     `<p style="margin:0 0 16px;color:#666;">Pályázati Kisokos landing oldal</p>` +
     `<table style="border-collapse:collapse;width:100%;max-width:560px;">` +
     rows
@@ -154,7 +150,9 @@ function buildLeadEmail(body, { ip, beerkezett }) {
   return { subject, text, html };
 }
 
-// E-mail értesítés a leadekről — non-blocking, silent fail (mint a CAPI).
+// E-mail értesítés a teljes leadekről — non-blocking, silent fail (mint a CAPI).
+// Részleges (partial) leadről innen NEM megy e-mail: azt késleltetve az n8n
+// workflow küldi ki, ha a teljes kitöltés végül elmarad (lásd lentebb).
 // Címzettek: LEAD_EMAIL_TO env; ha üres, prodban info@kreativo.hu + zalan@…,
 // egyébként csak zalan@traininghungary.com (teszt).
 async function sendLeadEmail({ body, ip, beerkezett }) {
@@ -313,11 +311,17 @@ export default async function handler(req, res) {
     return { ok: false, error: String(err) };
   });
 
-  // ── E-mail értesítés — non-blocking, silent fail ──
-  const emailPromise = sendLeadEmail({ body, ip, beerkezett }).catch((err) => {
-    console.error("[lead] e-mail promise elutasítva", String(err));
-    return { ok: false, error: String(err) };
-  });
+  // ── E-mail értesítés — CSAK teljes submitnél, non-blocking, silent fail ──
+  // Részleges leadről szándékosan nem megy azonnal e-mail: a "küldd csak akkor,
+  // ha a teljes kitöltés elmarad" logika késleltetést igényel, amit a stateless
+  // serverless function nem tud — ez az n8n workflow felelőssége (a partial
+  // lead `partial: true` jelzéssel odaér).
+  const emailPromise = partial
+    ? Promise.resolve({ ok: false, skipped: "partial" })
+    : sendLeadEmail({ body, ip, beerkezett }).catch((err) => {
+        console.error("[lead] e-mail promise elutasítva", String(err));
+        return { ok: false, error: String(err) };
+      });
 
   // A háttérhívásokat minden visszatérési ág előtt bevárjuk, hogy a serverless
   // function ne álljon le, mielőtt a CAPI / e-mail ténylegesen kiszáll.

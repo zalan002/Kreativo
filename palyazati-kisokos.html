@@ -69,6 +69,75 @@ window.kreativoCAPI = (function() {
   });
 })();
 </script>
+
+<!-- Attribúció — UTM / click-id capture localStorage-ba, 30 napos TTL, last-touch wins -->
+<script>
+window.kreativoAttribution = (function() {
+  var KEY = "kreativo_kisokos_attr";
+  var TTL = 30 * 24 * 60 * 60 * 1000;
+  var PARAM_KEYS = [
+    "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "utm_id",
+    "fbclid", "gclid", "msclkid", "ttclid", "li_fat_id"
+  ];
+
+  function read() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      var rec = JSON.parse(raw);
+      if (!rec || !rec.captured_at) return null;
+      if (Date.now() - rec.captured_at > TTL) { localStorage.removeItem(KEY); return null; }
+      return rec;
+    } catch (_) { return null; }
+  }
+  function write(rec) {
+    try { localStorage.setItem(KEY, JSON.stringify(rec)); } catch (_) {}
+  }
+  function capture() {
+    var sp;
+    try { sp = new URLSearchParams(window.location.search); } catch (_) { return; }
+    var found = {};
+    var hasTracking = false;
+    PARAM_KEYS.forEach(function(k) {
+      var v = sp.get(k);
+      if (v) { found[k] = v; hasTracking = true; }
+    });
+    var existing = read();
+    var now = Date.now();
+    var landingUrl = window.location.href;
+    var ref = document.referrer || "";
+    if (hasTracking) {
+      // last-touch wins — új hirdetés-kattintás új credit-et kap
+      var rec = { captured_at: now, landing_url: landingUrl, landing_referrer: ref };
+      PARAM_KEYS.forEach(function(k) { rec[k] = found[k] || ""; });
+      write(rec);
+    } else if (existing) {
+      if (!existing.landing_url) existing.landing_url = landingUrl;
+      if (!existing.landing_referrer) existing.landing_referrer = ref;
+      write(existing);
+    } else {
+      var first = { captured_at: now, landing_url: landingUrl, landing_referrer: ref };
+      PARAM_KEYS.forEach(function(k) { first[k] = ""; });
+      write(first);
+    }
+  }
+  function payload() {
+    var rec = read() || {};
+    var out = {};
+    PARAM_KEYS.forEach(function(k) { out[k] = rec[k] || ""; });
+    out.landing_url = rec.landing_url || "";
+    out.landing_referrer = rec.landing_referrer || "";
+    out.page_url = window.location.href;
+    out.page_path = window.location.pathname;
+    out.page_referrer = document.referrer || "";
+    out.captured_at = rec.captured_at || Date.now();
+    return out;
+  }
+
+  capture();
+  return { payload: payload };
+})();
+</script>
 <style id="lp-styles">
 /* ── Pályázati Kisokos landing — scoped ── */
 /* Anchor scroll offset — fix header alá ne kerüljön a szekció eleje */
@@ -76,7 +145,6 @@ window.kreativoCAPI = (function() {
 .lp-tease,
 .lp-proof,
 .lp-story,
-.lp-form,
 .lp-faq,
 .lp-final {
   scroll-margin-top: 80px;
@@ -97,126 +165,6 @@ window.kreativoCAPI = (function() {
   gap: clamp(48px, 6vw, 96px);
   align-items: center;
 }
-/* ── Hero paradox headline ── */
-.lp-h1-paradox {
-  margin: 28px 0 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.lp-h1-nope {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
-  letter-spacing: 0.01em;
-  line-height: 1.4;
-  color: var(--ink-soft);
-  position: relative;
-}
-.lp-h1-nope-mark {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--ink-line-2);
-  display: grid;
-  place-items: center;
-  font-size: 14px;
-  color: var(--error);
-  background: var(--paper-pure);
-}
-.lp-h1-nope-text {
-  text-decoration: line-through;
-  text-decoration-color: var(--ink-line-2);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.08em;
-  max-width: 36ch;
-}
-.lp-h1-yes {
-  display: block;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.2rem, 5.4vw, 4.8rem);
-  line-height: 1.02;
-  letter-spacing: -0.018em;
-  color: var(--ink);
-  max-width: 18ch;
-}
-.lp-h1-yes em {
-  font-style: italic;
-  font-weight: 500;
-  color: var(--plum);
-}
-.lp-hero .lede {
-  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
-  margin-bottom: 32px;
-  max-width: 56ch;
-}
-.lp-hero .lede em {
-  font-style: italic;
-  color: var(--plum-deep);
-  font-weight: 500;
-}
-
-/* Trust pills row */
-.lp-trust-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.lp-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: 999px;
-  background: var(--paper-pure);
-  border: 1px solid var(--ink-line);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--ink-mute);
-}
-.lp-pill-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--plum);
-  box-shadow: 0 0 0 4px rgba(123, 94, 167, 0.18);
-  animation: lp-pulse 2s var(--ease-soft) infinite;
-}
-@keyframes lp-pulse {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(123, 94, 167, 0.18); }
-  50%      { box-shadow: 0 0 0 7px rgba(123, 94, 167, 0.06); }
-}
-
-/* Hero actions row */
-.lp-hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px 24px;
-  align-items: center;
-  margin-bottom: 28px;
-}
-.lp-cta-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ink);
-  border-bottom: 1px solid var(--ink);
-  padding-bottom: 3px;
-  transition: all var(--duration-fast) var(--ease-out);
-}
-.lp-cta-link:hover { color: var(--plum-deep); border-bottom-color: var(--plum); }
-.lp-cta-link::after { content: '↓'; transition: transform var(--duration) var(--ease-out); }
-.lp-cta-link:hover::after { transform: translateY(2px); }
-
 /* "Ingyen" tag a borítón */
 .lp-cover-tag {
   position: absolute;
@@ -235,18 +183,6 @@ window.kreativoCAPI = (function() {
   transform: rotate(8deg);
   box-shadow: 0 8px 20px -8px rgba(184, 151, 90, 0.6);
 }
-.lp-trust {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-  margin: 28px 0 0;
-  padding-top: 24px;
-  border-top: 1px solid var(--ink-line);
-  font-size: 13px;
-  color: var(--ink-mute);
-  letter-spacing: 0.02em;
-}
-.lp-trust strong { color: var(--ink); font-weight: 600; }
 .lp-cta {
   display: inline-flex;
   align-items: center;
@@ -554,49 +490,13 @@ window.kreativoCAPI = (function() {
   border-color: var(--plum-soft);
 }
 
-/* ── Form szekció ── */
-.lp-form {
-  padding: clamp(80px, 10vw, 140px) 0;
-  background: var(--paper-tint);
-}
-.lp-form-grid {
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  gap: clamp(40px, 5vw, 80px);
-  align-items: start;
-}
-.lp-form-text .eyebrow { margin-bottom: 20px; }
-.lp-form-text h2 {
-  font-size: var(--display-lg);
-  margin-bottom: 20px;
-  line-height: 1.05;
-}
-.lp-form-text .lede {
-  margin-bottom: 28px;
-}
-.lp-form-bullets {
+/* ── Hero lead form ── */
+.lp-hero-form {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 32px;
-  padding-top: 28px;
-  border-top: 1px solid var(--ink-line);
+  align-items: center;
 }
-.lp-form-bullet {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  font-size: 14px;
-  color: var(--ink-mute);
-}
-.lp-form-bullet svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-  color: var(--plum);
-}
-.lp-form-bullet strong { color: var(--ink); font-weight: 600; }
-
 .lp-form-card {
+  width: 100%;
   background: var(--paper-pure);
   border: 1px solid var(--ink-line);
   border-radius: var(--r-lg);
@@ -614,7 +514,101 @@ window.kreativoCAPI = (function() {
 .lp-form-card .form-subtitle {
   font-size: 14px;
   color: var(--ink-mute);
-  margin-bottom: 28px;
+  margin-bottom: 24px;
+}
+
+/* Multi-step — lépésenként egy mező */
+.lf-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--ink-line);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.lf-progress-bar {
+  height: 100%;
+  width: 18%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--plum), var(--plum-deep));
+  transition: width var(--duration-slow) var(--ease-out);
+}
+.lf-head {
+  min-height: 1.2em;
+  margin-bottom: 10px;
+}
+.lf-step-count {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--plum-deep);
+}
+.lf-field {
+  margin: 6px 0 24px;
+}
+.lf-field-enter {
+  animation: lf-slide-in var(--duration-slow) var(--ease-out);
+}
+@keyframes lf-slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lf-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.lf-input {
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  border-bottom: 1px solid var(--ink-line-2);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--ink);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+.lf-input::placeholder { color: var(--ink-faint); font-style: italic; }
+.lf-input:focus { outline: none; border-bottom-color: var(--plum); }
+.lf-input[aria-invalid="true"] { border-bottom-color: var(--error); }
+.lf-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lf-actions .form-submit-btn {
+  flex: 1;
+  margin-top: 0;
+}
+.lf-back {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  cursor: pointer;
+  padding: 8px 6px;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.lf-back:hover { color: var(--ink); }
+.lf-foot {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lf-field-enter { animation: none; }
+  .lf-progress-bar { transition: none; }
 }
 
 /* ── GYIK ── */
@@ -739,7 +733,6 @@ window.kreativoCAPI = (function() {
   .lp-tease-grid { grid-template-columns: 1fr; }
   .lp-proof-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 0; }
   .lp-proof-cell:nth-child(3) { border-left: 0; padding-left: 0; }
-  .lp-form-grid { grid-template-columns: 1fr; }
   .lp-final-card { grid-template-columns: 1fr; }
   .lp-final-mini { margin: 0 auto; }
 }
@@ -770,35 +763,35 @@ window.kreativoCAPI = (function() {
   </div>
 </header>
 
-<!-- HERO — paradoxon hook + e-book mockup -->
-<section class="lp-hero">
+<!-- HERO — lead form + e-book borító -->
+<section class="lp-hero" id="letoltes">
   <div class="container">
     <div class="lp-hero-grid">
-      <div class="lp-hero-text reveal">
-        <div class="lp-trust-pills">
-          <span class="lp-pill"><span class="lp-pill-dot"></span>Ingyenes letöltés</span>
-          <span class="lp-pill">12 oldal · PDF</span>
-          <span class="lp-pill">15 perc olvasás</span>
-        </div>
-        <h1 class="lp-h1-paradox">
-          <span class="lp-h1-nope" aria-hidden="true">
-            <span class="lp-h1-nope-mark">✗</span>
-            <span class="lp-h1-nope-text">Nem a pályázat megírásán bukik el a legtöbb vállalkozás.</span>
-          </span>
-          <span class="lp-h1-yes">Hanem azon, <em>amire előtte nem figyel</em>.</span>
-        </h1>
-        <p class="lede">12 oldalas gyakorlati Kisokos: a leggyakoribb buktatók, amik miatt jó pályázatok rossz eredménnyel végződnek — és pontosan hogyan kerüld el őket a beadás <em>előtt</em>.</p>
-        <div class="lp-hero-actions">
-          <a href="#letoltes" class="lp-cta">
-            Kérem ingyen a Kisokost
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
-          <a href="#mit-tudsz-meg" class="lp-cta-link">Mit tudok meg belőle?</a>
-        </div>
-        <div class="lp-trust">
-          <span><strong>2015 óta</strong> a piacon</span>
-          <span><strong>100+</strong> nyertes pályázat</span>
-          <span><strong>Sikerdíjas</strong> modell</span>
+      <div class="lp-hero-form reveal">
+        <div class="lp-form-card" id="leadFormCard">
+          <div class="lf-progress" id="lfProgress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="18" aria-label="Kitöltés haladása">
+            <div class="lf-progress-bar" id="lfProgressBar"></div>
+          </div>
+          <div class="lf-head" aria-live="polite">
+            <p class="lf-step-count" id="lfStepCount">1 / 5. lépés</p>
+          </div>
+          <h1 class="form-title">Kérem ingyen a <em>Pályázati Kisokost</em></h1>
+          <p class="form-subtitle">12 oldalas gyakorlati útmutató — pár másodperc, és a köszönő oldalon azonnal letöltheted a PDF-et.</p>
+          <div class="form-error" id="formError" role="alert"></div>
+          <form id="ebookForm" novalidate>
+            <div class="lf-field lf-field-enter" id="lfField">
+              <label class="lf-label" id="lfLabel" for="lfInput"></label>
+              <input class="lf-input" id="lfInput" required>
+            </div>
+            <div class="lf-actions">
+              <button type="button" class="lf-back" id="lfBack">Vissza</button>
+              <button type="submit" class="form-submit-btn" id="lfNext">
+                <span class="btn-text">Tovább</span>
+                <span class="btn-spinner"></span>
+              </button>
+            </div>
+          </form>
+          <p class="lf-foot">A küldéssel elfogadod, hogy felvegyük veled a kapcsolatot. Adataidat soha nem adjuk ki harmadik félnek.</p>
         </div>
       </div>
       <div class="lp-hero-visual reveal delay-1" aria-hidden="true">
@@ -909,57 +902,6 @@ window.kreativoCAPI = (function() {
           Töltsd le a Kisokost
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FORM — 1-lépcsős, erőfeszítés igazolása copy -->
-<section class="lp-form" id="letoltes">
-  <div class="container">
-    <div class="lp-form-grid">
-      <div class="lp-form-text reveal">
-        <div class="eyebrow ink">Töltsd le ingyen</div>
-        <h2>Még <em>1 lépés</em>, és Önhöz repül a Kisokos.</h2>
-        <p class="lede">Add meg az adataidat, és a köszönő oldalon azonnal letöltheted a 12 oldalas PDF-et. Nincs spam, nincs napi e-mail.</p>
-        <div class="lp-form-bullets">
-          <div class="lp-form-bullet">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>Azonnali hozzáférés</strong> — a köszönő oldalon egy kattintásra letölthető.</span>
-          </div>
-          <div class="lp-form-bullet">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>Nincs kötelezettség</strong> — a Kisokos önmagában is teljes értékű útmutató.</span>
-          </div>
-          <div class="lp-form-bullet">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span><strong>Adatvédelem</strong> — adatait soha nem adjuk ki harmadik félnek.</span>
-          </div>
-        </div>
-      </div>
-      <div class="lp-form-card reveal delay-1">
-        <h3 class="form-title">Kérem ingyen a <em>Pályázati Kisokost</em></h3>
-        <p class="form-subtitle">A megadott e-mail címre is elküldjük a letöltési linket — biztonság kedvéért.</p>
-        <div class="form-error" id="formError"></div>
-        <form id="ebookForm" class="kreativo-form" novalidate>
-          <div class="form-row">
-            <div class="form-group"><label for="vezeteknev">Vezetéknév <span class="required">*</span></label><input type="text" id="vezeteknev" name="vezeteknev" placeholder="Kovács" required></div>
-            <div class="form-group"><label for="keresztnev">Keresztnév <span class="required">*</span></label><input type="text" id="keresztnev" name="keresztnev" placeholder="János" required></div>
-          </div>
-          <div class="form-row">
-            <div class="form-group full-width"><label for="cegnev">Cégnév <span class="required">*</span></label><input type="text" id="cegnev" name="cegnev" placeholder="Példa Kft." required></div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label for="email">E-mail <span class="required">*</span></label><input type="email" id="email" name="email" placeholder="kovacs@ceg.hu" required></div>
-            <div class="form-group"><label for="telefonszam">Telefonszám <span class="required">*</span></label><input type="tel" id="telefonszam" name="telefonszam" placeholder="+36 30 123 4567" required></div>
-          </div>
-          <input type="hidden" id="forras" name="forras" value="">
-          <button type="submit" class="form-submit-btn" id="submitBtn">
-            <span class="btn-text">Kérem ingyen a Kisokost</span>
-            <span class="btn-spinner"></span>
-          </button>
-          <p style="text-align:center; margin-top:14px; font-size:12px; color:var(--ink-soft);">A küldéssel elfogadod, hogy felvegyük veled a kapcsolatot.</p>
-        </form>
       </div>
     </div>
   </div>
@@ -1096,96 +1038,218 @@ window.kreativoCAPI = (function() {
   </div>
 </footer>
 
-<!-- Form submit logika -->
+<!-- Multi-step lead form — mezőnként egy lépcső, partial save a telefon lépcső után -->
 <script>
 (function() {
   var form = document.getElementById("ebookForm");
   if (!form) return;
-  var errorDiv = document.getElementById("formError");
-  var submitBtn = document.getElementById("submitBtn");
-  var forrasField = document.getElementById("forras");
-  forrasField.value = window.location.href;
 
-  form.addEventListener("submit", async function(e) {
-    e.preventDefault();
-    errorDiv.classList.remove("visible");
-    errorDiv.textContent = "";
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var FORRAS = "palyazati-kisokos";
+  var REDIRECT = "/koszonjuk-az-erdeklodest";
 
-    var required = ["vezeteknev", "keresztnev", "cegnev", "email", "telefonszam"];
-    var labels = {
-      vezeteknev: "Vezetéknév", keresztnev: "Keresztnév", cegnev: "Cégnév",
-      email: "E-mail", telefonszam: "Telefonszám"
-    };
-    var missing = [];
-    for (var i = 0; i < required.length; i++) {
-      var input = document.getElementById(required[i]);
-      if (!input.value.trim()) {
-        missing.push(labels[required[i]]);
-        input.style.borderBottomColor = "#C14D4D";
-      } else {
-        input.style.borderBottomColor = "";
+  // A lépcsők sorrendje úgy van, hogy a telefon lépcső után már megvan a
+  // név + e-mail + telefon — ekkor fut a partial save, a cégnév pedig az
+  // egyetlen mező, ami még lemorzsolódhat.
+  var STEPS = [
+    {
+      key: "vezeteknev", label: "Mi a vezetékneved?", type: "text",
+      autoComplete: "family-name", inputMode: "text", placeholder: "Kovács",
+      validate: function(v) { return v.trim().length >= 2 ? null : "Kérjük add meg a vezetékneved."; }
+    },
+    {
+      key: "keresztnev", label: "És a keresztneved?", type: "text",
+      autoComplete: "given-name", inputMode: "text", placeholder: "János",
+      validate: function(v) { return v.trim().length >= 2 ? null : "Kérjük add meg a keresztneved."; }
+    },
+    {
+      key: "email", label: "Hova küldjük a Kisokost?", type: "email",
+      autoComplete: "email", inputMode: "email", placeholder: "kovacs@ceg.hu",
+      validate: function(v) { return EMAIL.test(v.trim()) ? null : "Kérjük adj meg egy érvényes e-mail címet."; }
+    },
+    {
+      key: "telefonszam", label: "Milyen telefonszámon érünk el?", type: "tel",
+      autoComplete: "tel", inputMode: "tel", placeholder: "+36 30 123 4567",
+      validate: function(v) {
+        var d = v.replace(/\D/g, "");
+        return (d.length >= 7 && d.length <= 15) ? null : "Kérjük adj meg egy érvényes telefonszámot.";
       }
+    },
+    {
+      key: "cegnev", label: "Melyik cég nevében érdeklődsz?", type: "text",
+      autoComplete: "organization", inputMode: "text", placeholder: "Példa Kft.",
+      validate: function(v) { return v.trim().length >= 2 ? null : "Kérjük add meg a cégneved."; }
     }
-    var emailInput = document.getElementById("email");
-    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailInput.value.trim() && !emailRegex.test(emailInput.value.trim())) {
-      missing.push("Érvényes e-mail cím");
-      emailInput.style.borderBottomColor = "#C14D4D";
-    }
+  ];
+  var NUM_STEPS = STEPS.length;
 
-    if (missing.length > 0) {
-      errorDiv.textContent = "Kérjük töltse ki a kötelező mezőket: " + missing.join(", ");
-      errorDiv.classList.add("visible");
+  var state = {};
+  STEPS.forEach(function(s) { state[s.key] = ""; });
+  var stepIndex = 0;
+  var submitting = false;
+  var partialSent = false;
+  // A teljes submit event_id-je a form betöltésekor egyszer generálódik —
+  // ugyanez megy a CAPI-ba és a kliens Pixelbe → Meta deduplikáció.
+  var eventId = window.kreativoCAPI.uuid();
+
+  var progressEl = document.getElementById("lfProgress");
+  var progressBar = document.getElementById("lfProgressBar");
+  var stepCount = document.getElementById("lfStepCount");
+  var field = document.getElementById("lfField");
+  var label = document.getElementById("lfLabel");
+  var input = document.getElementById("lfInput");
+  var backBtn = document.getElementById("lfBack");
+  var nextBtn = document.getElementById("lfNext");
+  var nextText = nextBtn.querySelector(".btn-text");
+  var errorDiv = document.getElementById("formError");
+
+  function showError(msg) {
+    errorDiv.textContent = msg;
+    errorDiv.classList.add("visible");
+  }
+  function clearError() {
+    errorDiv.textContent = "";
+    errorDiv.classList.remove("visible");
+  }
+  function setLoading(on) {
+    nextBtn.disabled = on;
+    backBtn.disabled = on;
+    nextBtn.classList.toggle("loading", on);
+  }
+
+  function render(focus) {
+    var step = STEPS[stepIndex];
+    var progress = 0.18 + 0.82 * (stepIndex / NUM_STEPS);
+    progressBar.style.width = (progress * 100) + "%";
+    progressEl.setAttribute("aria-valuenow", Math.round(progress * 100));
+    stepCount.textContent = (stepIndex + 1) + " / " + NUM_STEPS + ". lépés";
+
+    label.textContent = step.label;
+    input.type = step.type;
+    input.name = step.key;
+    input.placeholder = step.placeholder;
+    input.setAttribute("autocomplete", step.autoComplete);
+    input.setAttribute("inputmode", step.inputMode);
+    input.value = state[step.key] || "";
+    input.removeAttribute("aria-invalid");
+
+    backBtn.style.visibility = stepIndex === 0 ? "hidden" : "visible";
+    nextText.textContent = stepIndex === NUM_STEPS - 1 ? "Kérem ingyen a Kisokost" : "Tovább";
+
+    field.classList.remove("lf-field-enter");
+    void field.offsetWidth;
+    field.classList.add("lf-field-enter");
+    // Az első renderkor nem fókuszálunk — ne ugorjon fel azonnal a mobil billentyűzet.
+    if (focus) input.focus();
+  }
+
+  function buildBody(isPartial) {
+    return {
+      vezeteknev: state.vezeteknev.trim(),
+      keresztnev: state.keresztnev.trim(),
+      cegnev: state.cegnev.trim(),
+      email: state.email.trim(),
+      telefonszam: state.telefonszam.trim(),
+      partial: isPartial,
+      forras: isPartial ? FORRAS + "-partial" : FORRAS,
+      event_id: isPartial ? window.kreativoCAPI.uuid() : eventId,
+      event_source_url: window.location.href,
+      beerkezett: new Date().toISOString(),
+      attribution: window.kreativoAttribution ? window.kreativoAttribution.payload() : {}
+    };
+  }
+
+  // Partial save — a telefon lépcső sikeres validációja után, fire-and-forget.
+  // Munkamenetenként egyszer fut le; hiba esetén a flag visszaáll, hogy újrapróbálható legyen.
+  function sendPartial() {
+    if (partialSent) return;
+    partialSent = true;
+    fetch("/api/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(buildBody(true)),
+      keepalive: true
+    }).then(function(r) {
+      if (!r.ok) partialSent = false;
+    }).catch(function() {
+      partialSent = false;
+    });
+  }
+
+  function submit() {
+    if (submitting) return;
+    submitting = true;
+    setLoading(true);
+    clearError();
+
+    fetch("/api/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(buildBody(false))
+    }).then(function(resp) {
+      if (resp.ok) return resp;
+      return resp.json().catch(function() { return {}; }).then(function(data) {
+        throw new Error(data.error || "Most nem sikerült beküldeni. Kérjük próbáld újra.");
+      });
+    }).then(function() {
+      // Pixel Lead — ugyanaz az event_id, mint a CAPI-ban → Meta deduplikálja.
+      if (typeof fbq !== "undefined") {
+        fbq("track", "Lead",
+          { content_name: "Pályázati Kisokos", content_category: FORRAS },
+          { eventID: eventId }
+        );
+      }
+      window.location.href = REDIRECT + "?nev=" + encodeURIComponent(state.keresztnev.trim());
+    }).catch(function(err) {
+      // Az eventId megmarad — retrynél ugyanaz megy, így nem lesz duplikált konverzió.
+      showError(err.message || "Hálózati hiba történt. Próbáld újra.");
+      submitting = false;
+      setLoading(false);
+    });
+  }
+
+  function onNext() {
+    if (submitting) return;
+    var step = STEPS[stepIndex];
+    state[step.key] = input.value;
+    var err = step.validate(input.value);
+    if (err) {
+      showError(err);
+      input.setAttribute("aria-invalid", "true");
+      input.focus();
       return;
     }
+    clearError();
+    input.removeAttribute("aria-invalid");
 
-    submitBtn.disabled = true;
-    submitBtn.classList.add("loading");
+    if (step.key === "telefonszam") sendPartial();
 
-    var payload = {
-      vezeteknev: document.getElementById("vezeteknev").value.trim(),
-      keresztnev: document.getElementById("keresztnev").value.trim(),
-      cegnev: document.getElementById("cegnev").value.trim(),
-      email: document.getElementById("email").value.trim(),
-      telefonszam: document.getElementById("telefonszam").value.trim(),
-      lead_type: "ebook",
-      forras: forrasField.value,
-      submitted_at: new Date().toISOString()
-    };
-
-    try {
-      var response = await fetch("https://traininghungary.app.n8n.cloud/webhook/35919594-6d84-45ee-b920-fc1f8067cce0", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (response.ok) {
-        // A Lead esemény (Pixel + CAPI) a köszönő oldalon tüzel — ott
-        // konvertál jobban. Itt csak előkészítjük az adatokat: az
-        // event_id-t, a hash-elendő PII-t és a forrást elraktározzuk
-        // sessionStorage-be, hogy a /koszonjuk-az-erdeklodest oldal
-        // betöltéskor el tudja küldeni az eseményt.
-        try {
-          var leadEventId = window.kreativoCAPI.uuid();
-          sessionStorage.setItem("kreativo_lead", JSON.stringify({
-            event_id: leadEventId,
-            email: payload.email,
-            phone: payload.telefonszam,
-            forras: forrasField.value,
-            content_name: "Pályázati Kisokos",
-            ts: Date.now()
-          }));
-        } catch (_) { /* sessionStorage nem érhető el — ignoráljuk */ }
-        window.location.href = "https://kreativo.hu/koszonjuk-az-erdeklodest";
-      } else { throw new Error("Hiba"); }
-    } catch (err) {
-      errorDiv.textContent = "Sajnos hiba történt a küldés során. Kérjük próbálja újra, vagy keressen minket e-mailben az info@kreativo.hu címen.";
-      errorDiv.classList.add("visible");
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.classList.remove("loading");
+    if (stepIndex < NUM_STEPS - 1) {
+      stepIndex++;
+      render(true);
+    } else {
+      submit();
     }
+  }
+
+  input.addEventListener("input", function() {
+    state[STEPS[stepIndex].key] = input.value;
+    clearError();
+    input.removeAttribute("aria-invalid");
   });
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    onNext();
+  });
+  backBtn.addEventListener("click", function() {
+    if (submitting || stepIndex === 0) return;
+    state[STEPS[stepIndex].key] = input.value;
+    stepIndex--;
+    clearError();
+    render(true);
+  });
+
+  render(false);
 })();
 </script>
 

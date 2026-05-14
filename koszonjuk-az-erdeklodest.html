@@ -28,7 +28,6 @@ src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 
 <!-- CompleteRegistration — a köszönő oldal megnyitásakor tüzel (kliens Pixel) -->
-<!-- A Lead esemény (Pixel + CAPI, deduplikált) a landing oldalon, sikeres beküldéskor tüzel. -->
 <script>
 (function() {
   var fired = false;
@@ -47,6 +46,60 @@ src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
       if (typeof fbq !== "undefined" || tries > 40) {
         clearInterval(iv);
         fire();
+      }
+    }, 50);
+  }
+})();
+</script>
+
+<!-- Lead esemény — a köszönő oldal megnyitásakor tüzel (Pixel + CAPI dedup) -->
+<script>
+(function() {
+  var raw;
+  try { raw = sessionStorage.getItem("kreativo_lead"); } catch (_) { return; }
+  if (!raw) return;
+  var data;
+  try { data = JSON.parse(raw); } catch (_) { return; }
+  // Azonnal töröljük, hogy oldal-újratöltésnél ne tüzeljen újra
+  try { sessionStorage.removeItem("kreativo_lead"); } catch (_) {}
+  if (!data || !data.event_id) return;
+
+  var fireLead = function() {
+    if (typeof fbq !== "undefined") {
+      fbq("track", "Lead",
+        { content_name: data.content_name || document.title, content_category: data.forras || "" },
+        { eventID: data.event_id }
+      );
+    }
+    // CAPI Lead — szerveroldali párja a Pixel eseménynek (dedup ugyanazzal az event_id-vel)
+    fetch("/api/capi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event_name: "Lead",
+        event_id: data.event_id,
+        event_source_url: data.forras || window.location.href,
+        event_time: Math.floor(Date.now() / 1000),
+        email: data.email,
+        phone: data.phone,
+        custom_data: {
+          content_name: data.content_name || document.title,
+          content_category: data.forras || ""
+        }
+      }),
+      keepalive: true
+    }).catch(function() {});
+  };
+
+  if (typeof fbq !== "undefined") {
+    fireLead();
+  } else {
+    var tries = 0;
+    var iv = setInterval(function() {
+      tries++;
+      if (typeof fbq !== "undefined" || tries > 40) {
+        clearInterval(iv);
+        fireLead();
       }
     }, 50);
   }

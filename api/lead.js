@@ -326,16 +326,21 @@ export default async function handler(req, res) {
     page_referrer: attribution.page_referrer || "",
   };
 
-  const capiPromise = sendCapiEvent({
-    eventName: partial ? "LeadPartial" : "Lead",
-    eventId: isString(body.event_id) ? body.event_id : undefined,
-    eventSourceUrl,
-    userData,
-    customData,
-  }).catch((err) => {
-    console.error("[lead] CAPI promise elutasítva", String(err));
-    return { ok: false, error: String(err) };
-  });
+  // A teljes (partial: false) Lead esemény a köszönőoldalon tüzel — Pixel és
+  // CAPI egyaránt, közös event_id-vel deduplikálva. Innen ezért csak a
+  // részleges leadről megy CAPI esemény (LeadPartial).
+  const capiPromise = partial
+    ? sendCapiEvent({
+        eventName: "LeadPartial",
+        eventId: isString(body.event_id) ? body.event_id : undefined,
+        eventSourceUrl,
+        userData,
+        customData,
+      }).catch((err) => {
+        console.error("[lead] CAPI promise elutasítva", String(err));
+        return { ok: false, error: String(err) };
+      })
+    : Promise.resolve({ ok: false, skipped: "lead-fires-on-thankyou" });
 
   // ── E-mail értesítés — CSAK teljes submitnél, non-blocking, silent fail ──
   // Részleges leadről szándékosan nem megy e-mail; az csak az n8n-hez és a

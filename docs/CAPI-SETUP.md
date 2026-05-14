@@ -106,10 +106,16 @@ A multi-step formok (`palyazati-kisokos.html` ebook landing, `sikerdijas-palyaza
 1. Validálja a payloadot (`vezeteknev`, `keresztnev`, `email`, `telefonszam`, `cegnev` mindig kötelező; `adoszam` csak teljes submitnél; `palyazati_konstrukcio`, `megvalositasi_helyszin`, `megjegyzes` opcionális — ezeket a sikerdíjas landing küldi).
 2. Szerveroldali enrichment: kliens IP (`X-Forwarded-For`), User-Agent, `_fbp` / `_fbc` cookie-k.
 3. **n8n webhook** — blocking hívás, ez a source of truth. A `lead_type` alapján routol: a sikerdíjas pályázatírás landing direkt érdeklődői a `N8N_DIREKTLEAD_WEBHOOK_URL`-re, minden más lead a `N8N_EBOOK_WEBHOOK_URL`-re megy. Non-2xx vagy timeout → 502. Ha a vonatkozó env változó nincs beállítva → 503 (dev környezetben devMode válasz).
-4. **Meta CAPI** — non-blocking, silent fail. Teljes submitnél `Lead`, részlegesnél `LeadPartial` event. SHA-256 hash-elt PII, `_fbc` rekonstrukció `fbclid`-ből, ha a cookie hiányzik.
+4. **Meta CAPI** — non-blocking, silent fail. **Csak a részleges (`partial: true`) submitről** megy innen CAPI esemény (`LeadPartial`). A teljes (`partial: false`) `Lead` esemény nem itt, hanem a **köszönőoldalon** tüzel (Pixel + CAPI, deduplikálva). SHA-256 hash-elt PII, `_fbc` rekonstrukció `fbclid`-ből, ha a cookie hiányzik.
 5. **E-mail értesítés** (nodemailer, `SMTP_*`) — non-blocking, silent fail. **Csak a teljes (`partial: false`) submitről** megy értesítő e-mail; a tárgy és a törzs egyértelműen jelzi a lead jellegét — „Ebook letöltő” vagy „Direkt érdeklődő”. Részleges (`partial: true`) leadről **soha nem** megy e-mail — az kizárólag az n8n-hez és a Meta CAPI-hoz (`LeadPartial`) jut el. A címzettek, az SMTP kapcsolat és a feladó cím minden lead-típusnál azonos.
 
-A teljes `Lead` event_id a form betöltésekor generálódik, és ugyanaz megy a CAPI-ba **és** a kliens oldali Pixelbe (sikeres submit után) → Meta deduplikáció. A `LeadPartial` külön event_id-t kap, így nem dedupolódik a `Lead`-del.
+### A teljes `Lead` esemény — a köszönőoldalon tüzel
+
+Minden űrlapnál (lead-magnet landingek és a sima kapcsolati űrlapok egyaránt) a teljes `Lead` esemény a **köszönőoldalon** tüzel, Pixel + CAPI párban, közös `event_id`-vel deduplikálva:
+
+- A landing a sikeres beküldés után `sessionStorage.kreativo_lead`-be írja az `event_id`-t, e-mailt, telefonszámot, `content_name`-et és `forras`-t, majd átirányít a köszönőoldalra.
+- A köszönőoldal (`koszonjuk-a-kapcsolatfelvetelt.html`, illetve az ebooknál `koszonjuk-az-erdeklodest.html`) kiolvassa és azonnal törli a `sessionStorage` bejegyzést, majd tüzeli a Pixel `Lead`-et és a `/api/capi` felé a CAPI `Lead`-et — ugyanazzal az `event_id`-vel, így a Meta egy eseményként számolja el.
+- A lead-magnet landingek `event_id`-je a form betöltésekor generálódik, és ugyanez megy az n8n-hez is. A `LeadPartial` külön `event_id`-t kap, így nem dedupolódik a `Lead`-del.
 
 A `/api/lead` endpoint válaszai:
 

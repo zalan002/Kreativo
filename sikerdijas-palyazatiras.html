@@ -1526,13 +1526,19 @@ window.kreativoAttribution = (function() {
         throw new Error(data.error || "Most nem sikerült beküldeni. Kérjük próbálja újra.");
       });
     }).then(function() {
-      // Pixel Lead — ugyanaz az event_id, mint a CAPI-ban → Meta deduplikálja.
-      if (typeof fbq !== "undefined") {
-        fbq("track", "Lead",
-          { content_name: CONTENT_NAME, content_category: FORRAS },
-          { eventID: eventId }
-        );
-      }
+      // A Lead esemény (Pixel + CAPI, deduplikálva) a köszönőoldalon tüzel —
+      // itt csak előkészítjük az adatokat. Ugyanaz az event_id megy a köszönő-
+      // oldali Pixel + CAPI eseménybe, mint amit az n8n is megkapott.
+      try {
+        sessionStorage.setItem("kreativo_lead", JSON.stringify({
+          event_id: eventId,
+          email: state.email.trim(),
+          phone: state.telefonszam.trim(),
+          forras: FORRAS,
+          content_name: CONTENT_NAME,
+          ts: Date.now()
+        }));
+      } catch (_) { /* sessionStorage nem érhető el — ignoráljuk */ }
       window.location.href = REDIRECT;
     }).catch(function(err) {
       // Az eventId megmarad — retrynél ugyanaz megy, így nem lesz duplikált konverzió.

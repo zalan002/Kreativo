@@ -111,12 +111,12 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-function buildLeadEmail(body, { ip, beerkezett }) {
+function buildLeadEmail(body, { ip, beerkezett, contentName }) {
   const nev = `${body.vezeteknev.trim()} ${body.keresztnev.trim()}`.trim();
-  const subject = `Ebook letöltő — új lead: ${nev}`;
+  const subject = `Új lead — ${contentName}: ${nev}`;
 
   const rows = [
-    ["Típus", "Ebook letöltő — Pályázati Kisokos"],
+    ["Típus", contentName],
     ["Név", nev],
     ["E-mail", body.email.trim()],
     ["Telefonszám", body.telefonszam.trim()],
@@ -129,12 +129,12 @@ function buildLeadEmail(body, { ip, beerkezett }) {
   ];
 
   const text =
-    "EBOOK LETÖLTŐ — ÚJ LEAD\n\n" + rows.map(([k, v]) => `${k}: ${v}`).join("\n");
+    `ÚJ LEAD — ${contentName}\n\n` + rows.map(([k, v]) => `${k}: ${v}`).join("\n");
 
   const html =
     `<div style="font-family:Arial,Helvetica,sans-serif;color:#1a1b2e;">` +
-    `<h2 style="margin:0 0 4px;">Ebook letöltő — új lead</h2>` +
-    `<p style="margin:0 0 16px;color:#666;">Pályázati Kisokos landing oldal</p>` +
+    `<h2 style="margin:0 0 4px;">Új lead — ${escapeHtml(contentName)}</h2>` +
+    `<p style="margin:0 0 16px;color:#666;">${escapeHtml(body.forras || "landing oldal")}</p>` +
     `<table style="border-collapse:collapse;width:100%;max-width:560px;">` +
     rows
       .map(
@@ -155,7 +155,7 @@ function buildLeadEmail(body, { ip, beerkezett }) {
 // CAPI-hoz jut el.
 // Címzettek: LEAD_EMAIL_TO env; ha üres, prodban info@kreativo.hu + zalan@…,
 // egyébként csak zalan@traininghungary.com (teszt).
-async function sendLeadEmail({ body, ip, beerkezett }) {
+async function sendLeadEmail({ body, ip, beerkezett, contentName }) {
   const host = process.env.SMTP_HOST;
   const port = Number(process.env.SMTP_PORT || 587);
   const user = process.env.SMTP_USER;
@@ -179,7 +179,7 @@ async function sendLeadEmail({ body, ip, beerkezett }) {
       secure: port === 465,
       auth: { user, pass },
     });
-    const { subject, text, html } = buildLeadEmail(body, { ip, beerkezett });
+    const { subject, text, html } = buildLeadEmail(body, { ip, beerkezett, contentName });
     await transporter.sendMail({
       from,
       to,
@@ -214,6 +214,11 @@ export default async function handler(req, res) {
   }
 
   const partial = body.partial === true;
+
+  // Landing-specifikus címkék — alapértelmezés a Pályázati Kisokos ebook landing,
+  // de bármely landing felülírhatja a lead_type / content_name mezőkkel.
+  const leadType = isString(body.lead_type) ? body.lead_type.trim() : "ebook";
+  const contentName = isString(body.content_name) ? body.content_name.trim() : "Pályázati Kisokos";
 
   // Validáció — a partial save a cégnév lépcső után fut, így a név/e-mail/
   // telefon/cégnév mindig kötelező; az adószám csak a teljes submitnél;
@@ -277,7 +282,7 @@ export default async function handler(req, res) {
   };
 
   const customData = {
-    content_name: "Pályázati Kisokos",
+    content_name: contentName,
     lead_source: body.forras || "",
     company: isString(body.cegnev) ? body.cegnev.trim() : "",
     tax_number: isString(body.adoszam) ? body.adoszam.trim() : "",
@@ -316,7 +321,7 @@ export default async function handler(req, res) {
   // CAPI-hoz jut el.
   const emailPromise = partial
     ? Promise.resolve({ ok: false, skipped: "partial" })
-    : sendLeadEmail({ body, ip, beerkezett }).catch((err) => {
+    : sendLeadEmail({ body, ip, beerkezett, contentName }).catch((err) => {
         console.error("[lead] e-mail promise elutasítva", String(err));
         return { ok: false, error: String(err) };
       });
@@ -347,7 +352,7 @@ export default async function handler(req, res) {
     adoszam: isString(body.adoszam) ? body.adoszam.trim() : "",
     megjegyzes: isString(body.megjegyzes) ? body.megjegyzes.trim() : "",
     partial,
-    lead_type: "ebook",
+    lead_type: leadType,
     forras: body.forras || "",
     beerkezett,
     event_id: isString(body.event_id) ? body.event_id : "",

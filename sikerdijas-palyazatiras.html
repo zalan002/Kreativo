@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sikerdíjas pályázatírás vállalkozásoknak | Kreativo Magyarország Kft.</title>
+<meta name="description" content="Sikerdíjas pályázatírás vállalkozásoknak: felmérjük a cége jogosultságát, elkészítjük a pályázatot, és siker esetén végigvisszük a projektet. Kérjen ingyenes konzultációt.">
+<meta property="og:title" content="Sikerdíjas pályázatírás vállalkozásoknak — Kreativo">
+<meta property="og:description" content="Van már pályázat, ami érdekli? Segítünk elnyerni és megvalósítani — sikerdíjas konstrukcióban.">
+<meta property="og:type" content="website">
+<link rel="icon" href="img/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '3511173002462631');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=3511173002462631&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
+<!-- Conversions API helper + ViewContent — Pixel/CAPI deduplikált -->
+<script>
+window.kreativoCAPI = (function() {
+  function uuid() {
+    if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0;
+      var v = c === "x" ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  function send(payload) {
+    return fetch("/api/capi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function() {});
+  }
+  return { uuid: uuid, send: send };
+})();
+
+// ViewContent — page-load esemény, Pixel + CAPI dedup ugyanazzal az event_id-vel
+(function() {
+  var eventId = window.kreativoCAPI.uuid();
+  if (typeof fbq !== "undefined") {
+    fbq("track", "ViewContent",
+      { content_name: "Sikerdíjas pályázatírás — landing" },
+      { eventID: eventId }
+    );
+  }
+  window.kreativoCAPI.send({
+    event_name: "ViewContent",
+    event_id: eventId,
+    event_source_url: window.location.href,
+    event_time: Math.floor(Date.now() / 1000),
+    custom_data: { content_name: "Sikerdíjas pályázatírás — landing" }
+  });
+})();
+</script>
+
+<!-- Attribúció — UTM / click-id capture localStorage-ba, 30 napos TTL, last-touch wins -->
+<script>
+window.kreativoAttribution = (function() {
+  var KEY = "kreativo_sikerdij_attr";
+  var TTL = 30 * 24 * 60 * 60 * 1000;
+  var PARAM_KEYS = [
+    "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "utm_id",
+    "fbclid", "gclid", "msclkid", "ttclid", "li_fat_id"
+  ];
+
+  function read() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      var rec = JSON.parse(raw);
+      if (!rec || !rec.captured_at) return null;
+      if (Date.now() - rec.captured_at > TTL) { localStorage.removeItem(KEY); return null; }
+      return rec;
+    } catch (_) { return null; }
+  }
+  function write(rec) {
+    try { localStorage.setItem(KEY, JSON.stringify(rec)); } catch (_) {}
+  }
+  function capture() {
+    var sp;
+    try { sp = new URLSearchParams(window.location.search); } catch (_) { return; }
+    var found = {};
+    var hasTracking = false;
+    PARAM_KEYS.forEach(function(k) {
+      var v = sp.get(k);
+      if (v) { found[k] = v; hasTracking = true; }
+    });
+    var existing = read();
+    var now = Date.now();
+    var landingUrl = window.location.href;
+    var ref = document.referrer || "";
+    if (hasTracking) {
+      // last-touch wins — új hirdetés-kattintás új credit-et kap
+      var rec = { captured_at: now, landing_url: landingUrl, landing_referrer: ref };
+      PARAM_KEYS.forEach(function(k) { rec[k] = found[k] || ""; });
+      write(rec);
+    } else if (existing) {
+      if (!existing.landing_url) existing.landing_url = landingUrl;
+      if (!existing.landing_referrer) existing.landing_referrer = ref;
+      write(existing);
+    } else {
+      var first = { captured_at: now, landing_url: landingUrl, landing_referrer: ref };
+      PARAM_KEYS.forEach(function(k) { first[k] = ""; });
+      write(first);
+    }
+  }
+  function payload() {
+    var rec = read() || {};
+    var out = {};
+    PARAM_KEYS.forEach(function(k) { out[k] = rec[k] || ""; });
+    out.landing_url = rec.landing_url || "";
+    out.landing_referrer = rec.landing_referrer || "";
+    out.page_url = window.location.href;
+    out.page_path = window.location.pathname;
+    out.page_referrer = document.referrer || "";
+    out.captured_at = rec.captured_at || Date.now();
+    return out;
+  }
+
+  capture();
+  return { payload: payload };
+})();
+</script>
+<style id="lp-styles">
+/* ── Sikerdíjas pályázatírás landing — scoped ── */
+.lp-hero,
+.lp-points,
+.lp-audience,
+.lp-tease,
+.lp-why,
+.lp-process,
+.lp-story,
+.lp-final {
+  scroll-margin-top: 80px;
+}
+
+/* ── Hero — szöveg + lead form ── */
+.lp-hero {
+  position: relative;
+  padding: clamp(120px, 16vw, 180px) 0 clamp(80px, 10vw, 120px);
+  background-color: var(--ink);
+  background-image:
+    linear-gradient(135deg, rgba(26, 27, 46, 0.86) 0%, rgba(46, 37, 71, 0.74) 55%, rgba(63, 42, 107, 0.66) 100%),
+    url("img/eu-palyazatok-hero-1600px-300kb.jpg");
+  background-size: cover;
+  background-position: center 38%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  isolation: isolate;
+}
+.lp-hero-grid {
+  display: grid;
+  grid-template-columns: 6fr 5fr;
+  gap: clamp(48px, 6vw, 88px);
+  align-items: center;
+}
+.lp-hero-text { color: rgba(255, 255, 255, 0.82); }
+.lp-hero-text .eyebrow { color: var(--plum-soft); margin-bottom: 22px; }
+.lp-hero-text .eyebrow::before { background: var(--plum-soft); }
+.lp-hero-text h1 {
+  font-size: var(--display-xl);
+  line-height: 1.04;
+  color: #fff;
+  margin-bottom: 20px;
+}
+.lp-hero-text h1 em { font-style: italic; color: var(--plum-soft); }
+.lp-hero-lead {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  line-height: 1.3;
+  color: #fff;
+  margin-bottom: 24px;
+}
+.lp-hero-text p {
+  font-size: var(--body-lg);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 52ch;
+  margin-bottom: 20px;
+}
+.lp-hero-note {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 15px;
+  line-height: 1.6;
+  color: #fff;
+}
+.lp-hero-note svg { flex-shrink: 0; margin-top: 3px; color: var(--plum-soft); }
+
+/* ── Közös CTA pill ── */
+.lp-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 32px;
+  background: var(--plum-deep);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--plum-darker);
+  transition: all var(--duration) var(--ease-out);
+  box-shadow: 0 12px 32px -12px rgba(91, 63, 138, 0.5);
+}
+.lp-cta:hover {
+  background: var(--plum-darker);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 48px -16px rgba(91, 63, 138, 0.6);
+}
+.lp-cta svg { transition: transform var(--duration) var(--ease-out); }
+.lp-cta:hover svg { transform: translateX(3px); }
+
+/* ── Hero lead form ── */
+.lp-hero-form {
+  display: flex;
+  align-items: center;
+}
+.lp-form-card {
+  width: 100%;
+  background: var(--paper-pure);
+  border: 1px solid var(--ink-line);
+  border-radius: var(--r-lg);
+  padding: clamp(32px, 4vw, 48px);
+  box-shadow: var(--shadow-lift);
+}
+.lp-form-card .form-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.lp-form-card .form-title em { font-style: italic; color: var(--plum); }
+.lp-form-card .form-subtitle {
+  font-size: 14px;
+  color: var(--ink-mute);
+  margin-bottom: 24px;
+}
+
+/* Multi-step — lépésenként egy mező */
+.lf-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--ink-line);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.lf-progress-bar {
+  height: 100%;
+  width: 18%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--plum), var(--plum-deep));
+  transition: width var(--duration-slow) var(--ease-out);
+}
+.lf-head {
+  min-height: 1.2em;
+  margin-bottom: 10px;
+}
+.lf-step-count {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--plum-deep);
+}
+.lf-field {
+  margin: 6px 0 24px;
+}
+.lf-field-enter {
+  animation: lf-slide-in var(--duration-slow) var(--ease-out);
+}
+@keyframes lf-slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lf-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+.lf-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.lf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.lf-group {
+  display: flex;
+  flex-direction: column;
+}
+.lf-sublabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.lf-input,
+.lf-textarea {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--ink-line-2);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  color: var(--ink);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+.lf-input {
+  padding: 12px 0;
+  font-size: 1.05rem;
+}
+.lf-textarea {
+  padding: 12px 14px;
+  font-size: 1rem;
+  line-height: 1.55;
+  min-height: 110px;
+  resize: vertical;
+  border: 1px solid var(--ink-line-2);
+  border-radius: var(--r-sm);
+}
+.lf-input::placeholder,
+.lf-textarea::placeholder { color: var(--ink-faint); font-style: italic; }
+.lf-input:focus { outline: none; border-bottom-color: var(--plum); }
+.lf-textarea:focus { outline: none; border-color: var(--plum); }
+.lf-input[aria-invalid="true"] { border-bottom-color: var(--error); }
+.lf-textarea[aria-invalid="true"] { border-color: var(--error); }
+.lf-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.lf-actions .form-submit-btn {
+  flex: 1;
+  margin-top: 0;
+}
+.lf-back {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  cursor: pointer;
+  padding: 8px 6px;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.lf-back:hover { color: var(--ink); }
+.lf-foot {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lf-field-enter { animation: none; }
+  .lf-progress-bar { transition: none; }
+}
+
+/* ── A pályázati kiírás — checklist ── */
+.lp-points {
+  background: var(--paper);
+  padding: clamp(80px, 10vw, 140px) 0;
+}
+.lp-points-grid {
+  display: grid;
+  grid-template-columns: 5fr 6fr;
+  gap: clamp(40px, 6vw, 88px);
+  align-items: start;
+}
+.lp-points-head .eyebrow { margin-bottom: 20px; }
+.lp-points-head h2 {
+  font-size: var(--display-lg);
+  margin-bottom: 18px;
+}
+.lp-points-head .lede { color: var(--ink-mute); }
+.lp-check-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--plum-deep);
+  margin-bottom: 8px;
+}
+.lp-check-list {
+  border-top: 1px solid var(--ink-line);
+}
+.lp-check {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--ink-line);
+}
+.lp-check-mark {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--plum-pale);
+  color: var(--plum-deep);
+  display: grid;
+  place-items: center;
+}
+.lp-check p {
+  color: var(--ink-mute);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.lp-points-note {
+  margin-top: clamp(40px, 5vw, 64px);
+  padding: clamp(32px, 4vw, 52px);
+  background: var(--plum-ink);
+  color: rgba(255, 255, 255, 0.82);
+  border-radius: var(--r-lg);
+  font-size: var(--body-lg);
+  line-height: 1.7;
+}
+.lp-points-note strong { color: #fff; }
+
+/* ── Kinek ajánljuk + mit jelent ── */
+.lp-audience {
+  background: var(--paper-tint);
+  padding: clamp(80px, 10vw, 140px) 0;
+}
+.lp-audience-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 5vw, 80px);
+  align-items: start;
+}
+.lp-audience-head .eyebrow { margin-bottom: 20px; }
+.lp-audience-head h2 {
+  font-size: var(--display-lg);
+  margin-bottom: 22px;
+}
+.lp-audience-card {
+  background: var(--paper-pure);
+  border: 1px solid var(--ink-line);
+  border-radius: var(--r-lg);
+  padding: clamp(32px, 4vw, 48px);
+  box-shadow: var(--shadow-soft);
+}
+.lp-audience-card h3 {
+  font-size: var(--display-sm);
+  margin-bottom: 16px;
+}
+.lp-audience-card p {
+  color: var(--ink-mute);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+.lp-audience-card .lp-cta { margin-top: 14px; }
+
+/* ── Miben segítünk — információs kártyák × 5 ── */
+.lp-tease {
+  background: var(--paper);
+  padding: clamp(80px, 10vw, 140px) 0;
+}
+.lp-tease-head {
+  max-width: 760px;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+.lp-tease-head .eyebrow { margin-bottom: 20px; }
+.lp-tease-head h2 {
+  font-size: var(--display-lg);
+  margin-bottom: 16px;
+}
+.lp-tease-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--ink-line);
+  border-left: 1px solid var(--ink-line);
+}
+.lp-tease-card {
+  padding: 44px 40px;
+  border-right: 1px solid var(--ink-line);
+  border-bottom: 1px solid var(--ink-line);
+  background: rgba(251, 248, 243, 0.4);
+  transition: background var(--duration) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lp-tease-card:hover { background: var(--paper-pure); }
+.lp-tease-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 32px;
+  color: var(--plum);
+  line-height: 1;
+}
+.lp-tease-card h3 {
+  font-size: var(--display-sm);
+  line-height: 1.2;
+}
+.lp-tease-card p {
+  color: var(--ink-mute);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── Miért a Kreatívó — 4 oszlopos ── */
+.lp-why {
+  background: var(--paper-tint);
+  padding: clamp(80px, 10vw, 140px) 0;
+}
+.lp-why-head {
+  max-width: 820px;
+  margin-bottom: clamp(48px, 6vw, 80px);
+}
+.lp-why-head .eyebrow { margin-bottom: 20px; }
+.lp-why-head h2 {
+  font-size: var(--display-lg);
+  margin-bottom: 18px;
+}
+.lp-why-head .lede { color: var(--ink-mute); }
+.lp-why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--ink-line);
+  border-left: 1px solid var(--ink-line);
+}
+.lp-why-cell {
+  padding: 36px 32px;
+  border-right: 1px solid var(--ink-line);
+  border-bottom: 1px solid var(--ink-line);
+  background: rgba(255, 255, 255, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.lp-why-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 26px;
+  color: var(--plum);
+  line-height: 1;
+}
+.lp-why-cell h3 {
+  font-size: var(--display-sm);
+  line-height: 1.2;
+}
+.lp-why-cell p {
+  color: var(--ink-mute);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── Folyamat — 5 lépés ── */
+.lp-process {
+  background: var(--paper);
+  padding: clamp(80px, 10vw, 140px) 0;
+}
+.lp-process-head {
+  max-width: 720px;
+  margin-bottom: clamp(40px, 5vw, 64px);
+}
+.lp-process-head .eyebrow { margin-bottom: 20px; }
+.lp-process-head h2 { font-size: var(--display-lg); }
+.lp-process-list {
+  border-top: 1px solid var(--ink-line);
+  max-width: 1000px;
+}
+.lp-process-step {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: clamp(20px, 4vw, 56px);
+  padding: 32px 0;
+  border-bottom: 1px solid var(--ink-line);
+  align-items: baseline;
+}
+.lp-process-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  color: var(--plum);
+  line-height: 1;
+}
+.lp-process-step h3 {
+  font-size: var(--display-sm);
+  margin-bottom: 8px;
+}
+.lp-process-step p {
+  color: var(--ink-mute);
+  line-height: 1.65;
+  max-width: 62ch;
+}
+
+/* ── Előkészítés — sötét történet szekció ── */
+.lp-story {
+  padding: clamp(80px, 10vw, 140px) 0;
+  background: var(--ink);
+  color: rgba(255, 255, 255, 0.85);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.lp-story::before {
+  content: '';
+  position: absolute;
+  inset: -30% -10% auto auto;
+  width: 70vw;
+  max-width: 800px;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(184, 151, 90, 0.18), transparent 60%);
+  filter: blur(20px);
+  z-index: -1;
+}
+.lp-story .eyebrow { color: var(--plum-soft); }
+.lp-story .eyebrow::before { background: var(--plum-soft); }
+.lp-story-quote {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  line-height: 1.2;
+  color: #fff;
+  margin: 28px 0;
+  max-width: 20ch;
+}
+.lp-story-quote em { font-style: italic; color: var(--gold); }
+.lp-story-body {
+  max-width: 56ch;
+  font-size: var(--body-lg);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 18px;
+}
+.lp-story-body strong { color: #fff; }
+.lp-story-actions { margin-top: 28px; }
+
+/* ── Záró CTA ── */
+.lp-final {
+  padding: clamp(80px, 10vw, 140px) 0;
+  background: var(--paper-tint);
+}
+.lp-final-card {
+  background: var(--paper-pure);
+  border: 1px solid var(--ink-line);
+  border-radius: var(--r-lg);
+  padding: clamp(48px, 6vw, 88px);
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+.lp-final-card h2 {
+  font-size: var(--display-md);
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+.lp-final-card p {
+  color: var(--ink-mute);
+  margin-bottom: 28px;
+}
+.lp-final-visual {
+  position: relative;
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  margin-left: auto;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.5), transparent 55%),
+    linear-gradient(135deg, #2E2547 0%, #5B3F8A 55%, #3F2A6B 100%);
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 30px 70px -20px rgba(63, 42, 107, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.lp-final-visual::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.lp-final-visual svg { width: 34%; height: 34%; color: #fff; }
+
+/* ── Reszponzív ── */
+@media (max-width: 980px) {
+  .lp-hero-grid { grid-template-columns: 1fr; gap: 56px; }
+  .lp-points-grid { grid-template-columns: 1fr; gap: 40px; }
+  .lp-audience-grid { grid-template-columns: 1fr; }
+  .lp-tease-grid { grid-template-columns: 1fr; }
+  .lp-why-grid { grid-template-columns: repeat(2, 1fr); }
+  .lp-final-card { grid-template-columns: 1fr; }
+  .lp-final-visual { margin: 0 auto; }
+}
+@media (max-width: 560px) {
+  .lp-why-grid { grid-template-columns: 1fr; }
+  .lp-process-step { grid-template-columns: 1fr; gap: 8px; }
+  .lp-cta { width: 100%; justify-content: center; }
+  .lf-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="/" class="header-logo">
+      <img src="img/logo-header.png" alt="Kreativo Magyarország Kft.">
+    </a>
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menü">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="main-nav">
+      <a href="#kiiras">A kiírás</a>
+      <a href="#kinek">Kinek ajánljuk?</a>
+      <a href="#segitseg">Miben segítünk?</a>
+      <a href="#folyamat">Folyamat</a>
+      <a href="#konzultacio" class="nav-cta-btn">Ingyenes konzultáció</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO — szöveg + lead form -->
+<section class="lp-hero" id="konzultacio">
+  <div class="container">
+    <div class="lp-hero-grid">
+      <div class="lp-hero-text reveal">
+        <div class="eyebrow">Sikerdíjas pályázatírás</div>
+        <h1>Sikerdíjas pályázatírás <em>vállalkozásoknak</em></h1>
+        <p class="lp-hero-lead">Van már pályázat, ami érdekli? Segítünk elnyerni és megvalósítani.</p>
+        <p>A Kreatívó Magyarország Kft. sikerdíjas pályázatírási konstrukcióban segít abban, hogy a kiválasztott pályázatból valódi, megvalósítható támogatási projekt legyen.</p>
+        <div class="lp-hero-note">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span>Kérjen ingyenes konzultációt, és nézzük meg, milyen eséllyel indulhat a pályázaton.</span>
+        </div>
+      </div>
+      <div class="lp-hero-form reveal delay-1">
+        <div class="lp-form-card" id="leadFormCard">
+          <div class="lf-progress" id="lfProgress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="18" aria-label="Kitöltés haladása">
+            <div class="lf-progress-bar" id="lfProgressBar"></div>
+          </div>
+          <div class="lf-head" aria-live="polite">
+            <p class="lf-step-count" id="lfStepCount">1 / 5. lépés</p>
+          </div>
+          <h2 class="form-title">Kérjen ingyenes <em>konzultációt</em></h2>
+          <p class="form-subtitle">Pár adat, és felmérjük, milyen eséllyel indulhat a kiválasztott pályázaton — díjmentesen.</p>
+          <div class="form-error" id="formError" role="alert"></div>
+          <form id="leadForm" novalidate>
+            <div class="lf-field lf-field-enter" id="lfField">
+              <p class="lf-label" id="lfHeading"></p>
+              <div class="lf-fields" id="lfFields"></div>
+            </div>
+            <div class="lf-actions">
+              <button type="button" class="lf-back" id="lfBack">Vissza</button>
+              <button type="submit" class="form-submit-btn" id="lfNext">
+                <span class="btn-text">Tovább</span>
+                <span class="btn-spinner"></span>
+              </button>
+            </div>
+          </form>
+          <p class="lf-foot">A küldéssel elfogadja, hogy felvegyük Önnel a kapcsolatot. Adatait soha nem adjuk ki harmadik félnek.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- A PÁLYÁZATI KIÍRÁS -->
+<section class="lp-points" id="kiiras">
+  <div class="container">
+    <div class="lp-points-grid">
+      <div class="lp-points-head reveal">
+        <div class="eyebrow ink">A pályázati kiírás</div>
+        <h2>Ne egyedül próbálja megfejteni a pályázati <em>kiírást</em>.</h2>
+        <p class="lede">Egy pályázat elsőre vonzónak tűnhet, de a sikeres beadáshoz nem elég az, hogy a cég megfelel az alapfeltételeknek.</p>
+      </div>
+      <div class="reveal delay-1">
+        <p class="lp-check-label">Fontos látni</p>
+        <div class="lp-check-list">
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>milyen költségek számolhatók el,</p>
+          </div>
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>milyen dokumentumokra lesz szükség,</p>
+          </div>
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>milyen vállalásokat kell teljesíteni,</p>
+          </div>
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>milyen buktatók lehetnek a beadásnál,</p>
+          </div>
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>és hogyan lehet a projektet úgy felépíteni, hogy az ne csak elnyerhető, hanem meg is valósítható legyen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lp-points-note reveal">
+      <strong>Mi ebben segítünk:</strong> átnézzük a pályázati lehetőséget, felmérjük a cége jogosultságát, elkészítjük a szükséges szakmai és adminisztratív anyagokat, majd végigkísérjük a projektet a megvalósítás során is.
+    </div>
+  </div>
+</section>
+
+<!-- KINEK AJÁNLJUK + MIT JELENT -->
+<section class="lp-audience" id="kinek">
+  <div class="container">
+    <div class="lp-audience-grid">
+      <div class="lp-audience-head reveal">
+        <div class="eyebrow ink">Kinek ajánljuk?</div>
+        <h2>Kinek ajánljuk ezt a <em>szolgáltatást</em>?</h2>
+        <p class="lp-check-label">Ez a szolgáltatás Önnek szól, ha</p>
+        <div class="lp-check-list">
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>már kinézett egy konkrét pályázatot,</p>
+          </div>
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>szeretné tudni, hogy cége valóban indulhat-e rajta,</p>
+          </div>
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>nem szeretné egyedül értelmezni a kiírás feltételeit,</p>
+          </div>
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>fontos, hogy a beadott anyag szakmailag és formailag is rendben legyen,</p>
+          </div>
+          <div class="lp-check">
+            <span class="lp-check-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>olyan partnert keres, aki nemcsak a pályázatírásban, hanem a megvalósításban is segít.</p>
+          </div>
+        </div>
+      </div>
+      <div class="lp-audience-card reveal delay-1">
+        <h3>Mit jelent nálunk a sikerdíjas pályázatírás?</h3>
+        <p>A sikerdíjas konstrukció lényege, hogy mi is érdekeltek vagyunk az Ön sikerében.</p>
+        <p>Nemcsak dokumentumot készítünk, hanem olyan pályázati anyagon dolgozunk, amelynek célja a támogatás elnyerése és a projekt biztonságos megvalósítása.</p>
+        <p>A pontos feltételeket minden esetben a pályázat típusa, a projekt összetettsége és az előkészítés állapota alapján egyeztetjük.</p>
+        <a href="#konzultacio" class="lp-cta">
+          Megnézetem a pályázatomat szakértővel
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MIBEN SEGÍTÜNK PONTOSAN -->
+<section class="lp-tease" id="segitseg">
+  <div class="container">
+    <div class="lp-tease-head reveal">
+      <div class="eyebrow ink">A szolgáltatás</div>
+      <h2>Miben segítünk <em>pontosan</em>?</h2>
+      <p class="lede">A pályázati jogosultság vizsgálatától a megvalósításig — végigkísérjük a teljes folyamatot.</p>
+    </div>
+    <div class="lp-tease-grid">
+      <div class="lp-tease-card reveal">
+        <span class="lp-tease-num">01</span>
+        <h3>Pályázati jogosultság vizsgálata</h3>
+        <p>Megnézzük, hogy a cég és a tervezett projekt megfelel-e a kiírás alapfeltételeinek.</p>
+      </div>
+      <div class="lp-tease-card reveal delay-1">
+        <span class="lp-tease-num">02</span>
+        <h3>Projektterv kialakítása</h3>
+        <p>Segítünk a pályázati célokat, költségeket és vállalásokat úgy összeállítani, hogy azok reálisak és teljesíthetők legyenek.</p>
+      </div>
+      <div class="lp-tease-card reveal">
+        <span class="lp-tease-num">03</span>
+        <h3>Pályázati dokumentáció elkészítése</h3>
+        <p>Elkészítjük a szükséges szakmai anyagokat, mellékleteket és adminisztratív dokumentumokat.</p>
+      </div>
+      <div class="lp-tease-card reveal delay-1">
+        <span class="lp-tease-num">04</span>
+        <h3>Beadás támogatása</h3>
+        <p>Végigkísérjük a beadási folyamatot, figyelve a határidőkre, formai elvárásokra és kötelező elemekre.</p>
+      </div>
+      <div class="lp-tease-card reveal delay-2" style="grid-column: 1 / -1;">
+        <span class="lp-tease-num">05</span>
+        <h3>Megvalósítás és projektmenedzsment</h3>
+        <p>A támogatás elnyerése után sem hagyjuk magára: segítünk a projekt szabályos megvalósításában és a szükséges elszámolási, fenntartási feladatokban.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MIÉRT A KREATÍVÓ -->
+<section class="lp-why" id="miert">
+  <div class="container">
+    <div class="lp-why-head reveal">
+      <div class="eyebrow ink">Miért a Kreatívó?</div>
+      <h2>Miért érdemes a <em>Kreatívóval</em> dolgozni?</h2>
+      <p class="lede">A pályázatírás nálunk nem egy egyszeri adminisztrációs feladat. A célunk az, hogy Ön ne csak beadjon egy pályázatot, hanem olyan támogatási projektet valósítson meg, amely üzletileg is értelmezhető, szabályosan kivitelezhető és hosszú távon is vállalható.</p>
+    </div>
+    <div class="lp-why-grid reveal">
+      <div class="lp-why-cell">
+        <span class="lp-why-num">01</span>
+        <h3>Több mint 10 év tapasztalat</h3>
+        <p>2015 óta segítjük a magyar vállalkozásokat pályázati forrásokhoz jutni.</p>
+      </div>
+      <div class="lp-why-cell">
+        <span class="lp-why-num">02</span>
+        <h3>Sikerdíjas szemlélet</h3>
+        <p>Mi is abban vagyunk érdekeltek, hogy a pályázat sikeres legyen.</p>
+      </div>
+      <div class="lp-why-cell">
+        <span class="lp-why-num">03</span>
+        <h3>Teljes körű támogatás</h3>
+        <p>A pályázatírástól a megvalósításon át a fenntartási időszakig számíthat ránk.</p>
+      </div>
+      <div class="lp-why-cell">
+        <span class="lp-why-num">04</span>
+        <h3>Gyakorlati projektgondolkodás</h3>
+        <p>Nemcsak azt nézzük, hogyan lehet beadni a pályázatot, hanem azt is, hogyan lehet biztonságosan megvalósítani.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOGYAN INDUL A KÖZÖS MUNKA -->
+<section class="lp-process" id="folyamat">
+  <div class="container">
+    <div class="lp-process-head reveal">
+      <div class="eyebrow ink">A folyamat</div>
+      <h2>Hogyan indul a közös <em>munka</em>?</h2>
+    </div>
+    <div class="lp-process-list reveal">
+      <div class="lp-process-step">
+        <span class="lp-process-num">01</span>
+        <div>
+          <h3>Ingyenes konzultáció</h3>
+          <p>Röviden átbeszéljük, milyen pályázat érdekli, milyen fejlesztést tervez, és hol tart most a folyamatban.</p>
+        </div>
+      </div>
+      <div class="lp-process-step">
+        <span class="lp-process-num">02</span>
+        <div>
+          <h3>Előzetes jogosultsági vizsgálat</h3>
+          <p>Megnézzük, hogy a cég és a projekt megfelelhet-e a pályázat főbb feltételeinek.</p>
+        </div>
+      </div>
+      <div class="lp-process-step">
+        <span class="lp-process-num">03</span>
+        <div>
+          <h3>Javaslat a következő lépésekre</h3>
+          <p>Elmondjuk, milyen dokumentumokra, döntésekre és előkészítésre lesz szükség.</p>
+        </div>
+      </div>
+      <div class="lp-process-step">
+        <span class="lp-process-num">04</span>
+        <div>
+          <h3>Pályázatírás és beadás</h3>
+          <p>Ha közösen úgy látjuk, hogy érdemes elindulni, elkészítjük és beadjuk a pályázati anyagot.</p>
+        </div>
+      </div>
+      <div class="lp-process-step">
+        <span class="lp-process-num">05</span>
+        <div>
+          <h3>Megvalósítás támogatása</h3>
+          <p>Nyertes pályázat esetén segítünk a projekt szabályos lebonyolításában is.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ELŐKÉSZÍTÉS — sötét szekció -->
+<section class="lp-story" id="elokeszites">
+  <div class="container">
+    <div class="split split--57">
+      <div class="reveal">
+        <div class="eyebrow">Előkészítés</div>
+        <p class="lp-story-quote">Ne a beadás előtt derüljön ki, hogy valami <em>hiányzik</em>.</p>
+      </div>
+      <div class="reveal delay-1">
+        <p class="lp-story-body">A pályázatoknál sokszor nem a jó projektötlet hiányzik, hanem a <strong>pontos előkészítés</strong>.</p>
+        <p class="lp-story-body">Egy rosszul értelmezett feltétel, hiányzó melléklet vagy nem megfelelően megtervezett költségvetés könnyen veszélyeztetheti a támogatás elnyerését.</p>
+        <p class="lp-story-body">Kérjen szakértői segítséget még időben.</p>
+        <div class="lp-story-actions">
+          <a href="#konzultacio" class="lp-cta">
+            Kérek egy előzetes pályázati egyeztetést
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZÁRÓ CTA -->
+<section class="lp-final">
+  <div class="container">
+    <div class="lp-final-card reveal">
+      <div>
+        <div class="eyebrow ink" style="margin-bottom:18px;">Még itt van?</div>
+        <h2>Van pályázat, amire <em>indulna</em>?</h2>
+        <p>Ne hagyja, hogy a bizonytalan feltételek, dokumentációs elvárások vagy megvalósítási kérdések megállítsák. Segítünk felmérni a lehetőséget, elkészíteni a pályázatot, és siker esetén végigvinni a projektet.</p>
+        <a href="#konzultacio" class="lp-cta">
+          Beszéljünk a pályázatomról
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="lp-final-visual" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <polyline points="9 15 11 17 15 12"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-cta">
+      <div class="footer-cta-text">
+        <h3>Kérjen ingyenes <em>konzultációt</em></h3>
+        <p>Vegye fel velünk a kapcsolatot, és közösen megtervezzük az Ön cégére szabott pályázati stratégiát.</p>
+      </div>
+      <a href="/kapcsolat" class="footer-cta-btn">
+        Kapcsolatfelvétel
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="img/favicon.png" alt="Kreativo Magyarország Kft.">
+        <p>2015 óta segítjük a magyar vállalkozásokat pályázati forrásokhoz jutni. Sikerdíjas modellünkkel mi is érdekeltek vagyunk az Ön sikerében.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/kreativomagyarorszagkft" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Szolgáltatások</h4>
+        <ul>
+          <li><a href="/szolgaltatasaink-palyazatfigyeles">Pályázatfigyelés</a></li>
+          <li><a href="/szolgaltatasaink-palyazati-tanacsadas">Pályázatírás, tanácsadás</a></li>
+          <li><a href="/szolgaltatasaink-projektmenedzsment">Projektmenedzsment</a></li>
+          <li><a href="/szolgaltatasaink-kozbeszerzesi-tanacsadas">Közbeszerzési tanácsadás</a></li>
+          <li><a href="/szolgaltatasaink-uzletviteli-tanacsadas">Üzletviteli tanácsadás</a></li>
+          <li><a href="/szolgaltatasaink-biztositeknyujtas">Biztosítéknyújtás</a></li>
+          <li><a href="/szolgaltatasaink-hitelkozvetites">Hitelközvetítés</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Cégünk</h4>
+        <ul>
+          <li><a href="/referenciaink">Referenciáink</a></li>
+          <li><a href="/palyazatfigyeles">Pályázatfigyelés</a></li>
+          <li><a href="/kapcsolat">Kapcsolat</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Elérhetőségek</h4>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>1142 Budapest,<br>Szőnyi út 50/a.</span>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:info@kreativo.hu">info@kreativo.hu</a>
+        </div>
+        <div class="footer-contact-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          <a href="tel:+36205295153">+36 20 529 5153</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 Kreativo Magyarország Kft. Minden jog fenntartva.</span>
+      <div class="footer-bottom-links">
+        <a href="/kapcsolat">Kapcsolat</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Multi-step lead form — lépésenként 1-2 mező, partial save a cégnév lépcső után -->
+<script>
+(function() {
+  var form = document.getElementById("leadForm");
+  if (!form) return;
+
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var FORRAS = "sikerdijas-palyazatiras";
+  var LEAD_TYPE = "sikerdijas-palyazatiras";
+  var CONTENT_NAME = "Sikerdíjas pályázatírás";
+  var REDIRECT = "/koszonjuk-a-kapcsolatfelvetelt";
+
+  function vName(msg) {
+    return function(v) { return v.trim().length >= 2 ? null : msg; };
+  }
+
+  // A cégnév lépcső után (partialAfter) fut a partial save: ekkor már megvan
+  // a név + e-mail + telefon + cégnév. Az adószám és a megjegyzés az, ami
+  // még lemorzsolódhat — azt is elmenti a partial.
+  var STEPS = [
+    {
+      heading: "Kezdjük — hogy hívják?",
+      fields: [
+        { key: "vezeteknev", label: "Vezetéknév", type: "text", autoComplete: "family-name",
+          inputMode: "text", placeholder: "Kovács", validate: vName("Kérjük adja meg a vezetéknevét.") },
+        { key: "keresztnev", label: "Keresztnév", type: "text", autoComplete: "given-name",
+          inputMode: "text", placeholder: "János", validate: vName("Kérjük adja meg a keresztnevét.") }
+      ]
+    },
+    {
+      heading: "Hogyan érjük el?",
+      fields: [
+        { key: "email", label: "E-mail", type: "email", autoComplete: "email",
+          inputMode: "email", placeholder: "kovacs@ceg.hu",
+          validate: function(v) { return EMAIL.test(v.trim()) ? null : "Kérjük adjon meg egy érvényes e-mail címet."; } },
+        { key: "telefonszam", label: "Telefonszám", type: "tel", autoComplete: "tel",
+          inputMode: "tel", placeholder: "+36 30 123 4567",
+          validate: function(v) {
+            var d = v.replace(/\D/g, "");
+            return (d.length >= 7 && d.length <= 15) ? null : "Kérjük adjon meg egy érvényes telefonszámot.";
+          } }
+      ]
+    },
+    {
+      heading: "Melyik cég nevében érdeklődik?",
+      partialAfter: true,
+      fields: [
+        { key: "cegnev", label: "Cégnév", type: "text", autoComplete: "organization",
+          inputMode: "text", placeholder: "Példa Kft.", validate: vName("Kérjük adja meg a cég nevét.") }
+      ]
+    },
+    {
+      heading: "A cég adószáma",
+      fields: [
+        { key: "adoszam", label: "Adószám", type: "text", autoComplete: "off",
+          inputMode: "numeric", placeholder: "12345678-1-23",
+          validate: function(v) {
+            var d = v.replace(/\D/g, "");
+            return d.length === 11 ? null : "Az adószám 11 számjegyből áll.";
+          } }
+      ]
+    },
+    {
+      heading: "Melyik pályázat érdekli?",
+      fields: [
+        { key: "megjegyzes", label: "Pályázat / megjegyzés (nem kötelező)", type: "textarea", autoComplete: "off",
+          inputMode: "text", placeholder: "Pl. melyik pályázat érdekli, milyen fejlesztést tervez…",
+          validate: null }
+      ]
+    }
+  ];
+  var NUM_STEPS = STEPS.length;
+
+  var state = {};
+  STEPS.forEach(function(s) {
+    s.fields.forEach(function(f) { state[f.key] = ""; });
+  });
+  var stepIndex = 0;
+  var submitting = false;
+  var partialSent = false;
+  // A teljes submit event_id-je a form betöltésekor egyszer generálódik —
+  // ugyanez megy a CAPI-ba és a kliens Pixelbe → Meta deduplikáció.
+  var eventId = window.kreativoCAPI.uuid();
+
+  var progressEl = document.getElementById("lfProgress");
+  var progressBar = document.getElementById("lfProgressBar");
+  var stepCount = document.getElementById("lfStepCount");
+  var field = document.getElementById("lfField");
+  var heading = document.getElementById("lfHeading");
+  var fieldsEl = document.getElementById("lfFields");
+  var backBtn = document.getElementById("lfBack");
+  var nextBtn = document.getElementById("lfNext");
+  var nextText = nextBtn.querySelector(".btn-text");
+  var errorDiv = document.getElementById("formError");
+
+  function showError(msg) {
+    errorDiv.textContent = msg;
+    errorDiv.classList.add("visible");
+  }
+  function clearError() {
+    errorDiv.textContent = "";
+    errorDiv.classList.remove("visible");
+  }
+  function setLoading(on) {
+    nextBtn.disabled = on;
+    backBtn.disabled = on;
+    nextBtn.classList.toggle("loading", on);
+  }
+  function fieldEl(key) {
+    return document.getElementById("lf-" + key);
+  }
+
+  // A mező-markup statikus konfigból épül (label, placeholder, kulcs) — nincs
+  // benne felhasználói adat, ezért az innerHTML biztonságos. Az értékeket
+  // utólag .value-n keresztül állítjuk.
+  function buildFieldHtml(f) {
+    var id = "lf-" + f.key;
+    var control;
+    if (f.type === "textarea") {
+      control = '<textarea class="lf-textarea" id="' + id + '" name="' + f.key + '" rows="4" ' +
+        'placeholder="' + f.placeholder + '"></textarea>';
+    } else {
+      control = '<input class="lf-input" id="' + id + '" name="' + f.key + '" type="' + f.type + '" ' +
+        'inputmode="' + f.inputMode + '" autocomplete="' + f.autoComplete + '" ' +
+        'placeholder="' + f.placeholder + '">';
+    }
+    return '<div class="lf-group">' +
+      '<label class="lf-sublabel" for="' + id + '">' + f.label + '</label>' +
+      control + '</div>';
+  }
+
+  function render(focus) {
+    var step = STEPS[stepIndex];
+    var progress = 0.18 + 0.82 * (stepIndex / NUM_STEPS);
+    progressBar.style.width = (progress * 100) + "%";
+    progressEl.setAttribute("aria-valuenow", Math.round(progress * 100));
+    stepCount.textContent = (stepIndex + 1) + " / " + NUM_STEPS + ". lépés";
+    heading.textContent = step.heading;
+
+    var groups = step.fields.map(buildFieldHtml).join("");
+    fieldsEl.innerHTML = step.fields.length === 2 ? '<div class="lf-row">' + groups + '</div>' : groups;
+
+    step.fields.forEach(function(f) {
+      var el = fieldEl(f.key);
+      el.value = state[f.key] || "";
+      el.addEventListener("input", function() {
+        state[f.key] = el.value;
+        el.removeAttribute("aria-invalid");
+        clearError();
+      });
+    });
+
+    backBtn.style.visibility = stepIndex === 0 ? "hidden" : "visible";
+    nextText.textContent = stepIndex === NUM_STEPS - 1 ? "Kérek ingyenes konzultációt" : "Tovább";
+
+    field.classList.remove("lf-field-enter");
+    void field.offsetWidth;
+    field.classList.add("lf-field-enter");
+    // Az első renderkor nem fókuszálunk — ne ugorjon fel azonnal a mobil billentyűzet.
+    if (focus) {
+      var first = fieldEl(step.fields[0].key);
+      if (first) first.focus();
+    }
+  }
+
+  function collectStep() {
+    STEPS[stepIndex].fields.forEach(function(f) {
+      var el = fieldEl(f.key);
+      if (el) state[f.key] = el.value;
+    });
+  }
+
+  function validateStep() {
+    var firstError = null;
+    STEPS[stepIndex].fields.forEach(function(f) {
+      var el = fieldEl(f.key);
+      var err = f.validate ? f.validate(state[f.key] || "") : null;
+      if (err) {
+        el.setAttribute("aria-invalid", "true");
+        if (!firstError) firstError = { msg: err, key: f.key };
+      } else {
+        el.removeAttribute("aria-invalid");
+      }
+    });
+    return firstError;
+  }
+
+  function buildBody(isPartial) {
+    return {
+      vezeteknev: state.vezeteknev.trim(),
+      keresztnev: state.keresztnev.trim(),
+      cegnev: state.cegnev.trim(),
+      email: state.email.trim(),
+      telefonszam: state.telefonszam.trim(),
+      adoszam: state.adoszam.trim(),
+      megjegyzes: state.megjegyzes.trim(),
+      partial: isPartial,
+      forras: isPartial ? FORRAS + "-partial" : FORRAS,
+      lead_type: LEAD_TYPE,
+      content_name: CONTENT_NAME,
+      event_id: isPartial ? window.kreativoCAPI.uuid() : eventId,
+      event_source_url: window.location.href,
+      beerkezett: new Date().toISOString(),
+      attribution: window.kreativoAttribution ? window.kreativoAttribution.payload() : {}
+    };
+  }
+
+  // Partial save — a cégnév lépcső sikeres validációja után, fire-and-forget.
+  // Munkamenetenként egyszer fut le; hiba esetén a flag visszaáll, hogy újrapróbálható legyen.
+  function sendPartial() {
+    if (partialSent) return;
+    partialSent = true;
+    fetch("/api/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(buildBody(true)),
+      keepalive: true
+    }).then(function(r) {
+      if (!r.ok) partialSent = false;
+    }).catch(function() {
+      partialSent = false;
+    });
+  }
+
+  function submit() {
+    if (submitting) return;
+    submitting = true;
+    setLoading(true);
+    clearError();
+
+    fetch("/api/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(buildBody(false))
+    }).then(function(resp) {
+      if (resp.ok) return resp;
+      return resp.json().catch(function() { return {}; }).then(function(data) {
+        throw new Error(data.error || "Most nem sikerült beküldeni. Kérjük próbálja újra.");
+      });
+    }).then(function() {
+      // Pixel Lead — ugyanaz az event_id, mint a CAPI-ban → Meta deduplikálja.
+      if (typeof fbq !== "undefined") {
+        fbq("track", "Lead",
+          { content_name: CONTENT_NAME, content_category: FORRAS },
+          { eventID: eventId }
+        );
+      }
+      window.location.href = REDIRECT;
+    }).catch(function(err) {
+      // Az eventId megmarad — retrynél ugyanaz megy, így nem lesz duplikált konverzió.
+      showError(err.message || "Hálózati hiba történt. Próbálja újra.");
+      submitting = false;
+      setLoading(false);
+    });
+  }
+
+  function onNext() {
+    if (submitting) return;
+    collectStep();
+    var err = validateStep();
+    if (err) {
+      showError(err.msg);
+      var el = fieldEl(err.key);
+      if (el) el.focus();
+      return;
+    }
+    clearError();
+
+    if (STEPS[stepIndex].partialAfter) sendPartial();
+
+    if (stepIndex < NUM_STEPS - 1) {
+      stepIndex++;
+      render(true);
+    } else {
+      submit();
+    }
+  }
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    onNext();
+  });
+  backBtn.addEventListener("click", function() {
+    if (submitting || stepIndex === 0) return;
+    collectStep();
+    stepIndex--;
+    clearError();
+    render(true);
+  });
+
+  render(false);
+})();
+</script>
+
+<script>
+document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+  document.getElementById('main-nav').classList.toggle('open');
+});
+window.addEventListener('scroll', function() {
+  document.getElementById('site-header').classList.toggle('scrolled', window.scrollY > 10);
+});
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+}
+</script>
+</body>
+</html>

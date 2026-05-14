@@ -151,8 +151,8 @@ function buildLeadEmail(body, { ip, beerkezett }) {
 }
 
 // E-mail értesítés a teljes leadekről — non-blocking, silent fail (mint a CAPI).
-// Részleges (partial) leadről innen NEM megy e-mail: azt késleltetve az n8n
-// workflow küldi ki, ha a teljes kitöltés végül elmarad (lásd lentebb).
+// Részleges (partial) leadről soha nem megy e-mail; az csak az n8n-hez és a
+// CAPI-hoz jut el.
 // Címzettek: LEAD_EMAIL_TO env; ha üres, prodban info@kreativo.hu + zalan@…,
 // egyébként csak zalan@traininghungary.com (teszt).
 async function sendLeadEmail({ body, ip, beerkezett }) {
@@ -312,10 +312,8 @@ export default async function handler(req, res) {
   });
 
   // ── E-mail értesítés — CSAK teljes submitnél, non-blocking, silent fail ──
-  // Részleges leadről szándékosan nem megy azonnal e-mail: a "küldd csak akkor,
-  // ha a teljes kitöltés elmarad" logika késleltetést igényel, amit a stateless
-  // serverless function nem tud — ez az n8n workflow felelőssége (a partial
-  // lead `partial: true` jelzéssel odaér).
+  // Részleges leadről szándékosan nem megy e-mail; az csak az n8n-hez és a
+  // CAPI-hoz jut el.
   const emailPromise = partial
     ? Promise.resolve({ ok: false, skipped: "partial" })
     : sendLeadEmail({ body, ip, beerkezett }).catch((err) => {

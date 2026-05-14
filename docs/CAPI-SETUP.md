@@ -105,18 +105,7 @@ A multi-step form (`palyazati-kisokos.html`) ide POST-ol — teljes (`partial: f
 2. Szerveroldali enrichment: kliens IP (`X-Forwarded-For`), User-Agent, `_fbp` / `_fbc` cookie-k.
 3. **n8n webhook** (`N8N_EBOOK_WEBHOOK_URL`) — blocking hívás, ez a source of truth. Non-2xx vagy timeout → 502. Ha az env változó nincs beállítva → 503 (dev környezetben devMode válasz).
 4. **Meta CAPI** — non-blocking, silent fail. Teljes submitnél `Lead`, részlegesnél `LeadPartial` event. SHA-256 hash-elt PII, `_fbc` rekonstrukció `fbclid`-ből, ha a cookie hiányzik.
-5. **E-mail értesítés** (nodemailer, `SMTP_*`) — non-blocking, silent fail. **Csak a teljes (`partial: false`) submitről** megy értesítő e-mail; a tárgy egyértelműen jelzi, hogy „Ebook letöltő” leadről van szó. Részleges leadről innen szándékosan **nem** megy e-mail — lásd lentebb.
-
-### Részleges lead e-mail — n8n felelőssége
-
-A „részleges kitöltésről csak akkor küldjünk e-mailt, ha a teljes kitöltés elmarad” logika **késleltetést** igényel (várni kell, hátha megjön a teljes submit). Ezt a stateless serverless function nem tudja megoldani — ezért az `/api/lead` a részleges leadet `partial: true` jelzéssel elküldi az n8n-nek, és **az n8n workflow** dönt:
-
-1. Megérkezik a `partial: true` lead → indul egy várakozó ág (pl. 15–30 perc Wait node).
-2. A várakozás letelte után az n8n megnézi, érkezett-e ugyanattól az e-mail címtől `partial: false` lead.
-3. Ha **igen** → nem küld semmit (a teljes leadről az `/api/lead` már küldött e-mailt).
-4. Ha **nem** → az n8n kiküldi a részleges lead értesítőt.
-
-Így a sales csak akkor kap részleges-lead e-mailt, ha a kitöltő tényleg lemorzsolódott.
+5. **E-mail értesítés** (nodemailer, `SMTP_*`) — non-blocking, silent fail. **Csak a teljes (`partial: false`) submitről** megy értesítő e-mail; a tárgy egyértelműen jelzi, hogy „Ebook letöltő” leadről van szó. Részleges (`partial: true`) leadről **soha nem** megy e-mail — az kizárólag az n8n-hez és a Meta CAPI-hoz (`LeadPartial`) jut el.
 
 A teljes `Lead` event_id a form betöltésekor generálódik, és ugyanaz megy a CAPI-ba **és** a kliens oldali Pixelbe (sikeres submit után) → Meta deduplikáció. A `LeadPartial` külön event_id-t kap, így nem dedupolódik a `Lead`-del.
 

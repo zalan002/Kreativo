@@ -238,8 +238,8 @@ export default async function handler(req, res) {
   const isDirektLead = leadType === "sikerdijas-palyazatiras";
 
   // Validáció — a partial save a cégnév lépcső után fut, így a név/e-mail/
-  // telefon/cégnév mindig kötelező; az adószám csak a teljes submitnél;
-  // a megjegyzés végig opcionális.
+  // telefon/cégnév mindig kötelező; az adószám opcionális, de ha megadták,
+  // a formátumot ellenőrizzük; a megjegyzés végig opcionális.
   if (
     !isString(body.vezeteknev) ||
     !isString(body.keresztnev) ||
@@ -255,13 +255,8 @@ export default async function handler(req, res) {
   if (!isValidPhone(body.telefonszam)) {
     return res.status(422).json({ error: "Érvénytelen telefonszám." });
   }
-  if (!partial) {
-    if (!isString(body.adoszam)) {
-      return res.status(422).json({ error: "Hiányzó kötelező mező." });
-    }
-    if (!isValidTaxNumber(body.adoszam)) {
-      return res.status(422).json({ error: "Érvénytelen adószám." });
-    }
+  if (isString(body.adoszam) && !isValidTaxNumber(body.adoszam)) {
+    return res.status(422).json({ error: "Érvénytelen adószám." });
   }
 
   // Szerveroldali enrichment.

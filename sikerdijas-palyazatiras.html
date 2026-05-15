@@ -1294,9 +1294,9 @@ window.kreativoAttribution = (function() {
   }
 
   // A cégadatok lépcső után (partialAfter) fut a partial save: ekkor már megvan
-  // a név + e-mail + telefon + cégnév + adószám. A pályázati konstrukció, a
-  // megvalósítási helyszín és a megjegyzés az, ami még lemorzsolódhat — azokat
-  // is elmenti a partial.
+  // a név + e-mail + telefon + cégnév (az adószám opcionális). A pályázati
+  // konstrukció, a megvalósítási helyszín és a megjegyzés az, ami még
+  // lemorzsolódhat — azokat is elmenti a partial.
   var STEPS = [
     {
       heading: "Kezdjük — hogy hívják?",
@@ -1327,10 +1327,12 @@ window.kreativoAttribution = (function() {
       fields: [
         { key: "cegnev", label: "Cégnév", type: "text", autoComplete: "organization",
           inputMode: "text", placeholder: "Példa Kft.", validate: vName("Kérjük adja meg a cég nevét.") },
-        { key: "adoszam", label: "Adószám", type: "text", autoComplete: "off",
+        { key: "adoszam", label: "Adószám (nem kötelező)", type: "text", autoComplete: "off",
           inputMode: "numeric", placeholder: "12345678-1-23",
           validate: function(v) {
-            var d = v.replace(/\D/g, "");
+            var t = v.trim();
+            if (t === "") return null;
+            var d = t.replace(/\D/g, "");
             return d.length === 11 ? null : "Az adószám 11 számjegyből áll.";
           } }
       ]
@@ -1338,9 +1340,9 @@ window.kreativoAttribution = (function() {
     {
       heading: "Mire pályázna?",
       fields: [
-        { key: "palyazati_konstrukcio", label: "Pályázati konstrukció", type: "text", autoComplete: "off",
+        { key: "palyazati_konstrukcio", label: "Pályázati konstrukció (nem kötelező)", type: "text", autoComplete: "off",
           inputMode: "text", placeholder: "Pl. GINOP_PLUSZ-1.2.3-24",
-          validate: vName("Kérjük adja meg a pályázati konstrukciót.") },
+          validate: null },
         { key: "megvalositasi_helyszin", label: "Megvalósítási helyszín", type: "text", autoComplete: "off",
           inputMode: "text", placeholder: "Pl. Budapest",
           validate: vName("Kérjük adja meg a megvalósítási helyszínt.") }

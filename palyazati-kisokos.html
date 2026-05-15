@@ -1011,12 +1011,14 @@ window.kreativoAttribution = (function() {
       ]
     },
     {
-      heading: "A cég adószáma",
+      heading: "A cég adószáma (nem kötelező)",
       fields: [
-        { key: "adoszam", label: "Adószám", type: "text", autoComplete: "off",
+        { key: "adoszam", label: "Adószám (nem kötelező)", type: "text", autoComplete: "off",
           inputMode: "numeric", placeholder: "12345678-1-23",
           validate: function(v) {
-            var d = v.replace(/\D/g, "");
+            var t = v.trim();
+            if (t === "") return null;
+            var d = t.replace(/\D/g, "");
             return d.length === 11 ? null : "Az adószám 11 számjegyből áll.";
           } }
       ]

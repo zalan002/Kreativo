@@ -1461,12 +1461,12 @@ body { padding-top: 76px; }
   list-style: none;
   font-size: 12px;
   letter-spacing: 0.02em;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.5);
   transition: color var(--duration-fast) var(--ease-out);
 }
 .footer-notice > summary::-webkit-details-marker { display: none; }
 .footer-notice > summary:hover,
-.footer-notice[open] > summary { color: rgba(255,255,255,0.6); }
+.footer-notice[open] > summary { color: rgba(255,255,255,0.78); }
 .footer-notice > summary:focus-visible {
   outline: 1px solid rgba(255,255,255,0.35);
   outline-offset: 5px;
@@ -1486,7 +1486,7 @@ body { padding-top: 76px; }
   border-left: 1px solid rgba(255,255,255,0.1);
   font-size: 13px;
   line-height: 1.7;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.72);
   animation: fade-up 0.4s var(--ease-out);
 }
 .footer-notice-body p + p { margin-top: 10px; }

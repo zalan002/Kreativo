@@ -1448,6 +1448,49 @@ body { padding-top: 76px; }
 .footer-contact-item a { color: rgba(255,255,255,0.6); }
 .footer-contact-item a:hover { color: #fff; }
 
+/* Partneri tájékoztató — szándékosan visszafogott, összecsukható */
+.footer-notice {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 18px 0 22px;
+}
+.footer-notice > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.3);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.footer-notice > summary::-webkit-details-marker { display: none; }
+.footer-notice > summary:hover,
+.footer-notice[open] > summary { color: rgba(255,255,255,0.6); }
+.footer-notice > summary:focus-visible {
+  outline: 1px solid rgba(255,255,255,0.35);
+  outline-offset: 5px;
+  border-radius: 2px;
+}
+.footer-notice > summary svg { flex-shrink: 0; }
+.footer-notice-caret {
+  width: 9px;
+  height: 6px;
+  transition: transform var(--duration) var(--ease-out);
+}
+.footer-notice[open] .footer-notice-caret { transform: rotate(180deg); }
+.footer-notice-body {
+  max-width: 62ch;
+  margin: 14px 0 0 6px;
+  padding-left: 15px;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.5);
+  animation: fade-up 0.4s var(--ease-out);
+}
+.footer-notice-body p + p { margin-top: 10px; }
+
 .footer-divider {
   height: 1px;
   background: rgba(255,255,255,0.08);

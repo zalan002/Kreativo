@@ -66,6 +66,9 @@ export default async function handler(req, res) {
   if (ip) userData.client_ip_address = ip;
 
   if (eventName === "Lead") {
+    if (typeof body.fbc === "string" && /^fb\.1\.\d{13}\.[A-Za-z0-9_-]{1,1000}$/.test(body.fbc)) {
+      userData.fbc = body.fbc;
+    }
     if (body.email) userData.em = [sha256(body.email)];
     if (body.phone) userData.ph = [hashPhone(body.phone)];
   }

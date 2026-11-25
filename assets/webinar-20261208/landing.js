@@ -15,6 +15,7 @@
   for (const name of ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","utm_id","fbclid","gclid","msclkid","ttclid","li_fat_id"]) {
     if (query.get(name)) campaign.set(name, query.get(name));
   }
+  const landingTime = Date.now();
   const landingUrl = new URL(location.pathname, location.origin);
   landingUrl.search = campaign.toString();
   const directLink = new URL(fallback.querySelector("a").href);
@@ -32,6 +33,26 @@
   });
   let session;
   let busy = false;
+
+  async function reportMetaLead() {
+    const event = {
+      event_name: "Lead",
+      event_id: crypto.randomUUID(),
+      event_source_url: location.origin + location.pathname,
+      custom_data: { content_name: "Kreativo webinár" }
+    };
+    const clickId = campaign.get("fbclid");
+    if (clickId && /^[A-Za-z0-9_-]{1,1000}$/.test(clickId)) {
+      event.fbc = "fb.1." + landingTime + "." + clickId;
+    }
+    await fetch("/api/capi", {
+      method: "POST",
+      credentials: "omit",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(event),
+      keepalive: true
+    });
+  }
 
   async function loadSession() {
     const response = await fetch(endpoint, { cache: "no-store", credentials: "omit" });
@@ -131,12 +152,17 @@
       }
       document.getElementById("valasztott-idopont").textContent =
         isoDay.format(date).slice(0, 4) + ". " + dateFormat.format(date) + ", " + timeFormat.format(date);
+      const measureLead = response.status === 201 && document.getElementById("meta-measurement").checked;
       form.hidden = true;
       form.reset();
       fallback.hidden = true;
       document.querySelector(".card-intro").hidden = true;
       success.hidden = false;
       success.focus({ preventScroll: true });
+      if (measureLead) {
+        // An unavailable measurement service must not interrupt a confirmed registration.
+        reportMetaLead().catch(() => {});
+      }
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: "webinar_registration", webinar: "kreativo-" + isoDay.format(date),

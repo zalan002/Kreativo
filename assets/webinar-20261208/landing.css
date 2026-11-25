@@ -149,3 +149,25 @@ footer {border-top:1px solid var(--line)}
   .presenters img {aspect-ratio:1.08}
   .presenters figcaption {font-size:1.25rem}
 }
+
+/* Webinar series dates and single-session registration */
+.series-agenda {margin-top:26px}
+.series-year {color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.76rem}
+.series-agenda ul {list-style:none;margin:8px 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.series-agenda li {border:1px solid #d2bb9a85;border-radius:5px;padding:7px 12px;background:#352a42a6}
+.series-agenda time {display:flex;align-items:baseline;gap:5px}
+.series-agenda time strong {margin-left:5px;color:#fff}
+.series-note {color:#e7dfe9;font-size:.85rem;max-width:48ch}
+.session-picker {min-width:0;margin:0 0 15px;border:0;padding:0}
+.session-picker legend {font-size:.85rem;font-weight:700;color:#37313e;margin-bottom:7px;padding:0}
+.session-picker legend b {color:#79558b}
+#webinar-idopontok {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.session-option {display:flex;align-items:center;gap:8px;padding:10px;border-radius:7px;border:1px solid #cfc4d4;color:#372940;background:#fff;cursor:pointer;line-height:1.35}
+.session-option input {accent-color:#61428a;margin:0;flex:none;width:16px;height:16px}
+.session-option small,.session-option strong {display:block}
+.session-option small {font-size:.74rem}
+.session-option strong {font-size:.94rem}
+.session-option:has(:checked) {border-color:#61428a;background:#f4eff8;box-shadow:0 0 0 1px #61428a inset}
+.session-option:focus-within {outline:2px solid #61428a;outline-offset:2px}
+@media(max-width:760px){.series-agenda{margin-top:12px}.series-agenda li{padding:4px 9px}.series-note{font-size:.78rem}}
+@media(max-width:360px){#webinar-idopontok{grid-template-columns:1fr}}

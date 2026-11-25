@@ -20,6 +20,16 @@
   const directLink = new URL(fallback.querySelector("a").href);
   directLink.search = campaign.toString();
   fallback.querySelector("a").href = directLink.href;
+  const choices = document.getElementById("webinar-idopontok");
+  const dateFormat = new Intl.DateTimeFormat("hu-HU", {
+    timeZone: "Europe/Budapest", month: "long", day: "numeric", weekday: "long"
+  });
+  const timeFormat = new Intl.DateTimeFormat("hu-HU", {
+    timeZone: "Europe/Budapest", hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+  });
+  const isoDay = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Europe/Budapest", year: "numeric", month: "2-digit", day: "2-digit"
+  });
   let session;
   let busy = false;
 
@@ -29,6 +39,42 @@
     const data = await response.json();
     if (!data.token || !data.ts) throw new Error("A regisztrációt nem sikerült előkészíteni.");
     return data;
+  }
+
+  function displaySessions(value) {
+    const field = value.webinar_selection?.field_key;
+    const options = value.webinar_sessions || [];
+    if (!field || value.webinar_selection.mode !== "single" || !Array.isArray(options)) {
+      throw new Error("Az időpontválasztó nem tölthető be.");
+    }
+    const previous = choices.querySelector("input:checked")?.value;
+    const fragment = document.createDocumentFragment();
+    for (const option of options) {
+      const date = new Date(option.scheduled_at);
+      if (!option.id || !Number.isFinite(date.getTime())) continue;
+      const label = document.createElement("label");
+      label.className = "session-option";
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = field;
+      input.value = option.id;
+      input.required = true;
+      input.checked = previous === option.id;
+      const details = document.createElement("span");
+      const day = document.createElement("small");
+      day.textContent = dateFormat.format(date);
+      const hour = document.createElement("strong");
+      hour.textContent = timeFormat.format(date);
+      details.append(day, hour);
+      label.append(input, details);
+      fragment.append(label);
+    }
+    choices.replaceChildren(fragment);
+    session = value;
+    if (!choices.childElementCount) {
+      form.hidden = true;
+      throw new Error("Jelenleg nincs választható időpont.");
+    }
   }
 
   function showError(message) {
@@ -57,6 +103,9 @@
     errorBox.hidden = true;
     try {
       const data = Object.fromEntries(new FormData(form));
+      const chosen = session.webinar_sessions.find(option => option.id === data[session.webinar_selection.field_key]);
+      if (!chosen) throw new Error("Kérjük, válasszon időpontot.");
+      const date = new Date(chosen.scheduled_at);
       Object.assign(data, Object.fromEntries(campaign), {
         _token: session.token, _ts: session.ts, _channel: "embed",
         landing_url: landingUrl.href, page_url: landingUrl.href
@@ -72,11 +121,16 @@
       const result = await response.json();
       if (!response.ok || !result.ok) {
         if (response.status === 403) {
-          session = await loadSession();
+          displaySessions(await loadSession());
           throw new Error("Frissítettük az űrlapot. Kérjük, néhány másodperc múlva küldje el újra.");
+        }
+        if (Array.isArray(result.webinar_sessions)) {
+          displaySessions({ ...session, webinar_sessions: result.webinar_sessions });
         }
         throw new Error(result.error || "Nem sikerült a regisztráció. Kérjük, ellenőrizze a megadott adatokat.");
       }
+      document.getElementById("valasztott-idopont").textContent =
+        isoDay.format(date).slice(0, 4) + ". " + dateFormat.format(date) + ", " + timeFormat.format(date);
       form.hidden = true;
       form.reset();
       fallback.hidden = true;
@@ -84,7 +138,10 @@
       success.hidden = false;
       success.focus({ preventScroll: true });
       window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({event:"webinar_registration", webinar:"kreativo-2026-12-08"});
+      window.dataLayer.push({
+        event: "webinar_registration", webinar: "kreativo-" + isoDay.format(date),
+        webinar_session_id: chosen.id, webinar_scheduled_at: chosen.scheduled_at
+      });
     } catch (error) {
       showError(error instanceof TypeError ? "Kapcsolati hiba történt. Ha nem kapott visszaigazolást, próbálja újra, vagy nyissa meg a külön regisztrációs űrlapot." : error.message);
     } finally {
@@ -96,8 +153,8 @@
 
   // Until the CRM confirms it is ready, visitors can use the hosted form.
   loadSession().then((value) => {
-    session = value;
+    displaySessions(value);
     form.hidden = false;
     fallback.hidden = true;
-  }).catch(() => showError("A beágyazott űrlap most nem töltődött be. Az alábbi linken tud jelentkezni."));
+  }).catch(error => showError(error instanceof TypeError ? "Az űrlap most nem töltődött be. Az alábbi linken tud jelentkezni." : error.message));
 })();

@@ -9,6 +9,7 @@
   const success = document.getElementById("siker");
   const submit = form.querySelector('button[type="submit"]');
   const submitText = submit.querySelector("span");
+  const submitLabel = submitText.textContent;
   const campaign = new URLSearchParams();
   const query = new URLSearchParams(location.search);
   for (const name of ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","utm_id","fbclid","gclid","msclkid","ttclid","li_fat_id"]) {
@@ -89,7 +90,7 @@
     } finally {
       busy = false;
       submit.disabled = false;
-      submitText.textContent = "Jelentkezem a webinárra";
+      submitText.textContent = submitLabel;
     }
   });
 

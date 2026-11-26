@@ -138,13 +138,10 @@
       const chosen = session.webinar_sessions.find(option => option.id === data[session.webinar_selection.field_key]);
       if (!chosen) throw new Error("Kérjük, válasszon időpontot.");
       const date = new Date(chosen.scheduled_at);
-      const measurementConsent = document.getElementById("meta-measurement").checked;
       Object.assign(data, Object.fromEntries(campaign), {
         _token: session.token, _ts: session.ts, _channel: "embed",
         landing_url: landingUrl.href, page_url: landingUrl.href
       });
-      // Same encoding as a CRM checkbox field: "true" when ticked, absent otherwise.
-      if (measurementConsent) data.meta_meres = "true";
       if (document.referrer) {
         try { data.landing_referrer = new URL(document.referrer).origin; } catch {}
       }
@@ -166,7 +163,8 @@
       }
       document.getElementById("valasztott-idopont").textContent =
         isoDay.format(date).slice(0, 4) + ". " + dateFormat.format(date) + ", " + timeFormat.format(date);
-      const measureLead = response.status === 201 && measurementConsent;
+      // 201 = a new, confirmed registration (honeypot hits get 200 and are not measured).
+      const measureLead = response.status === 201;
       form.hidden = true;
       form.reset();
       fallback.hidden = true;

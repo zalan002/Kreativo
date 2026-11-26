@@ -59,13 +59,6 @@ h1 em {color:var(--lavender)}
 .form-grid textarea {resize:vertical;min-height:55px}
 .full {grid-column:1 / -1}
 .trap {position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
-.measurement-choice {display:flex;align-items:flex-start;gap:8px;margin-top:14px;font-size:.8rem;line-height:1.45;cursor:pointer}
-.measurement-choice input {flex:none;width:16px;height:16px;margin:1px 0 0;accent-color:var(--plum)}
-.measurement-choice small {font-size:inherit;color:#625b65}
-.measurement-details {margin:3px 0 8px 24px;font-size:.75rem;color:#625b65}
-.measurement-details summary {cursor:pointer;text-decoration:underline}
-.measurement-details p {line-height:1.5;margin:5px 0}
-.measurement-details a {text-decoration:underline}
 .fineprint {font-size:.73rem;color:#625b65;margin:11px 0;line-height:1.4}
 .button {display:inline-flex;align-items:center;justify-content:space-between;gap:24px;background:var(--plum);color:#fff;border:none;border-radius:4px;text-decoration:none;padding:12px 17px;min-height:44px;font:700 .91rem/1.35 var(--sans);cursor:pointer}
 .button:hover {background:#503568}

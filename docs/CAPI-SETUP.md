@@ -128,6 +128,26 @@ A `/api/lead` endpoint válaszai:
 | 502 | Az n8n webhook hibát adott vagy nem elérhető. |
 | 503 | Prodban nincs a lead-típushoz tartozó n8n webhook URL beállítva (`N8N_EBOOK_WEBHOOK_URL` / `N8N_DIREKTLEAD_WEBHOOK_URL`). |
 
+## Webinár landing (`webinar.html`) — hozzájáruláshoz kötött Lead
+
+A webinároldalon **nincs böngészős Pixel**. A jelentkezés a CRM nyilvános űrlap-API-jára megy (`assets/webinar-20261208/landing.js`), és a Meta csak akkor kap `Lead` eseményt (`/api/capi`, szerveroldalon), ha:
+
+1. a jelentkező bepipálta az opcionális „Engedélyezem a jelentkezésem mérését a Metánál” jelölőnégyzetet, és
+2. a CRM `201`-gyel visszaigazolta az új regisztrációt.
+
+Az esemény IP-címet, User-Agentet és — hirdetésből érkezve — az `fbclid`-ből képzett `fbc`-t tartalmaz; e-mailt és telefonszámot nem. Ezért a Meta jellemzően kevesebb leadet mutat, mint a CRM; a valós szám a CRM-ben van (hirdetésenként az `utm_content` alapján).
+
+**A hozzájárulás rögzítése a CRM-ben:** bepipált jelölőnégyzetnél a landing `meta_meres: "true"` mezőt küld a CRM-nek (üresen semmit — ugyanúgy, mint a CRM saját jelölőnégyzet-mezője). A CRM csak az űrlapon felvett mezőket tárolja, ezért a webinár-űrlapon fel kell venni egy mezőt:
+
+| Beállítás | Érték |
+|---|---|
+| Kulcs | `meta_meres` |
+| Típus | jelölőnégyzet (checkbox) |
+| Kötelező | nem |
+| Címke | pl. „Engedélyezem a jelentkezésem mérését a Metánál” |
+
+A mező nélkül a jelentkezés továbbra is működik, csak a hozzájárulás nem tárolódik. A mező a CRM saját (hosted) tartalék űrlapján is megjelenik; ott a bepipálása nem indít Meta-mérést.
+
 ## Hibakeresés
 
 A `/api/capi` endpoint válaszai:

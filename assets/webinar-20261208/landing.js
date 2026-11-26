@@ -34,10 +34,21 @@
   let session;
   let busy = false;
 
+  // crypto.randomUUID is missing from older in-app browsers (iOS < 15.4, Chrome < 92).
+  function newEventId() {
+    try {
+      if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+      const bytes = crypto.getRandomValues(new Uint8Array(16));
+      return Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+    } catch {
+      return Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+    }
+  }
+
   async function reportMetaLead() {
     const event = {
       event_name: "Lead",
-      event_id: crypto.randomUUID(),
+      event_id: newEventId(),
       event_source_url: location.origin + location.pathname,
       custom_data: { content_name: "Kreativo webinár" }
     };
@@ -127,10 +138,13 @@
       const chosen = session.webinar_sessions.find(option => option.id === data[session.webinar_selection.field_key]);
       if (!chosen) throw new Error("Kérjük, válasszon időpontot.");
       const date = new Date(chosen.scheduled_at);
+      const measurementConsent = document.getElementById("meta-measurement").checked;
       Object.assign(data, Object.fromEntries(campaign), {
         _token: session.token, _ts: session.ts, _channel: "embed",
         landing_url: landingUrl.href, page_url: landingUrl.href
       });
+      // Same encoding as a CRM checkbox field: "true" when ticked, absent otherwise.
+      if (measurementConsent) data.meta_meres = "true";
       if (document.referrer) {
         try { data.landing_referrer = new URL(document.referrer).origin; } catch {}
       }
@@ -152,7 +166,7 @@
       }
       document.getElementById("valasztott-idopont").textContent =
         isoDay.format(date).slice(0, 4) + ". " + dateFormat.format(date) + ", " + timeFormat.format(date);
-      const measureLead = response.status === 201 && document.getElementById("meta-measurement").checked;
+      const measureLead = response.status === 201 && measurementConsent;
       form.hidden = true;
       form.reset();
       fallback.hidden = true;

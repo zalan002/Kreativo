@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
 
 const FB_API_VERSION = "v19.0";
-const ALLOWED_EVENTS = new Set(["ViewContent", "Lead"]);
+const ALLOWED_EVENTS = new Set(["ViewContent", "Lead", "LeadPartial"]);
+// Events that identify a person: they carry the click id and hashed contact data.
+const LEAD_EVENTS = new Set(["Lead", "LeadPartial"]);
 
 function sha256(value) {
   return crypto
@@ -76,7 +78,7 @@ export default async function handler(req, res) {
   const ip = getClientIp(req);
   if (ip) userData.client_ip_address = ip;
 
-  if (eventName === "Lead") {
+  if (LEAD_EVENTS.has(eventName)) {
     if (typeof body.fbc === "string" && /^fb\.1\.\d{13}\.[A-Za-z0-9_-]{1,1000}$/.test(body.fbc)) {
       userData.fbc = body.fbc;
     }

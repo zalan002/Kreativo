@@ -43,7 +43,7 @@
   let current = 0;
   let resume = null;
   let queue = Promise.resolve();
-  let leadReported = false;
+  let partialReported = false;
   document.getElementById("step-total").textContent = steps.length;
 
   // crypto.randomUUID is missing from older in-app browsers (iOS < 15.4, Chrome < 92).
@@ -58,11 +58,12 @@
   }
 
   // Email and phone are hashed (SHA-256) by /api/capi before they reach Meta.
-  const leadEventId = newEventId();
-  async function reportMetaLead(email, phone) {
+  // Measured like the Training Hungary webinar form: LeadPartial once the
+  // phone step is valid, Lead only for a completed registration.
+  async function reportMetaEvent(eventName, email, phone) {
     const event = {
-      event_name: "Lead",
-      event_id: leadEventId,
+      event_name: eventName,
+      event_id: newEventId(),
       event_source_url: location.origin + location.pathname,
       custom_data: { content_name: "Kreativo webinár" },
       email,
@@ -204,13 +205,13 @@
     return { response, result, data };
   }
 
-  // The CRM registers the visitor for the webinar at the first save
-  // (202 for a partial, 201 for a complete one), so that is the Lead.
-  function reportLeadOnce(data) {
-    if (leadReported) return;
-    leadReported = true;
-    // An unavailable measurement service must not interrupt a registration.
-    reportMetaLead(data.email, data.telefonszam).catch(() => {});
+  function reportPartialOnce() {
+    if (partialReported) return;
+    partialReported = true;
+    const value = name => form.elements.namedItem(name).value;
+    // Measurement only; a failure is retried on the next pass, never shown.
+    reportMetaEvent("LeadPartial", value("email"), value("telefonszam"))
+      .catch(() => { partialReported = false; });
   }
 
   function sessionsChanged(result) {
@@ -222,12 +223,11 @@
 
   function savePartial() {
     const run = queue.then(async () => {
-      const { response, result, data } = await postToCrm(true);
+      const { response, result } = await postToCrm(true);
       if (response.ok && result.ok) {
         if (result.submission && result.resume) {
           resume = { submission: String(result.submission), token: String(result.resume) };
         }
-        if (response.status === 202) reportLeadOnce(data);
         return;
       }
       if (response.status === 403) {
@@ -275,8 +275,11 @@
       document.querySelector(".card-intro").hidden = true;
       success.hidden = false;
       success.focus({ preventScroll: true });
-      // 201 = confirmed registration; honeypot hits get 200 and are not measured.
-      if (response.status === 201) reportLeadOnce(data);
+      // 201 = completed registration; honeypot hits get 200 and are not measured.
+      if (response.status === 201) {
+        // An unavailable measurement service must not interrupt a registration.
+        reportMetaEvent("Lead", data.email, data.telefonszam).catch(() => {});
+      }
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: "webinar_registration", webinar: "kreativo-" + isoDay.format(date),
@@ -309,6 +312,7 @@
       finish();
       return;
     }
+    if (current + 1 === PARTIAL_AFTER_STEP) reportPartialOnce();
     if (current + 1 >= PARTIAL_AFTER_STEP) savePartial();
     showStep(current + 1);
   });

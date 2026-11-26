@@ -45,12 +45,15 @@
     }
   }
 
-  async function reportMetaLead() {
+  // Email and phone are hashed (SHA-256) by /api/capi before they reach Meta.
+  async function reportMetaLead(email, phone) {
     const event = {
       event_name: "Lead",
       event_id: newEventId(),
       event_source_url: location.origin + location.pathname,
-      custom_data: { content_name: "Kreativo webinár" }
+      custom_data: { content_name: "Kreativo webinár" },
+      email,
+      phone
     };
     const clickId = campaign.get("fbclid");
     if (clickId && /^[A-Za-z0-9_-]{1,1000}$/.test(clickId)) {
@@ -173,7 +176,7 @@
       success.focus({ preventScroll: true });
       if (measureLead) {
         // An unavailable measurement service must not interrupt a confirmed registration.
-        reportMetaLead().catch(() => {});
+        reportMetaLead(data.email, data.telefonszam).catch(() => {});
       }
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({

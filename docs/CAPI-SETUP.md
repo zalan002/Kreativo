@@ -132,7 +132,7 @@ A `/api/lead` endpoint válaszai:
 
 A webinároldalon **nincs böngészős Pixel**. A jelentkezés a CRM nyilvános űrlap-API-jára megy (`assets/webinar-20261208/landing.js`), és **minden sikeres jelentkezésnél** (a CRM `201`-gyel igazolja vissza) a landing `Lead` eseményt küld a Metának a `/api/capi` végponton keresztül, szerveroldalon. A robotcsapdán fennakadt beküldések `200`-at kapnak, ezekről nem megy esemény.
 
-Az esemény IP-címet, User-Agentet és — hirdetésből érkezve — az `fbclid`-ből képzett `fbc`-t tartalmaz; e-mailt és telefonszámot nem. Az `event_id` `crypto.randomUUID()`-dal készül, régebbi böngészőben `getRandomValues`-, végső esetben időbélyeg-alapú tartalékkal.
+Az esemény IP-címet, User-Agentet, — hirdetésből érkezve — az `fbclid`-ből képzett `fbc`-t, valamint a jelentkező e-mail-címét és telefonszámát tartalmazza. Az e-mailt és a telefonszámot a landing a saját `/api/capi` végpontunknak küldi, ami SHA-256-tal hasheli őket; a Metához csak a hash jut el. A telefonszámot hashelés előtt országkódos formára hozzuk (`06 30 …`, `0036 30 …`, `30 …` → `3630…`), mert a Meta így párosít. Az `event_id` `crypto.randomUUID()`-dal készül, régebbi böngészőben `getRandomValues`-, végső esetben időbélyeg-alapú tartalékkal.
 
 A CRM saját (hosted) tartalék űrlapjáról beküldött jelentkezésekről nem megy Meta-esemény.
 

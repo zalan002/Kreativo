@@ -10,9 +10,20 @@ function sha256(value) {
     .digest("hex");
 }
 
+// Meta matches phone numbers with the country code, digits only (E.164 without "+").
+// Hungarian visitors often type the domestic "06" prefix or leave out the country code.
+function normalizePhone(phone) {
+  const raw = String(phone).trim();
+  const digits = raw.replace(/\D/g, "");
+  if (raw.startsWith("+")) return digits;
+  if (digits.startsWith("00")) return digits.slice(2);
+  if (digits.startsWith("06")) return "36" + digits.slice(2);
+  if (digits.length === 8 || digits.length === 9) return "36" + digits;
+  return digits;
+}
+
 function hashPhone(phone) {
-  const digits = String(phone).replace(/\D/g, "");
-  return crypto.createHash("sha256").update(digits).digest("hex");
+  return crypto.createHash("sha256").update(normalizePhone(phone)).digest("hex");
 }
 
 function getClientIp(req) {

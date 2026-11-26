@@ -171,3 +171,17 @@ footer {border-top:1px solid var(--line)}
 .session-option:focus-within {outline:2px solid #61428a;outline-offset:2px}
 @media(max-width:760px){.series-agenda{margin-top:12px}.series-agenda li{padding:4px 9px}.series-note{font-size:.78rem}}
 @media(max-width:360px){#webinar-idopontok{grid-template-columns:1fr}}
+.step-head {display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px}
+.step-title {font-weight:700;font-size:.95rem;color:var(--deep)}
+.step-count {flex:none;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.step-count b {font-weight:400;color:#b3a8b8}
+.step-progress {height:4px;margin-bottom:16px;border-radius:2px;background:#eee7f0;overflow:hidden}
+.step-progress span {display:block;width:20%;height:100%;background:linear-gradient(90deg,#8664a6,#c5a96f);transition:width .35s ease}
+.step-enter {animation:step-in .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes step-in {from {opacity:0;transform:translateX(16px)} to {opacity:1;transform:none}}
+.step .fineprint {margin-bottom:0}
+.step-nav {display:flex;align-items:stretch;gap:10px;margin-top:16px}
+.step-back {flex:none;min-height:44px;padding:0 14px;border:1px solid #cfc8ce;border-radius:4px;background:#fff;color:var(--deep);font-weight:600;font-size:.86rem;cursor:pointer}
+.step-back:disabled {opacity:.45;cursor:default}
+.step-next {flex:1}
+@media (prefers-reduced-motion:reduce) {.step-enter {animation:none}.step-progress span {transition:none}}

@@ -23,8 +23,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="/assets/webinar-20261208/landing.css?v=lead-4">
-  <script defer src="/assets/webinar-20261208/landing.js?v=lead-4"></script>
+  <link rel="stylesheet" href="/assets/webinar-20261208/landing.css?v=steps-1">
+  <script defer src="/assets/webinar-20261208/landing.js?v=steps-1"></script>
 </head>
 <body>
   <a class="skip" href="#jelentkezes">Ugrás a jelentkezési űrlapra</a>
@@ -54,21 +54,44 @@
         </div>
         <div class="form-card" id="jelentkezes">
           <div class="card-intro"><h2>Jelentkezés a webinárra</h2><p><strong>A részvétel ingyenes.</strong> Válassza ki, melyik alkalmon vesz részt. A választott időpont belépőlinkjét e-mailben küldjük.</p></div>
-          <form id="webinar-form" hidden>
-            <fieldset class="session-picker"><legend>Melyik időpontra jelentkezik? <b aria-hidden="true">*</b></legend><div id="webinar-idopontok"></div></fieldset>
-            <div class="form-grid">
-              <label>Vezetéknév <b>*</b><input name="vezeteknev" autocomplete="family-name" required minlength="2" placeholder="Kovács"></label>
-              <label>Keresztnév <b>*</b><input name="keresztnev" autocomplete="given-name" required minlength="2" placeholder="János"></label>
-              <label>E-mail <b>*</b><input name="email" type="email" autocomplete="email" required placeholder="nev@ceg.hu"></label>
-              <label>Telefonszám <b>*</b><input name="telefonszam" type="tel" autocomplete="tel" required placeholder="+36 30 123 4567"></label>
-              <label>Cégnév <b>*</b><input name="cegnev" autocomplete="organization" required minlength="2" placeholder="Példa Kft."></label>
-              <label>Adószám <small>(opcionális)</small><input name="adoszam" inputmode="numeric" placeholder="12345678-1-23"></label>
-              <label class="full" for="elozetes-kerdes">Mit kérdezne az előadóktól a pályázatokról? <small>(opcionális)</small><textarea id="elozetes-kerdes" name="elozetes_kerdes" rows="2" maxlength="1000" placeholder="Például elszámolható-e az új gépet beüzemelő munkatárs bére?" aria-describedby="kerdes-sugo"></textarea><span class="field-help" id="kerdes-sugo">Az előre beküldött kérdéseket az élő webinár kérdésblokkjában válaszoljuk meg.</span></label>
-              <label class="full">Megjegyzés <small>(opcionális)</small><textarea name="megjegyzes" rows="2" placeholder="Milyen fejlesztéshez keres forrást?"></textarea></label>
+          <form id="webinar-form" novalidate hidden>
+            <div class="step-head"><span class="step-title" id="step-title" aria-live="polite">Foglalja le a helyét</span><span class="step-count"><span id="step-num">1</span> <b>/</b> <span id="step-total">5</span></span></div>
+            <div class="step-progress" role="progressbar" aria-label="Kitöltöttség" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20"><span></span></div>
+            <div class="step" data-step="1">
+              <fieldset class="session-picker"><legend>Melyik időpontra jelentkezik? <b aria-hidden="true">*</b></legend><div id="webinar-idopontok"></div></fieldset>
+              <div class="form-grid">
+                <label>Vezetéknév <b>*</b><input name="vezeteknev" autocomplete="family-name" required minlength="2" placeholder="Kovács"></label>
+                <label>Keresztnév <b>*</b><input name="keresztnev" autocomplete="given-name" required minlength="2" placeholder="János"></label>
+              </div>
+            </div>
+            <div class="step" data-step="2" hidden>
+              <div class="form-grid">
+                <label class="full">E-mail-cím <b>*</b><input name="email" type="email" inputmode="email" autocomplete="email" required placeholder="nev@ceg.hu" aria-describedby="email-sugo"><span class="field-help" id="email-sugo">Ide küldjük a választott alkalom személyes belépőlinkjét.</span></label>
+              </div>
+            </div>
+            <div class="step" data-step="3" hidden>
+              <div class="form-grid">
+                <label class="full">Telefonszám <b>*</b><input name="telefonszam" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+36 30 123 4567" aria-describedby="telefon-sugo"><span class="field-help" id="telefon-sugo">Ezen keressük, ha kérdés merül fel a jelentkezésével kapcsolatban.</span></label>
+              </div>
+              <p class="fineprint">A továbblépéssel hozzájárul, hogy a Kreativo megkeresse a webinárral kapcsolatban.</p>
+            </div>
+            <div class="step" data-step="4" hidden>
+              <div class="form-grid">
+                <label class="full">Cégnév <b>*</b><input name="cegnev" autocomplete="organization" required minlength="2" placeholder="Példa Kft."></label>
+                <label class="full">Adószám <small>(opcionális)</small><input name="adoszam" inputmode="numeric" placeholder="12345678-1-23"></label>
+              </div>
+            </div>
+            <div class="step" data-step="5" hidden>
+              <div class="form-grid">
+                <label class="full" for="elozetes-kerdes">Mit kérdezne az előadóktól a pályázatokról? <small>(opcionális)</small><textarea id="elozetes-kerdes" name="elozetes_kerdes" rows="3" maxlength="1000" placeholder="Például elszámolható-e az új gépet beüzemelő munkatárs bére?" aria-describedby="kerdes-sugo"></textarea><span class="field-help" id="kerdes-sugo">Az előre beküldött kérdéseket az élő webinár kérdésblokkjában válaszoljuk meg.</span></label>
+                <label class="full">Megjegyzés <small>(opcionális)</small><textarea name="megjegyzes" rows="2" placeholder="Milyen fejlesztéshez keres forrást?"></textarea></label>
+              </div>
             </div>
             <div class="trap" aria-hidden="true"><label>Weboldal<input type="text" name="website_a90630bb" tabindex="-1" autocomplete="off"></label></div>
-            <p class="fineprint">A beküldéssel hozzájárul, hogy a Kreativo megkeresse a webinárral kapcsolatban.</p>
-            <button class="button full-button" type="submit"><span>Jelentkezem az ingyenes webinárra</span><span aria-hidden="true">↗</span></button>
+            <div class="step-nav">
+              <button class="step-back" type="button" disabled>← Vissza</button>
+              <button class="button step-next" type="submit"><span>Tovább</span><span aria-hidden="true">→</span></button>
+            </div>
           </form>
           <p id="form-error" class="error" role="alert" hidden></p>
           <p id="direct-form" class="fallback"><a href="https://partnercrm.leadgensolution.hu/f/28e9d9f97b166b213f6693213b921780">Ingyenes jelentkezés megnyitása <span aria-hidden="true">↗</span></a></p>

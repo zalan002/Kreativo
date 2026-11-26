@@ -128,9 +128,17 @@ A `/api/lead` endpoint válaszai:
 | 502 | Az n8n webhook hibát adott vagy nem elérhető. |
 | 503 | Prodban nincs a lead-típushoz tartozó n8n webhook URL beállítva (`N8N_EBOOK_WEBHOOK_URL` / `N8N_DIREKTLEAD_WEBHOOK_URL`). |
 
-## Webinár landing (`webinar.html`) — Lead minden jelentkezésnél
+## Webinár landing (`webinar.html`) — többlépcsős űrlap, Lead az első mentéskor
 
-A webinároldalon **nincs böngészős Pixel**. A jelentkezés a CRM nyilvános űrlap-API-jára megy (`assets/webinar-20261208/landing.js`), és **minden sikeres jelentkezésnél** (a CRM `201`-gyel igazolja vissza) a landing `Lead` eseményt küld a Metának a `/api/capi` végponton keresztül, szerveroldalon. A robotcsapdán fennakadt beküldések `200`-at kapnak, ezekről nem megy esemény.
+A webinároldalon **nincs böngészős Pixel**. Az űrlap öt lépcsős (a Training Hungary webinár-űrlapjának mintájára), és a CRM nyilvános űrlap-API-jára küld (`assets/webinar-20261208/landing.js`):
+
+1. időpont + vezeték- és keresztnév
+2. e-mail
+3. telefonszám — **innen részleges mentés** (`_partial: "1"`; a CRM-űrlap `partial_capture_after_step: 3` beállításával összhangban)
+4. cégnév + adószám (opcionális)
+5. előzetes kérdés és megjegyzés (opcionális) → végleges beküldés
+
+A részleges mentésre a CRM `202`-vel válaszol, és visszaad egy beküldés-azonosítót és aláírást (`submission`, `resume`); a további lépcsők ezzel (`_submission`, `_resume`) ugyanazt a beküldést egészítik ki, a végleges beküldés `201`-gyel zárja. A kérések sorba rendezve futnak. A CRM már a részleges mentésnél létrehozza a dealt és a webinár-regisztrációt (belépőlinkkel), ezért a **`Lead` esemény egyszer, az első visszaigazolt mentéskor** megy a Metának (`202` vagy — ha nem volt részleges mentés — `201`), egy közös `event_id`-vel a `/api/capi` végponton keresztül. A robotcsapdán fennakadt beküldések `200`-at kapnak, ezekről nem megy esemény.
 
 Az esemény IP-címet, User-Agentet, — hirdetésből érkezve — az `fbclid`-ből képzett `fbc`-t, valamint a jelentkező e-mail-címét és telefonszámát tartalmazza. Az e-mailt és a telefonszámot a landing a saját `/api/capi` végpontunknak küldi, ami SHA-256-tal hasheli őket; a Metához csak a hash jut el. A telefonszámot hashelés előtt országkódos formára hozzuk (`06 30 …`, `0036 30 …`, `30 …` → `3630…`), mert a Meta így párosít. Az `event_id` `crypto.randomUUID()`-dal készül, régebbi böngészőben `getRandomValues`-, végső esetben időbélyeg-alapú tartalékkal.
 
